@@ -1,0 +1,126 @@
+{% load static %}
+<html lang="en">
+
+<!-- Mirrored from www.once.app/ by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 17 Oct 2020 13:01:34 GMT -->
+<head>
+    <!-- Basic meta -->
+    <meta charset="UTF-8" />
+    <title>Once | Boost your e-commerce conversion rates on mobile</title>
+    <meta name="description" content="Once lets you create mobile-optimized storefronts for your e-commerce" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <!-- Facebook meta -->
+    <meta property="og:url" content="index.html" />
+    <meta property="og:type" content="product" />
+    <meta property="og:site_name" content="Once" />
+    <meta property="og:title" content="Boost your e-commerce conversion rates on mobile" />
+    <meta property="og:description" content="Once lets you create mobile-optimized storefronts for your e-commerce" />
+    <meta property="og:image" content="public/img/meta-image--og%402x.png" />
+
+    <!-- Twitter meta -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@oncedotapp" />
+    <meta name="twitter:title" content="Boost your e-commerce conversion rates on mobile" />
+    <meta name="twitter:description" content="Once lets you create mobile-optimized storefronts for your e-commerce" />
+    <meta name="twitter:image" content="{% static 'public/img/meta-image--tw%402x.html' %}" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'public/img/favicon.png' %}" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'public/css/app.css' %}" />
+  </head>
+
+  <body>
+    <div class="l-menu" id="top">
+      <div class="l-nav-wrap u-fb u-sb u-va">
+        <a href="{% url 'home' %}">
+          <img style="height: 36px;" src="{% static 'public/img/logo--dark.svg' %}" alt="Once Logo Three Dots" />
+        </a>
+        <div class="l-menu__links u-fb u-va">
+          {% if user.is_authenticated %}
+          <h1>Logged in</h1>
+          <a style="--btn-color: var(--dark-grey); --bckg-color: var(--white);" class="c-form__btn c-form__btn--small t-fs--base t-fw--xbui l-hpl l-hpr l-hml" href="{% url 'create-story' %}">
+            Create Story
+          </a>
+          {% else %}
+          <a class="t-cl--black-100 t-cl--blue-100--hover t-fs--base t-fw--medium l-hpl l-hpr" href="{% url 'login' %}">Login</a>
+
+
+          <a style="--btn-color: var(--dark-grey); --bckg-color: var(--white);" class="c-form__btn c-form__btn--small t-fs--base t-fw--xbui l-hpl l-hpr l-hml" href="{% url 'login' %}">
+            Start Now
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <!-- /.wrap -->
+    </div>
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+     <!-- Footer -->
+     <div class="l-footer">
+        <div class="l-wrap">
+          <div class="row">
+            <div class="col-xs-12 col-md-6 l-hmb">
+              <div class="row">
+                <div class="col-xs-12 col-md-8 l-img34px">
+                  <img class="l-hmb" src="{% static 'public/img/logo--dark.svg' %}" alt="Once logo" />
+                  <p class="t-cl--black-60 t-fs--base t-ln--large">
+                    <span class="u-stronger">Boost your e-commerce conversion rate on mobile.</span>
+                    Once lets you create mobile-optimized storefronts for your e-commerce.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-12 col-md-2 l-mb">
+              <p class="t-cl--blue-100 t-fs--base t-fw--medium l-hmb l-hmt">Once</p>
+              <a class="t-cl--black-60 t-cl--black-100--hover t-fs--base t-ln--large t--underline--hover u-db l-hmb" href="mailto:arthur@once.app?subject=Open%20Application">We're hiring</a>
+              <a class="t-cl--black-60 t-cl--black-100--hover t-fs--base t-ln--large t--underline--hover u-db l-hmb" href="terms.html">Terms of Use</a>
+              <a class="t-cl--black-60 t-cl--black-100--hover t-fs--base t-ln--large t--underline--hover u-db l-hmb" href="privacy.html">Privacy policy</a>
+            </div>
+
+            <div class="col-xs-12 col-md-2 l-mb">
+              <p class="t-cl--blue-100 t-fs--base t-fw--medium l-hmb l-hmt">Slack Community</p>
+              <p class="t-cl--black-60 t-fs--base t-ln--large u-db l-hmb">
+                Join our community to share feedback & get live updates 🤗
+              </p>
+              <a
+                class="l-footer__slack t-cl--black-80 t-cl--blue-100--hover t-fw--medium u-fb u-va"
+                href="https://join.slack.com/t/onceapp/shared_invite/enQtOTQ3NTAyOTcyNjc4LWYyYzRlZDkyY2FhYzExOWY5NjZiYzU5NGYxMzJhMDU5OTAxNTY3YzMzMzZlMmMyODZhMjI4OTYyN2VlMzAyNDA"
+              >
+                <img class="u-db" height="15" src="{% static 'public/img/footer--slack%402x.png' %}" alt="Slack logo" />
+                <span>Get onboard!</span>
+              </a>
+            </div>
+
+            <div class="col-xs-12 col-md-2 l-mb">
+              <p class="t-cl--blue-100 t-fs--base t-fw--medium l-hmb l-hmt">Follow us</p>
+              <a class="t-cl--black-60 t-cl--black-100--hover t-fs--base t-ln--large t--underline--hover u-fb u-ac l-hmb" href="https://twitter.com/oncedotapp">
+                <span class="l-footer__link l-footer__link--twitter l-bkg--white-100"><span></span></span>
+                <span>Twitter</span>
+              </a>
+              <a class="t-cl--black-60 t-cl--black-100--hover t-fs--base t-ln--large t--underline--hover u-fb u-ac l-hmb" href="https://www.linkedin.com/company/26270751">
+                <span class="l-footer__link l-footer__link--linkedin l-bkg--white-100"><span></span></span>
+                <span>LinkedIn</span>
+              </a>
+              <a class="t-cl--black-60 t-cl--black-100--hover t-fs--base t-ln--large t--underline--hover u-fb u-ac l-hmb" href="https://www.facebook.com/oncedotapp">
+                <span class="l-footer__link l-footer__link--facebook l-bkg--white-100"><span></span></span>
+                <span>Facebook</span>
+              </a>
+            </div>
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.wrap -->
+      </div>
+      <!-- /. Footer -->
+
+      <div id="segment-banner"></div>
+      <script src="../unpkg.com/%40segment/consent-manager%405.0.0/standalone/consent-manager.js" data-container defer></script>
+      <script src="{% static 'public/js/once.js' %}"></script>
+  </body>
+  </html>

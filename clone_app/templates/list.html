@@ -1,0 +1,335 @@
+{% load static %}
+<html class="no-js" lang="zxx">
+<head>
+    <title>Once | Create story</title>
+    <meta name="theme-color" content="#141e30"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <link rel="icon" href="">
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-free.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/swiper.css' %}">
+    <link rel="stylesheet" href="{% static 'css/emojionearea.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/trumbowyg.scss' %}">
+    <link rel="stylesheet" href="{% static 'css/trumbowyg.giphy.scss' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
+            integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk="
+			crossorigin="anonymous"></script>
+    <script src="{% static 'js/mdb.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/swiper.min.js' %}"></script>
+    <script src="{% static 'js/fontawesome.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/emojionearea.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/trumbowyg.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/trumbowyg.giphy.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script> 
+    <style>
+        .invisible{
+            position: absolute;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+        }
+        .editable-container{
+            position: relative;
+            border: none;
+            transition: all 0.2s ease;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .new-editable-container{
+            position: absolute;
+            z-index: 99999;
+        }
+
+        .resizeXbtn{
+            display: none;
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+
+        .resizeXbtn{
+            display: none;
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+
+        .storyContentControl{
+            display: none;
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+        .storyContentControl-navlink.nav-link{
+            display: none;
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+        .card{
+            height: 100%;
+        }
+        .v-center{
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .text-bg{
+            background: violet;
+        }
+        .text-underlined{
+            background: rgba(0, 0, 0, 0) linear-gradient(transparent 50%, rgb(182, 87, 108) 50%) repeat scroll 0% 0%;
+        }
+        .text-stroke{
+            color: white;
+            text-shadow: -1px -1px 0 grey, -1px 1px 0 grey, 1px -1px 0 grey, 1px 1px 0 grey;
+        }
+        .text-left-bordered{
+            border-left: 2px solid #ffc107;
+        }
+        .specialTextColor{
+            color: #ffc107;
+        }
+        .text-royal, .text-royal:hover{
+            color: #323b51;
+        }
+        .btn-fancy{
+            border-radius: 25px;
+            width: 100px;
+        }
+        .dropdown-fancy.nav-link{
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            overflow: hidden;
+            background: #323b51;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            line-height: 33px;
+            box-shadow: 0px 0px 10px rgba(50, 59, 81, 0.5);
+        }
+        .half-bordered{
+            border-right: 1px solid #323b51;
+            border-left: 1px solid #323b51;
+            height: max-content;
+        }
+        .bold{
+            font-weight: bold;
+        }
+        .max-content{
+            width: max-content;
+        }
+        .bg-royal{
+            background: #323b51;
+            color: white;
+        }
+        .bg-light-royal{
+            background: #415586;
+        }
+        .image-fluid{
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: auto;
+        }
+        html{
+            scroll-behavior: smooth;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
+            background: #fefefe;
+        }
+        .section{
+            padding: 30px;
+        }
+
+        #navbar{
+            width: 100%;
+            height: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+       
+        .contentcard, .contentrow:first-child{
+            width: 70px;
+            height: 100px;
+        }
+        .innerStoryCard{
+            width: 100%;
+            height: 100%;
+            border: 2px solid #323b51;
+            border-radius: 15px;
+            position: relative;
+        }
+        .storyControls{
+            width: 0;
+            height: 0;
+            visibility: hidden;
+            display: none;
+        }
+
+
+        #header{
+            width: 90%;
+            height: 300px;
+            margin-left: 10%;
+            overflow: hidden;
+            border-bottom-left-radius: 25px;
+            background: lightgrey;
+            padding-top: 200px;
+            padding-left: 100px;
+        }
+
+        .table tr td{padding-top: 25px;}
+        .table tr td:first-child{padding-top: 5px;}
+
+        .dropdown-menu{
+            padding-left: 3px;
+            padding-right: 3px;
+        }
+        .dropdown-menu li.nav-item:hover{
+            background: #f4f4f4;
+            border-radius: 3px;
+        }
+
+        tr{
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        tr td:first-child{
+            display: block;
+            width: 70px;
+            height: 110px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <nav id="navbar" class="navbar navbar-expand-md justify-content-between navbar-light bg-light">
+        <a href="#!" style="margin: 0; padding: 5px; height: 60px;" class="navbar-brand d-flex">
+            <div class="d-flex" style="width: auto; height: 50px;">
+                <img class="image-fluid" src="{% static 'img/logo.png' %}">
+                <h4 class="bold text-royal p-2">ONCE</h4>
+            </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar"><i class="fas fa-bars text-info" aria-hidden="true"></i></button>
+        <div class="collapse navbar-collapse d-md-flex justify-content-md-between" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item" style="line-height: 1; padding-top: 10px; margin-left: 5px; margin-right: 5px;">
+                    <a class="text-royal bold nav-link" href="#!">My Once story</a>
+                </li>
+                <li class="nav-item">
+                    <a class="text-royal bold nav-link btn btn-fancy" href="#!">invite</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item m-md-2">
+                    <a class="text-royal btn btn-fancy bold nav-link" href="#!"><i class="fas fa-link"></i> Share</a>
+                </li>
+                <li class="nav-item pt-2">
+                    <a class="nav-link dropdown-fancy" data-toggle="dropdown">M</a>
+                    <ul class="dropdown-menu p-1">
+                        <li>
+                            <a style="height: 30px;" class="nav-link text-royal d-flex justify-content-between" href="#">
+                                Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a style="height: 30px;" class="nav-link text-royal d-flex justify-content-between" href="#">
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+    <div id="header">
+        <span class="text-muted">Welcome</span>
+        <div class="stories_num">
+            <h2 class="text-dark"><span class="text-dark bold">1 story</span> created</h2>
+        </div>
+    </div>
+
+
+
+
+    <div class="section">
+        <table class="table table-hover">
+            {% for i in stories %}
+                <tr class="redirecting">
+                    <td>
+                        <div class="contentcard">
+                            {% autoescape off %}
+                                {{i.story}}
+                            {%endautoescape%}
+                        </div>
+                    </td>
+                    <td>
+                        <h6 class="text-info bold"><a href="{% url 'create-story' %}" class="text-info">My Once Story</a></h6>
+                        <h6 class="text-muted">{{i.date}}</h6>
+                    </td>
+                    <td>
+                        <h6 class="text-dark">
+                            <i class="fas fa-eye"></i>
+                            {{i.views}}
+                        </h6>
+                    </td>
+                    <td>
+                        <h6 class="text-dark">
+                            <i class="fas fa-bars"></i>
+                            {{i.answers}}
+                        </h6>
+                    </td>
+                    <td>nothing</td>
+                    <td>
+                        <a data-toggle="dropdown" class="nav-link"><i class="fas fa-ellipsis-v"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a href="#!" class="nav-link"><i class="fas fa-hashtag text-info"></i> Export</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'duplicateStoryList' i.id %}" class="nav-link"><i class="fas fa-clone text-dark"></i> Duplicate</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'removeStoryList' i.id %}" class="nav-link"><i class="fas fa-trash text-danger"></i> Remove</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {%endfor%}
+        </table>
+    </div>
+
+
+
+   
+
+    
+</body>
+<script>
+    $(".contentcard").each(function(){
+        $(this).css({'width':'315px', 'height':'450px', 'transform':'scale(0.22)', 'position':'relative', 'left':'-250%', 'top':'-200%'});
+    });
+
+</script>
+</html>

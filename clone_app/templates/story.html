@@ -1,0 +1,1378 @@
+{% load static %}
+<html class="no-js" lang="zxx">
+<head>
+    <title>Once | Create story</title>
+    <meta name="theme-color" content="#141e30"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+    <link rel="icon" href="">
+    <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-free.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/swiper.css' %}">
+    <link rel="stylesheet" href="{% static 'css/emojionearea.min.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"
+            integrity="sha256-0YPKAwZP7Mp3ALMRVB2i8GXeEndvCq3eSl/WsAl1Ryk="
+			crossorigin="anonymous"></script>
+    <script src="{% static 'js/mdb.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/swiper.min.js' %}"></script>
+    <script src="{% static 'js/fontawesome.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/emojionearea.min.js' %}"></script>
+    <style>
+        .invisible{
+            position: absolute;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+        }
+        .editable-container{
+            position: relative;
+            border: none;
+            transition: all 0.2s ease;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .new-editable-container{
+            position: absolute;
+            z-index: 99999;
+        }
+        .editable-container.active{
+            border: 2px solid dodgerblue;
+        }
+        .resizeXbtn, .rotatebtn, .resizeXbtn:focus, .rotatebtn:focus{
+            width: 10px;
+            height: 10px;
+            background: transparent;
+            border: none;
+            outline: none;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            border-radius: 50px;
+            visibility: hidden;
+        }
+        .editable-container.active .resizeXbtn, .editable-container.active .resizeYbtn, .editable-container.active .rotatebtn{
+            visibility: visible;
+        }
+        .resizeXbtn{
+            top: 50%;
+            left: 100%;
+        }
+        .rotatebtn{
+            top: -10;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+        }
+        .resizeXbtn:not(:disabled){cursor: e-resize;}
+        .storyContentControl{
+            width: 35px;
+            height: max-content;
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(-70%, -50%);
+        }
+        .storyContentControl-navlink.nav-link{
+            text-align: center;
+            border-radius: 50px;
+            width: 35px;
+            height: 35px;
+            background: dodgerblue;
+            padding: 0;
+            padding-top: 10px;
+        }
+        .card{
+            height: 100%;
+        }
+        .v-center{
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .text-bg{
+            background: violet;
+        }
+        .text-underlined{
+            background: rgba(0, 0, 0, 0) linear-gradient(transparent 50%, rgb(182, 87, 108) 50%) repeat scroll 0% 0%;
+        }
+        .text-stroke{
+            color: white;
+            text-shadow: -1px -1px 0 grey, -1px 1px 0 grey, 1px -1px 0 grey, 1px 1px 0 grey;
+        }
+        .text-left-bordered{
+            border-left: 2px solid #ffc107;
+        }
+        .specialTextColor{
+            color: #ffc107;
+        }
+        .text-royal, .text-royal:hover{
+            color: #323b51;
+        }
+        .btn-fancy{
+            border-radius: 25px;
+            width: 100px;
+        }
+        .dropdown-fancy.nav-link{
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            overflow: hidden;
+            background: #323b51;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            line-height: 33px;
+            box-shadow: 0px 0px 10px rgba(50, 59, 81, 0.5);
+        }
+        .half-bordered{
+            border-right: 1px solid #323b51;
+            border-left: 1px solid #323b51;
+            height: max-content;
+        }
+        .bold{
+            font-weight: bold;
+        }
+        .max-content{
+            width: max-content;
+        }
+        .bg-royal{
+            background: #323b51;
+            color: white;
+        }
+        .bg-light-royal{
+            background: #415586;
+        }
+        .image-fluid{
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: auto;
+        }
+        html{
+            scroll-behavior: smooth;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
+            background: #fefefe;
+        }
+        .section{
+            padding: 30px;
+        }
+
+        #navbar{
+            width: 100%;
+            height: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        #sidebar{
+            height: calc(100% - 80px);
+            position: fixed;
+            top: 80px;
+            left: 0;
+            z-index: 9;
+            padding-top: 20px;
+        }
+
+
+        #sidebar .nav-item{
+            padding: 10px;
+        }
+
+        #sidebar .nav-item .nav-link{
+            height: 45px;
+            display: block;
+            color: white;
+            border-radius: 10px;
+            padding-top: 15px;
+            transition: all 0.2s ease;
+        }
+
+        #sidebar .nav-item .nav-link:hover, #sidebar .nav-item .nav-link.active{
+            background: white;
+            color: #323b51;
+        }
+
+        #widgetbar{
+            width: 350px;
+            height: calc(100% - 80px);
+            position: fixed;
+            left: -100%;
+            top: 80px;
+            z-index: 8;
+            background: #323b51;
+            transition: all 0.2s ease;
+            overflow-y: auto;
+        }
+
+        #content{
+            width: calc(100% - 60px);
+            height: calc(100% - 80px);
+            position: fixed;
+            top: 80px;
+            left: 60px;
+            transition: all 0.2s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .contentcard, .contentrow:first-child{
+            width: 100%;
+            height: 450px;
+        }
+        .innerStoryCard{
+            width: 100%;
+            height: 100%;
+            border: 2px solid #323b51;
+            border-radius: 15px;
+        }
+        .addStoryBtn{
+            padding-top: 200px;
+            cursor: pointer;
+        }
+        .addStoryBtn:hover{
+            background: #f4f4f4;
+        }
+        .sticker-emoji-toggler.nav-link:hover, .sticker-emoji-toggler.nav-link.active{
+            border-bottom: 3px solid white;
+        }
+        .imageUploaderLabel{
+            width: 100%;
+            height: 200px;
+            border: 2px dashed white;
+            cursor: pointer;
+            padding-top: 90px;
+        }
+        .imageUploaderLabel:hover{
+            background: #415586;
+        }
+        .widgetbarHider{
+            height: 50px;
+            width: 50px;
+            border-radius: 50px;
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            box-shadow: 0px 0px 10px grey;
+        }
+
+        .clickmebtn{
+			width: 100%;
+			height: 50px;
+			background: dodgerblue;
+			border-radius: 25px;
+			text-align: center;
+			color: white;
+			font-weight: bold;
+			line-height: 50px;
+		}
+
+		.engage-card{
+			background: white;
+			border-radius: 10px;
+		}
+
+		.card-choice, .card-range-bar{
+			background: lightgrey;
+			border-radius: 3px;
+			height: 30px;
+		}
+
+		.card-choice-seq, .card-choice-check{
+			background: white;
+			height: 20px;
+			width: 20px;
+			border-radius: 50px;
+			line-height: 20px;
+			text-align: center;
+			font-weight: bold;
+		}
+
+		.card-choice-check{
+			border-radius: 2px;
+		}
+
+
+
+		.nav-yesno-answers{
+			width: 100%;
+			height: 60px;
+			border-radius: 20px;
+			background: white;
+		}
+
+		.nav-yesno-answers .nav-item{
+			background: white;
+			border: 1px solid grey;
+			text-align: center;
+			padding-top: 10px;
+		}
+		.nav-yesno-answers .nav-item:first-child{
+			border-top-left-radius: 20px;
+			border-bottom-left-radius: 20px;
+		}
+		.nav-yesno-answers .nav-item:nth-child(2){
+			border-top-right-radius: 20px;
+			border-bottom-right-radius: 20px;
+		}
+
+
+		.card-range-bar{
+			height: 5px;
+		}
+
+
+		.hour-number-card{
+			height: 40px;
+			background: dodgerblue;
+			border-radius: 3px;
+			line-height: 40px;
+			color: white;
+			text-align: center;
+			font-weight: bold;
+		}
+
+    </style>
+</head>
+<body>
+
+    <nav id="navbar" class="navbar navbar-expand-md justify-content-between navbar-light bg-light">
+        <a href="#!" style="margin: 0; padding: 5px; height: 60px;" class="navbar-brand d-flex">
+            <div class="d-flex" style="width: auto; height: 50px;">
+                <img class="image-fluid" src="{% static 'img/logo.png' %}">
+                <h4 class="bold text-royal p-2">ONCE</h4>
+            </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar"><i class="fas fa-bars text-info" aria-hidden="true"></i></button>
+        <div class="collapse navbar-collapse d-md-flex justify-content-md-between" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item" style="line-height: 1; padding-top: 10px; margin-left: 5px; margin-right: 5px;">
+                    <a class="text-royal bold nav-link" href="#!">My Once story</a>
+                </li>
+                <li class="nav-item">
+                    <a class="text-royal bold nav-link btn btn-fancy" href="#!">invite</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item m-md-2">
+                    <a class="text-royal btn btn-fancy bold nav-link" href="#!"><i class="fas fa-link"></i> Share</a>
+                </li>
+                <li class="nav-item pt-2">
+                    <a class="nav-link dropdown-fancy" data-toggle="dropdown">M</a>
+                    <ul class="dropdown-menu p-1">
+                        <li>
+                            <a style="height: 30px;" class="nav-link text-royal d-flex justify-content-between" href="#">
+                                Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a style="height: 30px;" class="nav-link text-royal d-flex justify-content-between" href="#">
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+    <ul id="sidebar" class="sidebar nav d-block bg-royal" role="tablist">
+        <li class="nav-item p-1">
+            <a href="#text" data-toggle="tab" class="nav-link text-center bold widgetbarToggler">T</a>
+        </li>
+        <li class="nav-item p-1">
+            <a href="#emoji" data-toggle="tab" class="nav-link text-center bold widgetbarToggler"><i class="far fa-surprise"></i></a>
+        </li>
+        <li class="nav-item p-1">
+            <a href="#format" data-toggle="tab" class="nav-link text-center bold widgetbarToggler"><i class="fas fa-th-large"></i></a>
+        </li>
+        <li class="nav-item p-1">
+            <a href="#image" data-toggle="tab" class="nav-link text-center bold widgetbarToggler"><i class="fas fa-image"></i></a>
+        </li>
+        <li class="nav-item p-1">
+            <a href="#bolt" data-toggle="tab" class="nav-link text-center bold widgetbarToggler"><i class="fas fa-bolt"></i></a>
+        </li>
+        <li class="nav-item p-1">
+            <a href="#cart" data-toggle="tab" class="nav-link text-center bold widgetbarToggler"><i class="fas fa-shopping-cart"></i></a>
+        </li>
+    </ul>
+    <div id="widgetbar" class="tab-content">
+        <div id="text" class="tab-pane p-2">
+            <div class="row p-2">
+                <div class="col-6 p-2">
+                    <div  class="widget d-table card pt-3 pb-3 bg-light-royal">
+                        <h3 style="color: white; text-align:center;" class="v-center bold">
+                            MarkDown Simple Text
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div  class="widget d-table card pt-3 pb-3 bg-light-royal">
+                        <h3 style="color: white; text-align:center;" class="v-center bold text-bg">
+                            Text with background color
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div  class="widget d-table card pt-3 pb-3 bg-light-royal">
+                        <h3 style="color: white; text-align:center;" class="v-center bold">
+                            <span class="text-underlined">
+                                Text with smart underline
+                            </span>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div  class="widget d-table card pt-3 pb-3 bg-light-royal">
+                        <h3 style="color: white; text-align:center;" class="v-center bold textStrokeContainer">
+                            <span class="text-stroke">
+                                Transparent
+                            </span>
+                            text with outline stroke
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div  class="widget d-table card pt-3 pb-3 bg-light-royal">
+                        <h5 style="color: white; text-align:center;" class="v-center bold text-left-bordered">
+                            <span class="specialTextContainer">We love <span class="specialTextColor" style="color: #ffc107;">to</span></span>
+                            <br/>
+                            <span class="specialTextContainer">Share <span class="specialTextColor" style="color: #ffc107;">stories</span></span>
+                            <br/>
+                            <span class="specialTextContainer">With <span class="specialTextColor" style="color: #ffc107;">people</span></span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="emoji" class="tab-pane p-2">
+            <ul class="nav d-flex justify-content-center" role="tablist">
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#stickers" class="nav-link text-white bold sticker-emoji-toggler active">Stickers</a>
+                </li>
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#emojis" class="nav-link text-white bold sticker-emoji-toggler">Emojis</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="stickers" class="tab-pane active p-2">
+                    <input type="text" class="form-control" placeholder="Search stickers" name="seachstickers" id="seachstickers">
+                    <div id="stickers-icons-container" class="row justify-content-between">
+                        
+                    </div>
+                </div>
+                <div id="emojis" class="tab-pane p-2">
+                    <div id="emojis-icons-container"></div>
+                </div>
+            </div>
+        </div>
+        <div id="format" class="tab-pane p-2">
+            <div class="row p-2">
+                <div class="col-6 p-2">
+                    <div class="widget card p-2 bg-light-royal">
+                        <div>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-check-circle"></i> Milk
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-check-circle"></i> Eggs
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-check-circle"></i> Tomatos
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div class="card widget p-2 bg-light-royal">
+                        <div>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-dot-circle"></i> Milk
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-dot-circle"></i> Eggs
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-dot-circle"></i> Tomatos
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div class="card widget p-2 bg-light-royal">
+                        <div>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-circle"></i> Milk
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-circle"></i> Eggs
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-circle"></i> Tomatos
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="image" class="tab-pane p-2">
+            <ul class="nav d-flex justify-content-center" role="tablist">
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#imageUpload" class="nav-link text-white bold sticker-emoji-toggler active">Stickers</a>
+                </li>
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#unsplash" class="nav-link text-white bold sticker-emoji-toggler">Emojis</a>
+                </li>
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#giphy" class="nav-link text-white bold sticker-emoji-toggler">Emojis</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="imageUpload" class="tab-pane active p-2">
+                    <form method="post" acction="">
+                        <label for="imageUploaderInput" class="text-white text-center bold imageUploaderLabel">Browse and upload your image</label>
+                        <input style="visibility: hidden;" type="file" id="imageUploaderInput" name="imageUploaderInput" onchange="uploadImage(this)">
+                    </form>
+                    <div class="row justify-content-between imagesContainer">
+                        {% for image in images %}
+                            <div class="col-6 p-2">
+                                <div style="height: 100%;" class="widget card pt-3 pb-3 bg-light-royal">
+                                    <img class="image-fluid" src="{{image.image.url}}">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="unsplash" class="tab-pane p-2">
+                    <h3 class="text-center text-white">unsplash will be added in here</h3>
+                </div>
+                <div id="giphy" class="tab-pane p-2">
+                    <div id="giphs-container">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="bolt" class="tab-pane">
+            <div class="row justify-content-center p-3 mx-auto" style="width: 100%;">
+                <div class="col-10 mx-auto p-2">
+                    <div class="widget">
+                        <div class="clickmebtn">Click me !</div>
+                    </div>
+                </div>
+
+
+                <div class="col-10 mx-auto p-2">
+                    <div class="widget">
+                        <div class="engage-card p-3">
+                            <h6 class="text-center text-dark bold">Make a choice:</h6>
+                            <div class="card-choice d-flex m-1">
+                                <div class="card-choice-seq m-1">A</div>
+                                <div class="card-choice-title m-1">The red pill</div>
+                            </div>
+                            <div class="card-choice d-flex m-1">
+                                <div class="card-choice-seq m-1">B</div>
+                                <div class="card-choice-title m-1">The blue pill</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-10 mx-auto p-2">
+                    <div class="widget">
+                        <div class="engage-card p-3">
+                            <h6 class="text-center text-dark bold">What animals do you like</h6>
+                            <div class="card-choice d-flex m-1">
+                                <div class="card-choice-check m-1"></div>
+                                <div class="card-choice-title m-1">Cats</div>
+                            </div>
+                            <div class="card-choice d-flex m-1">
+                                <div class="card-choice-check m-1"></div>
+                                <div class="card-choice-title m-1">Dogs</div>
+                            </div>
+                            <div class="card-choice d-flex m-1">
+                                <div class="card-choice-check m-1"></div>
+                                <div class="card-choice-title m-1">Fishes</div>
+                            </div>
+                            <div class="card-choice d-flex m-1">
+                                <div class="card-choice-check m-1"></div>
+                                <div class="card-choice-title m-1">Snakes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-10 mx-auto p-2">
+                    <div class="widget">
+                        <div class="p-3">
+                            <h6 class="text-center text-white bold">Is it stunny today?</h6>
+                            <div class="nav nav-yesno-answers d-flex m-1 p-2">
+                                <li class="nav-item col-6 text-info bold">Yes</li>
+                                <li class="nav-item col-6 text-danger bold">No</li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-10 mx-auto p-2">
+                    <div class="widget">
+                        <div class="engage-card p-3">
+                            <h6 class="text-center text-dark bold">Once</h6>
+                            <div class="card-range-bar d-flex m-1">
+                                <div style="font-size: 30px; transform: translate(-50%, -600%);">🤘</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-10 mx-auto p-2">
+                    <div class="widget">
+                        <div class="engage-card p-3">
+                            <h6 class="text-center text-dark bold">24h chrono</h6>
+                            <div class="row justify-content-between">
+                                <div class="col-3" style="padding: 0;">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="col-5 p-1">
+                                            <h6 class="hour-number-card">2</h6>
+                                        </div>
+                                        <div class="col-5 p-1">
+                                            <h6 class="hour-number-card">3</h6>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <small class="text-muted">hours</small>
+                                    </div>
+                                </div>
+                                <div class="col-1" style="line-height: 40px;">
+                                    <small class="text-muted">:</small>
+                                </div>
+                                <div class="col-3" style="padding: 0;">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="col-5 p-1">
+                                            <h6 class="hour-number-card">5</h6>
+                                        </div>
+                                        <div class="col-5 p-1">
+                                            <h6 class="hour-number-card">9</h6>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <small class="text-muted">minutes</small>
+                                    </div>
+                                </div>
+                                <div class="col-1" style="line-height: 40px;">
+                                    <small class="text-muted">:</small>
+                                </div>
+                                <div class="col-3" style="padding: 0;">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="col-5 p-1">
+                                            <h6 class="hour-number-card">5</h6>
+                                        </div>
+                                        <div class="col-5 p-1">
+                                            <h6 class="hour-number-card">9</h6>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <small class="text-muted">seconds</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div id="cart" class="tab-pane">
+            cart
+        </div>
+        <button class="btn bg-white widgetbarHider" type="button" onclick="hideWidgetBar()"><i class="fas text-royal fa-arrow-left"></i></button>
+    </div>
+
+
+
+
+
+
+    <div id="content" class="section">
+        <div class="row p-2 contentrow">
+            <div class="col-lg-4 col-md-6 col-12 p-2">
+                <div class="addStoryBtn innerStoryCard" onclick="addStory()"><h3 class="text-royal text-center bold"><i class="fas fa-plus"></i></h3></div>
+            </div>
+            {% for story in stories %}
+                <div class="col-lg-4 col-md-6 col-12 p-2">
+                    <div id="story_{{story.id}}" class="contentcard">
+                        {% autoescape off %}
+                            {{story.story}}
+                        {%endautoescape%}
+                    </div>
+                </div>
+            {%endfor%}
+        </div>
+    </div>
+
+
+    <div id="imageCardHtml" style="visibility: hidden; width: 0; height: 0; position: absolute;">
+        <div class="col-6 p-2">
+            <div style="height: 100%;" class="widget newImageWidget card pt-3 pb-3 bg-light-royal">
+                <img class="image-fluid" src="">
+            </div>
+        </div>
+    </div>
+
+    <div id="storyCardHtml" style="visibility: hidden; width: 0; height: 0; position: absolute;">
+        <div class="col-lg-4 col-md-6 col-12 p-2">
+            <div id="" class="contentcard newContentCard">
+                <div class="innerStoryCard" style="overflow:hidden;"></div><!--i-->
+                <ul class="nav d-block storyContentControl storyContentControl-oneColor">
+                    <li class="nav-item">
+                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center; line-height: 1;" href="#!"><i class="fas fa-palette"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item p-3">
+                                <ul class="nav d-block p-2">
+                                    <ul class="nav row" style="width: max-content">
+                                        <small class="text-muted">set text color</small>
+                                        <br/>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
+                                        </li>
+                                    </ul>
+                                    <li class="nav-item p-3">
+                                        <small class="text-muted">Custom Color</small>
+                                        <div class="d-flex">
+                                            <div>
+                                                #
+                                            </div>
+                                            <input onkeyup="setTextCustomColor(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Hex color code" maxlength="6" type="text">
+                                        </div>
+                                    </li>
+                                    <hr>
+                                    <ul class="nav row" style="width: max-content">
+                                        <small class="text-muted">Set layout color</small>
+                                        <br/>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
+                                        </li>
+                                    </ul>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pt-1">
+                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-align-center"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item p-3">
+                                <ul class="nav d-flex justify-content-between" style="width: max-content;">
+                                    <li class="nav-item">
+                                        <a onclick="setTextAlign(this)" data-align="left" href="#!" class="nav-link btn text-info"><i class="fas fa-align-left"></i></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextAlign(this)" data-align="center" href="#!" class="nav-link btn text-info"><i class="fas fa-align-center"></i></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextAlign(this)" data-align="right" href="#!" class="nav-link btn text-info"><i class="fas fa-align-right"></i></a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pt-1">
+                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-quote-left"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item p-3">
+                                <small class="text-muted">Enter text</small>
+                                <div class="d-block">
+                                    <input onkeyup="setText(this,'0')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
+                                    <div class="d-block threeInuptSpecialTextCase">
+                                        <input onkeyup="setText(this,'1')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
+                                        <input onkeyup="setText(this,'2')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pt-1">
+                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-font"></i></a>
+                        <ul class="dropdown-menu" style="width: max-content;">
+                            <li class="nav-item p-3">
+                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: Georgia, serif;' data-font="Georgia, serif">Nice mood under moon light</a>
+                            </li>
+                            <li class="nav-item p-3">
+                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: Arial, Helvetica, sans-serif;' data-font="Arial, Helvetica, sans-serif">Nice mood under moon light</a>
+                            </li>
+                            <li class="nav-item p-3">
+                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: "Comic Sans MS", cursive, sans-serif;' data-font='"Comic Sans MS", cursive, sans-serif'>Nice mood under moon light</a>
+                            </li>
+                            <li class="nav-item p-3">
+                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: "Courier New", Courier, monospace;' data-font='"Courier New", Courier, monospace'>Nice mood under moon light</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pt-1">
+                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-sync-alt"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item p-3">
+                                <input type="range" onmousemove="setRotationDegree(this)" class="form-control">
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pt-1">
+                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-text-width"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item p-3">
+                                <input type="range" onmousemove="setFontSize(this)" class="form-control">
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pt-1">
+                        <a onclick="removeEditableContainer()" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-trash"></i></a>
+                    </li>
+                </ul>
+                <ul class="storyControls nav d-flex justify-content-between">
+                    <li class="nav-item">
+                        <a onclick="removeStory(this)" href="#!" class="nav-link"><i class="fas fa-trash"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="dropdown" class="nav-link"><i class="fas fa-circle"></i></a>
+                        <ul class="dropdown-menu p-3">
+                            <li class="nav-item">
+                                <ul class="nav row p-2" style="width: 100%;">
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <small class="text-muted">Custom Color</small>
+                                <div class="d-flex">
+                                    <div>
+                                        #
+                                    </div>
+                                    <input onkeyup="setStoryCustomBg(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Hex color code" maxlength="6" type="text">
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <smal class="text-muted">Pre-made gradients</smal>
+                                <ul class="nav row p-2" style="width: 100%;">
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, white, grey)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, black, grey)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, blue, violet)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, green, yellow)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, red, darkred)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, dodgerblue, green)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, violet, red)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, green, cyan)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, white, cyan)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, pink, violet)"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, pink, red)"></a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .emojionearea .emojionearea-picker.hidden{
+            display: block;
+            opacity: 1;
+        }
+        .emojionearea .emojionearea-picker{
+            left: 0;
+        }
+        .emojionearea .emojionearea-picker.emojionearea-picker-position-top{
+            margin-top: 20px;
+        }
+        .emojionearea .emojionearea-button, .emojionearea .emojionearea-editor{
+            width: 0;
+            height: 0;
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+    </style>
+</body>
+<script>
+
+
+    $(document).ready(function() {
+        $("#emojis-icons-container").emojioneArea();
+    });
+
+
+    $("#seachstickers").on('keyup',function(e){
+        e.preventDefault();
+        url = "https://api.giphy.com/v1/stickers/search?api_key=G2hPbbatZMeld34WCsLQgjW2ket3qmtK&limit=50&q="+$("#seachstickers").val();
+        document.getElementById('stickers-icons-container').innerHTML = '';
+        fetch(url).then(response => response.json()).then(content => {
+            var data = content.data;
+            for(var i=0; i<data.length; i++){
+                fig_widget_container_col = '<div id="new-giphy-widget" class="col-6 p-2"><div class="widget"></div></div>';
+                fig_widget_container_col = document.createElement('div');
+                fig_widget_container_col.className = "col-6 p-2";
+                fig_widget_container = document.createElement('div');
+                fig_widget_container.className = "widget";
+                fig = document.createElement('figure');
+                img = document.createElement('img')
+                img.src = data[i].images.downsized.url;
+                img.className = 'image-fluid';
+                img.alt = '';
+                fig.appendChild(img);
+                fig_widget_container.appendChild(fig);
+                fig_widget_container_col.appendChild(fig_widget_container);
+                $("#stickers-icons-container").append(fig_widget_container_col);
+            }
+        }).catch(err =>{
+            console.log(err);
+        })
+    });
+
+    
+
+
+    function uploadImage(input) {
+        var file = $(input).prop("files")[0];
+        var formdata = new FormData();
+        formdata.append("images",file);
+
+        var story_id = $(".contentcard.active").attr('id').split('_')[1];
+
+        $.ajax({
+            type: "POST",
+            url: "/upload_image/"+story_id+"/",
+            data: formdata,
+            contentType: false,
+            processData: false,
+            success: function(result) {
+                var imageWidgetHtml = $("#imageCardHtml").html();
+                $(".imagesContainer").append(imageWidgetHtml);
+                $(".imagesContainer .newImageWidget img").attr('src',result);
+                $(".imagesContainer .newImageWidget").removeClass('newImageWidget');
+            }
+        });
+    }
+
+
+    function setTextColor(obj){
+        var color = $(obj).attr('data-color');
+        $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('color',color);
+        savepro();
+    }
+
+    function setTextSecondaryColor(obj){
+        var color = $(obj).attr('data-color');
+        $(".editable-container.active .text-bg").css('background',color);
+        $(".editabl-container.active .text-underlined").css('background',color);
+        $(".editabl-container.active .text-stroke").css({'text-shadow': '-1px -1px 0 '+color+', -1px 1px 0 '+color+', 1px -1px 0 '+color+', 1px 1px 0 '+color+''});
+        $(".editable-container.active .specialTextColor").css({'color':color});
+        $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('border-color',color);
+        $(".editable-container.active h1 i, .editable-container.active h2 i, .editable-container.active h3 i, .editable-container.active h4 i, .editable-container.active h5 i, .editable-container.active h6 i").css('color',color);
+        savepro();
+    }
+
+    function setTextAlign(obj){
+        var align = $(obj).attr('data-align');
+        $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('text-align',align);
+        savepro();
+    }
+
+    function setTextFont(obj){
+        var font = $(obj).attr('data-font');
+        $(".editable-container.active").css('font-family',font);
+        savepro();
+    }
+
+    function setText(obj, index){
+        var text = $(obj).val();
+        if($(".editable-container.active .specialTextColor").length > 0){
+            switch(index){
+                case "0":
+                    var line = $(".editable-container.active .specialTextContainer:eq(0)");
+                    break;
+                case "1":
+                    var line = $(".editable-container.active .specialTextContainer:eq(1)");
+                    break;
+                case "2":
+                    var line = $(".editable-container.active .specialTextContainer:eq(2)");
+                    break;
+            }
+            var textArr = text.split(' ');
+            var outText = "";
+            for (var i=0; i<textArr.length-1; i++){
+                outText += textArr[i]+" ";
+            }
+            var specialText = textArr[textArr.length-1];
+            line.html(outText+"<span class='specialTextColor'>"+specialText+"</span>");
+        }
+        else{
+            if($(".editable-container.active .text-stroke").length > 0){
+                line = $(".editable-container.active .textStrokeContainer")
+                var text = $(obj).val();
+                var textArr = text.split(' ');
+                var outText = "";
+                for (var i=1; i<textArr.length; i++){
+                    outText += textArr[i]+" ";
+                }
+                var specialText = textArr[0];
+                line.html('<span class="text-stroke">'+specialText+'</span> '+outText);
+            }
+            else{
+                $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").text(text);
+            }
+        }
+        savepro();
+    }
+
+    function setRotationDegree(obj){
+        degree = ($(obj).val() - 50) * 3.6;
+        $(".editable-container.active").css('transform','rotate('+degree+'deg)');
+        savepro();
+    }
+
+    function setFontSize(obj){
+        size = $(obj).val();
+        $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('font-size',size);
+        savepro();
+    }
+
+    function removeEditableContainer(){
+        $(".editable-container.active").remove();
+        savepro();
+    }
+
+
+
+    $(document).ready(function(){
+        $(".datacolorBtn").each(function(){
+            $(this).css({'border':'2px solid black','margin':'3px','width':'30px','height':'30px','border-radius':'50px','background':$(this).attr('data-color')});
+        });
+    });
+
+
+    $(".widgetbarToggler").click(function(){
+        showWidgetBar();
+    });
+    $(".widgetbarHider").click(function(){
+        hideWidgetBar();
+    });
+    function showWidgetBar(){
+        $("#widgetbar").css({'left':'60px', 'box-shadow':'0px 0px 10px grey'});
+    }
+    function hideWidgetBar(){
+        $("#widgetbar").css({'left':'-100%', 'box-shadow':'none'});
+    }
+    function addStory(){
+        $.ajax({
+             type: "POST",
+             url: "/create_story/",
+             data: null,
+             contentType: false,
+             processData: false,
+             success: function(result) {
+                 $(".contentrow").append($("#storyCardHtml").html());
+                 $(".contentrow .newContentCard").attr('id','story_'+result);
+                 $(".contentrow .newContentCard").removeClass("newContentCard");
+             }
+        });
+    }
+
+    $(document).on('click','.contentcard',function(){
+        $(".contentcard.active").removeClass('active');
+        $(this).addClass('active');
+    });
+
+
+
+    $(document).on('click','.widget',function(e){
+        var widget = $(this).html();
+        var newStoryElement = '<div draggable="true" class="editable-container new-editable-container"><button class="resizeXbtn"><i class="fas fa-circle"></i></button></div>';
+        $(".contentcard.active .innerStoryCard").append(newStoryElement);
+        $(".new-editable-container").append(widget);
+        $(".new-editable-container").removeClass("new-editable-container");
+        $(".new-editable-container").draggable();
+        savepro();
+    });
+
+    $(document).on('click','.emojibtn',function(){
+        var newStoryElement = '<div draggable="true" class="editable-container new-editable-container"><button class="resizeXbtn"><i class="fas fa-circle"></i></button>'+$(this).html()+'</div>';
+        $(".contentcard.active .innerStoryCard").append(newStoryElement);
+        $(".contentcard.active .innerStoryCard").children('img').remove();
+        savepro();
+    });
+
+
+
+    $(document).on('click','.editable-container',function(){
+        $(".editable-container.active").removeClass('active');
+        $(this).addClass('active');
+        if ($(".editable-container.active .specialTextContainer").length > 0){
+            $(".threeInuptSpecialTextCase").removeClass("invisible");
+        }
+        else{
+            $(".threeInuptSpecialTextCase").addClass("invisible");
+        }
+    });
+
+
+    $(document).on('mousedown','.editable-container',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        $(".editable-container").draggable({ disabled: true });
+        $(this).draggable({disabled:false});
+        $(this).draggable({
+            enable: true,
+            containment: "#draggable",
+            snap: '.gridlines',
+            stop: function () {
+                var l = ( 100 * ($(this).position().left + (0.5 * $(this).width())) / parseFloat($(this).parent().width())) + "%" ;
+                var t = ( 100 * ($(this).position().top + (0.5 * $(this).height())) / parseFloat($(this).parent().height())) + "%" ;
+                $(this).css("left", l);
+                $(this).css("top", t);
+                savepro();
+            }
+        });
+    });
+
+    $(document).on('mousedown','.resizeXbtn',function(e){
+        e.stopPropagation();
+        var elementWidth = $(".editable-container.active").width();
+        var xpos = $(this).offset().left;
+        resizeXclicking = true;
+        $(document).on('mousemove',function(e){
+            if (resizeXclicking == true){
+                var newxpos = e.pageX;
+                var widthDifference = newxpos - xpos;
+                $(".editable-container.active").css('width',elementWidth+widthDifference);
+            }
+        });
+        $(document).on('mouseup',function(){
+            resizeXclicking = false;
+            savepro();
+        });
+    });
+
+
+    function setStoryBg(obj){
+        $(".contentcard.active .innerStoryCard").css('background',$(obj).attr('data-color'));
+        savepro();
+    }
+    function setStoryCustomBg(obj){
+        $(".contentcard.active .innerStoryCard").css('background',"#"+$(obj).val());
+        savepro();
+    }
+    function removeStory(obj){
+        var id = $(".contentcard.active").attr('id').split('_')[1];
+
+        var url = '/remove_story/'+id+'/';
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: null,
+            success: function (data) {
+                null;
+            }
+        });
+        $(obj).closest('.contentcard').remove();
+    }
+
+
+
+    function savepro(){
+        var story = $(".contentcard.active").html();
+        var id = $(".contentcard.active").attr('id').split('_')[1];
+
+        var url = '/save_story/'+id+'/';
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {'story':story},
+            success: function (data) {
+                null;
+            }
+        });
+    }
+
+
+    var x = setInterval(function(){
+        var sec2 = document.getElementsByClassName('hour-number-card')[5];
+        var sec1 = document.getElementsByClassName('hour-number-card')[4];
+        var min2 = document.getElementsByClassName('hour-number-card')[3];
+        var min1 = document.getElementsByClassName('hour-number-card')[2];
+        var hr2 = document.getElementsByClassName('hour-number-card')[1];
+        var hr1 = document.getElementsByClassName('hour-number-card')[0];
+        if (Number(sec2.textContent) > 0){
+            sec2.textContent = Number(sec2.textContent) - 1;
+        }
+        else if(Number(sec2.textContent) == 0){
+            if(Number(sec1.textContent) > 0){
+                sec2.textContent = 9;
+                sec1.textContent = Number(sec1.textContent) - 1;
+            }
+            else if(Number(sec1.textContent) == 0){
+                sec2.textContent = 9;
+                sec1.textContent = 5;
+                if(Number(min2.textContent) > 0){
+                    min2.textContent = Number(min2.textContent) - 1;
+                }
+                else if(Number(min.textContent) == 0){
+                    if(Number(min.textContent) > 0){
+                        min2.textContent = 9;
+                        min1.textContent = Number(min1.textContent) - 1;
+                    }
+                    else if(Number(min1.textContent) == 0){
+                        min2.textContent = 9;
+                        min1.textContent = 5;
+                        if(Number(hr2.textContent) > 0){
+                            hr2.textContent = Number(hr2.textContent) - 1;
+                        }
+                        else if(Number(hr2.textContent) == 0){
+                            if(Number(hr1.textContent) > 0){
+                                hr2.textContent = 9;
+                                hr1.textContent = Number(hr1.textContent) - 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },1000);
+
+
+   
+
+</script>
+</html>
