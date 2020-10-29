@@ -46,6 +46,48 @@ def createStoryView(request):
     return render(request, 'story.html', context)
 
 
+def preview(request, id):
+    context = {
+        'stories': story.objects.filter(user=User.objects.get(id=id))
+    }
+    return render(request, 'preview.html', context)
+
+
+def addCheckRadio(request, id):
+    mychoice = choices.objects.get(id=id)
+    mychoice.chosen  += 1
+    mychoice.save()
+    return HttpResponse('done')
+
+def removeCheckRadio(request, id):
+    mychoice = choices.objects.get(id=id)
+    mychoice.chosen -= 1
+    mychoice.save()
+    return HttpResponse('done')
+
+@csrf_exempt
+def setRange(request, id):
+    newRangeValue = request.POST.get('newRangeValue')
+    rangeValue = request.POST.get('rangeValue')
+    mycomponent = components.objects.get(id=id)
+    if newRangeValue:
+        mycomponent.rangeCount /= rangeValue
+        mycomponent.rangeCount *= newRangeValue
+    else:
+        mycomponent.rangeTimes += 1
+        mycomponent.rangeCount *= rangeValue
+
+
+
+def answers(request):
+    pass
+
+
+
+
+
+
+
 @csrf_exempt
 def create_story(request):
     user = request.user

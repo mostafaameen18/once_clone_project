@@ -20,7 +20,7 @@ HCTI_API_KEY = '43777f28-feea-4109-a0c1-8d9388d95004'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

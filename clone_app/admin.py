@@ -7,4 +7,5 @@ from .models import *
 
 
 admin.site.register(story)
-admin.site.register(images)
+admin.site.register(components)
+admin.site.register(choices)
