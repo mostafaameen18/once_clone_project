@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'clone_app',
     'accounts',
-
+    'mathfilters',
 
     'allauth',
     'allauth.account',
