@@ -8,6 +8,7 @@ from io import BytesIO
 import requests
 import json
 from requests.auth import HTTPBasicAuth
+from django.http import JsonResponse
 
 
 def homeView(request):
@@ -154,20 +155,24 @@ def createComponent(request, id, type):
 
     component = components(user=user, type=type)
     if type == "image":
-        ourimage = images.objects.get(id=id)
+        ourimage = images.objects.get(id=data)
         component.image = ourimage.image
-    elif type == "text":
+    elif type == "text" or type == "block":
         component.html = data
     elif type == "emoji" or type == "sticker" or type == "unsplash" or type == "gif":
         component.src = data
     elif type == "check":
         component.title = "You can pick multiple choices"
+        component.save()
         choice1 = choices(user=user, title="first option")
         choice1.save()
         choice2 = choices(user=user, title="second option")
         choice2.save()
         choice3 = choices(user=user, title="third option")
         choice3.save()
+        component.choices.add(choice1)
+        component.choices.add(choice2)
+        component.choices.add(choice3)
         context = {
             "component_id": component.id,
             "choice_1_id": choice1.id,
@@ -176,12 +181,16 @@ def createComponent(request, id, type):
         }
     elif type == "radio":
         component.title = "You can pick one choice"
+        component.save()
         choice1 = choices(user=user, title="first option")
         choice1.save()
         choice2 = choices(user=user, title="second option")
         choice2.save()
         choice3 = choices(user=user, title="third option")
         choice3.save()
+        component.choices.add(choice1)
+        component.choices.add(choice2)
+        component.choices.add(choice3)
         context = {
             "component_id": component.id,
             "choice_1_id": choice1.id,
@@ -199,10 +208,31 @@ def createComponent(request, id, type):
         component.title = "Click Me"
 
     component.save()
-    if type == "check" or type == "radio":
-        return HttpResponse(context)
 
+    if type == "check" or type == "radio":
+        return JsonResponse(context)
     return HttpResponse(component.id)
+
+
+
+def removeEditableContainer(request, objId):
+    mycomponent = components.objects.get(id=objId)
+    mycomponent.delete()
+    return HttpResponse('removed')
+
+def addChoice(request, objId):
+    mycomponent = components.objects.get(id=objId)
+    choice = choices(user=request.user, title="New choice")
+    choice.save()
+    mycomponent.choices.add(choice)
+    mycomponent.save()
+    return HttpResponse(choice.id)
+
+def removeChoice(request, objId):
+    mychoice = choices.objects.get(id=objId)
+    mychoice.delete()
+    return HttpResponse('removed')
+
 
 
 @csrf_exempt
