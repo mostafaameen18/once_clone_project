@@ -63,8 +63,12 @@ def createStoryView(request):
 
 
 def preview(request, id):
+    stories = story.objects.filter(user=User.objects.get(id=id))
+    for i in stories:
+        i.views += 1
+        i.save()
     context = {
-        'stories': story.objects.filter(user=User.objects.get(id=id))
+        'stories': stories
     }
     return render(request, 'preview.html', context)
 
@@ -73,25 +77,63 @@ def addCheckRadio(request, id):
     mychoice = choices.objects.get(id=id)
     mychoice.chosen  += 1
     mychoice.save()
+    userComponents = components.objects.filter(user=request.user, type__in=['check','radio'])
+    for component in userComponents:
+        total = 0
+        for choice in component.choices.all():
+            total += choice.chosen
+        component.choiceSum = total
+        component.save()
     return HttpResponse('done')
 
 def removeCheckRadio(request, id):
     mychoice = choices.objects.get(id=id)
     mychoice.chosen -= 1
     mychoice.save()
+    userComponents = components.objects.filter(user=request.user, type__in=['check', 'radio'])
+    for component in userComponents:
+        total = 0
+        for choice in component.choices.all():
+            total += choice.chosen
+        component.choiceSum = total
+        component.save()
     return HttpResponse('done')
+
+
+def addYesNoAns(request, id, answer):
+    component = components.objects.get(id=id)
+    if answer == "yes":
+        component.yesTimes += 1
+    if answer == "no":
+        component.noTimes += 1
+    component.yesNoCount += 1
+    component.save()
+    return HttpResponse('done')
+
+def removeYesNoAns(request, id, answer):
+    component = components.objects.get(id=id)
+    if answer == "yes":
+        component.yesTimes -= 1
+    if answer == "no":
+        component.noTimes -= 1
+    component.yesNoCount -= 1
+    component.save()
+    return HttpResponse('done')
+
 
 @csrf_exempt
 def setRange(request, id):
     newRangeValue = request.POST.get('newRangeValue')
     rangeValue = request.POST.get('rangeValue')
     mycomponent = components.objects.get(id=id)
-    if newRangeValue:
-        mycomponent.rangeCount /= rangeValue
+    if int(rangeValue) == 0:
+        mycomponent.rangeCount += newRangeValue
         mycomponent.rangeCount *= newRangeValue
     else:
-        mycomponent.rangeTimes += 1
-        mycomponent.rangeCount *= rangeValue
+        mycomponent.rangeCount -= rangeValue
+        mycomponent.rangeTimes /= rangeValue
+        mycomponent.rangeCount += newRangeValue
+        mycomponent.rangeTimes *= newRangeValue
 
 
 
@@ -107,8 +149,9 @@ def connectShop(request):
     user = request.user
     shopName = request.POST.get('shopName')
     shopKey = request.POST.get('shopKey')
+    shopPass = request.POST.get('shopPass')
 
-    mycustomuser = customuser.objects.get_or_create(user=request.user, shop_name=shopName, shop_api_key=shopKey)
+    mycustomuser = customuser.objects.get_or_create(user=request.user, shop_name=shopName, shop_api_key=shopKey, shop_password=shopPass)
     mycustomuser.plan = "paid"
     mycustomuser.save()
 
@@ -141,6 +184,12 @@ def update_story(request, id, bg):
 def remove_story(request, id):
     user = request.user
     this_story = story.objects.get(user=user, id=id)
+    if this_story.components.all() != None:
+        for component in this_story.components.all():
+            if component.choices.all() != None:
+                for choice in component.choices.all():
+                    choice.delete()
+            component.delete()
     this_story.delete()
     return HttpResponse('removed')
 
@@ -208,15 +257,53 @@ def createComponent(request, id, type):
         component.title = "Click Me"
 
     component.save()
+    this_story.components.add(component)
+    this_story.save()
 
     if type == "check" or type == "radio":
         return JsonResponse(context)
     return HttpResponse(component.id)
 
+@csrf_exempt
+def updateComponent(request, id, item):
+    component = components.objects.get(id=id)
+    data = request.POST.get('data')
+
+    if item == "title":
+        component.title = data
+    elif item == "href":
+        component.href = data
+    elif item == "html":
+        component.html = data
+    elif item == "hours":
+        component.hours = data
+    elif item == "minutes":
+        component.minutes = data
+    elif item == "seconds":
+        component.seconds = data
+    elif item == "left":
+        component.left = data
+    elif item == "top":
+        component.top = data
+    elif item == "width":
+        component.width = data
+    elif item == "rotation":
+        component.rotation = data
+    elif item == "background":
+        component.background = data
+    elif item == "color":
+        component.color = data
+
+    component.save()
+    return HttpResponse('done')
+
 
 
 def removeEditableContainer(request, objId):
     mycomponent = components.objects.get(id=objId)
+    if mycomponent.choices.all() != None:
+        for choice in mycomponent.choices.all():
+            choice.delete()
     mycomponent.delete()
     return HttpResponse('removed')
 
@@ -227,6 +314,13 @@ def addChoice(request, objId):
     mycomponent.choices.add(choice)
     mycomponent.save()
     return HttpResponse(choice.id)
+
+
+def updateChoice(request, id, title):
+    choice = choices.objects.get(id=id)
+    choice.title = title
+    choice.save()
+    return HttpResponse('done')
 
 def removeChoice(request, objId):
     mychoice = choices.objects.get(id=objId)

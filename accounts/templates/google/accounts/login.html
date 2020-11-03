@@ -3,8 +3,38 @@
 <html>
     <head>
         <title>Google registration </title>
+        <style>
+            body{
+                background: #f4f4f4;
+            }
+            .glconnectbtn{
+                width: 400px;
+                height: 150px;
+                background: white;
+                border: none;
+                border-radius: 5px;
+                margin: auto;
+                box-shadow: 0px 0px 10px grey;
+                margin-top: 200px;
+                padding: 20px;
+                text-align: center;
+                line-height: 150px;
+            }
+            .glconnectbtn:hover{
+                background: #f4f4f4;
+            }
+            .glconnectbtn a{
+                display: block;
+                color: tomato;
+                font-size: 25px;
+                font-weight: bold;
+                text-decoration: none;
+            }
+        </style>
     </head>
     <body>
-        <a href="{% provider_login_url  'google' %}"> Google connect </a>
+        <div class="glconnectbtn">
+            <a href="{% provider_login_url  'google' %}"> Google connect </a>
+        </div>
     </body>
 </html>

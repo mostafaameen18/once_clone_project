@@ -244,6 +244,38 @@
             height: 110px;
         }
 
+        .rangeSlider, .rangeSlider:focus{
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+
+        }
+		.rangeSlider::-webkit-slider-thumb {
+            width: 20px;
+            width: 20px;
+            height: 50px;
+            border: none;
+            background: url('https://cdn.jsdelivr.net/emojione/assets/3.1/png/32/1f918.png');
+		    background-repeat: no-repeat;
+		    background-position: center;
+        }
+
+        .rangeSlider::-moz-range-thumb {
+            width: 20px;
+            width: 20px;
+            height: 50px;
+            border: none;
+            background: url('https://cdn.jsdelivr.net/emojione/assets/3.1/png/32/1f918.png');
+		    background-repeat: no-repeat;
+		    background-position: center;
+		}
+
     </style>
 </head>
 <body>
@@ -306,46 +338,93 @@
                 <div class="p-2 col-lg-2 col-md-3 col-sm-4 col-6">
                     <div>
                         <div id="story_{{story.id}}" class="contentcard" style="border: 5px solid grey; border-radius: 10px;">
-                            {% autoescape off %}
-                                <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
-                                    {% for component in story.components.all %}
-                                        {% if component.type == 'check' %}
-                                            <div id="component_{{component.id}}" style="background: {{component.background}}; width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}},{{component.transY}});" class="editable-container">
-                                                <div class="engage-card check-card p-3">
-                                                    <h6 class="text-center text-dark bold">{{component.title}}</h6>
+                            <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
+                                {% for component in story.components.all %}
+                                    {% if component.type == 'image' %}
+                                        <div id="image_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <img class="image-fluid" src="{{component.image.url}}" alt="">
+                                        </div>
+                                    {% elif component.type == 'text' or component.type == 'block' %}
+                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            {% autoescape off %}
+                                                {{component.html}}
+                                            {% endautoescape %}
+                                        </div>
+                                    {% elif component.type == 'range' %}
+                                        <div id="range_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                            <div style="background: {{component.background}};" class="engage-card p-3">
+                                                <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                <input onchange="setRange(this)" class="rangeSlider" type="range">
+                                            </div>
+                                            <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
+                                        </div>
+                                    {% elif component.type == 'yesNo' %}
+                                        <div id="yesNo_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <div class="p-3">
+                                                <h6 style="color: {{component.color}};" class="text-center bold">{{component.title}}</h6>
+                                                <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
+                                                    <li style="cursor: pointer;" class="yesAnswer yesNoAns nav-item col-6 text-info bold">Yes</li>
+                                                    <li style="cursor: pointer;" class="noAnswer yesNoAns nav-item col-6 text-danger bold">No</li>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% elif component.type == 'timer' %}
+                                        <div id="timer_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+
+                                        </div>
+                                    {% elif component.type == 'button' %}
+                                        <div id="button_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <div onclick="window.location.replace('{{component.href}}')" style="background: {{component.background}}; color: {{component.color}};" class="clickmebtn">Click me !</div>
+                                        </div>
+                                    {% elif component.type == 'emoji' %}
+                                        <div id="emoji_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <img class="emojioneemoji" src="{{component.src}}" alt="">
+                                        </div>
+                                    {% elif component.type == 'sticker' or component.type == 'gif' %}
+                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <figure>
+                                                <img class="image-fluid" src="{{component.src}}" alt="">
+                                            </figure>
+                                        </div>
+                                    {% elif component.type == 'unsalpsh' %}
+                                        <div id="unsalpsh_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <img class="image-fluid" src="{{component.src}}" alt="">
+                                        </div>
+                                    {% elif component.type == 'check' %}
+                                        <div id="check_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <div style="background: {{component.background}};" class="engage-card check-card p-3">
+                                                <h6 style="color: {{component.color}};" class="text-center bold">{{component.title}}</h6>
+                                                <div class="choices">
                                                     {% for choice in component.choices.all %}
-                                                        <div id="choice_{{choice.id}}" class="card-choice d-flex m-1">
-                                                            <div class="card-choice-check m-1"></div>
-                                                            <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                        <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                            <div class="d-flex">
+                                                                <div class="card-choice-check m-1"></div>
+                                                                <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                            </div>
                                                         </div>
                                                     {% endfor %}
                                                 </div>
                                             </div>
-                                        {% elif component.type == 'radio' %}
-                                            <div id="component_{{component.id}}" style="background: {{component.background}}; width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}},{{component.transY}});" class="editable-container">
-                                                <div class="engage-card radio-card p-3">
-                                                    <h6 class="text-center text-dark bold">component.title</h6>
+                                        </div>
+                                    {% elif component.type == 'radio' %}
+                                        <div id="radio_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                            <div style="background: {{component.background}};" class="engage-card radio-card p-3">
+                                                <h6 style="color: {{component.color}};" class="text-center bold">{{component.title}}</h6>
+                                                <div class="choices">
                                                     {% for choice in component.choices.all %}
-                                                        <div id="choice_{{choice.id}}" class="card-choice d-flex m-1">
-                                                            <div class="card-choice-seq m-1">{{forloop.counter}}</div>
-                                                            <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                        <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                            <div class="d-flex">
+                                                                <div class="card-choice-seq m-1">{{forloop.counter}}</div>
+                                                                <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                            </div>
                                                         </div>
                                                     {% endfor %}
                                                 </div>
                                             </div>
-                                        {% elif component.type == 'range' %}
-                                            <div style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}px, {{component.transY}}px);" class="editable-container">
-                                                <div class="engage-card p-3">
-                                                    <h6 class="text-center text-dark bold">{{component.title}}</h6>
-                                                    <div class="card-range-bar d-flex m-1">
-                                                        <div style="font-size: 30px; transform: translate(-50%, -600%);">🤘</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            {% endautoescape %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -359,8 +438,15 @@
                                         <h6 class="text-center text-dark bold">{{component.title}}</h6>
                                         {% for choice in component.choices.all %}
                                             <div id="choice_{{choice.id}}" class="card-choice d-flex m-1">
-                                                <div class="card-choice-check m-1"></div>
-                                                <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                <div class="d-flex">
+                                                    <div class="card-choice-check m-1"></div>
+                                                    <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                </div>
+                                            </div>
+                                            <div style="width: 100%; padding: 5px;">
+                                                <h6 class="text-right text-info bold">
+                                                    {{ choice.chosen|div:component.choiceSum|mul:100 }} % ({{choice.chosen}})
+                                                </h6>
                                             </div>
                                         {% endfor %}
                                     </div>
@@ -385,11 +471,30 @@
                                     </div>
                                 </div>
                             {% elif component.type == 'range' %}
-                                <div style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}px, {{component.transY}}px);" class="editable-container">
-                                    <div class="engage-card p-3">
-                                        <h6 class="text-center text-dark bold">{{component.title}}</h6>
-                                        <div class="card-range-bar d-flex m-1">
-                                            <div style="font-size: 30px; transform: translate(-50%, -600%);">🤘</div>
+                                <div id="range_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <div style="background: {{component.background}};" class="engage-card p-3">
+                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                        <input class="rangeSlider" type="range">
+                                    </div>
+                                    <div class="text-info text-center">
+                                        {{ component.rangeCount|div:component.rangeTimes|mul:100 }} % ({{component.rangeTimes}})
+                                    </div>
+                                </div>
+                            {% elif component.type == 'yesNo' %}
+                                <div style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                    <div class="p-3">
+                                        <h6 style="color: {{component.color}};" class="text-center bold">{{component.title}}</h6>
+                                        <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
+                                            <li style="cursor: pointer;" class="yesAnswer yesNoAns nav-item col-6 text-info bold">Yes</li>
+                                            <li style="cursor: pointer;" class="noAnswer yesNoAns nav-item col-6 text-danger bold">No</li>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="text-info text-center">
+                                                {{ component.yesTimes|div:component.yesNoCount|mul:100 }} % ({{component.yesTimes}})
+                                            </div>
+                                            <div class="text-info text-center">
+                                                {{ component.noTimes|div:component.yesNoCount|mul:100 }} % ({{component.noTimes}})
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

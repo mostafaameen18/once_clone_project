@@ -12,9 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'g%xv8ldj5m5i(2^72$u##12&3opwu95u9u9l=qo(tmv!d5+k0n'
 
-HCTI_API_ENDPOINT = "https://hcti.io/v1/image"
-HCTI_API_USER_ID = '696ded1f-a04a-41df-a264-7f7fb9076fd8'
-HCTI_API_KEY = '43777f28-feea-4109-a0c1-8d9388d95004'
+
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

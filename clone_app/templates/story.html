@@ -102,6 +102,9 @@
         .text-bg{
             background: violet;
         }
+        .includeText.active{
+            border: 2px dashed dodgerblue;
+        }
         .text-underlined{
             background: rgba(0, 0, 0, 0) linear-gradient(transparent 50%, rgb(182, 87, 108) 50%) repeat scroll 0% 0%;
         }
@@ -377,6 +380,38 @@
 			font-weight: bold;
 		}
 
+        .rangeSlider, .rangeSlider:focus{
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+
+        }
+		.rangeSlider::-webkit-slider-thumb {
+            width: 20px;
+            width: 20px;
+            height: 50px;
+            border: none;
+            background: url('https://cdn.jsdelivr.net/emojione/assets/3.1/png/32/1f918.png');
+		    background-repeat: no-repeat;
+		    background-position: center;
+        }
+
+        .rangeSlider::-moz-range-thumb {
+            width: 20px;
+            width: 20px;
+            height: 50px;
+            border: none;
+            background: url('https://cdn.jsdelivr.net/emojione/assets/3.1/png/32/1f918.png');
+		    background-repeat: no-repeat;
+		    background-position: center;
+		}
+
     </style>
 </head>
 <body>
@@ -460,14 +495,14 @@
             <div class="row p-2">
                 <div class="col-6 p-2">
                     <div data-type="text" class="widget d-table card pt-3 pb-3 bg-light-royal">
-                        <h3 style="color: white; text-align:center;" class="v-center bold">
+                        <h3 style="color: white; text-align:center;" class="v-center bold includeText">
                             MarkDown Simple Text
                         </h3>
                     </div>
                 </div>
                 <div class="col-6 p-2">
                     <div data-type="text" class="widget d-table card pt-3 pb-3 bg-light-royal">
-                        <h3 style="color: white; text-align:center;" class="v-center bold text-bg">
+                        <h3 style="color: white; text-align:center;" class="v-center bold text-bg includeText">
                             Text with background color
                         </h3>
                     </div>
@@ -475,7 +510,7 @@
                 <div class="col-6 p-2">
                     <div data-type="text" class="widget d-table card pt-3 pb-3 bg-light-royal">
                         <h3 style="color: white; text-align:center;" class="v-center bold">
-                            <span class="text-underlined">
+                            <span class="text-underlined includeText">
                                 Text with smart underline
                             </span>
                         </h3>
@@ -484,21 +519,24 @@
                 <div class="col-6 p-2">
                     <div data-type="text" class="widget d-table card pt-3 pb-3 bg-light-royal">
                         <h3 style="color: white; text-align:center;" class="v-center bold textStrokeContainer">
-                            <span class="text-stroke">
+                            <span class="text-stroke includeText">
                                 Transparent
                             </span>
-                            text with outline stroke
+                            <span class="includeText">
+                                text with outline stroke
+                            </span>
+
                         </h3>
                     </div>
                 </div>
                 <div class="col-6 p-2">
                     <div data-type="text" class="widget d-table card pt-3 pb-3 bg-light-royal">
                         <h5 style="color: white; text-align:center;" class="v-center bold text-left-bordered">
-                            <span class="specialTextContainer">We love <span class="specialTextColor" style="color: #ffc107;">to</span></span>
+                            <span class="specialTextContainer includeText">We love </span><span class="specialTextColor includeText" style="color: #ffc107;">to</span>
                             <br/>
-                            <span class="specialTextContainer">Share <span class="specialTextColor" style="color: #ffc107;">stories</span></span>
+                            <span class="specialTextContainer includeText">Share </span><span class="specialTextColor includeText" style="color: #ffc107;">stories</span>
                             <br/>
-                            <span class="specialTextContainer">With <span class="specialTextColor" style="color: #ffc107;">people</span></span>
+                            <span class="specialTextContainer includeText">With </span><span class="specialTextColor includeText" style="color: #ffc107;">people</span>
                         </h5>
                     </div>
                 </div>
@@ -531,28 +569,13 @@
                     <div data-type="block" class="widget card p-2 bg-light-royal">
                         <div>
                             <h6 class="text-white bold">
-                                <i class="fas fa-check-circle"></i> Milk
+                                <i class="fas fa-check-circle"></i> <span class="includeText">Milk</span>
                             </h6>
                             <h6 class="text-white bold">
-                                <i class="fas fa-check-circle"></i> Eggs
+                                <i class="fas fa-check-circle"></i> <span class="includeText">Eggs</span>
                             </h6>
                             <h6 class="text-white bold">
-                                <i class="fas fa-check-circle"></i> Tomatos
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 p-2">
-                    <div data-type="block" class="card widget p-2 bg-light-royal">
-                        <div>
-                            <h6 class="text-white bold">
-                                <i class="fas fa-dot-circle"></i> Milk
-                            </h6>
-                            <h6 class="text-white bold">
-                                <i class="fas fa-dot-circle"></i> Eggs
-                            </h6>
-                            <h6 class="text-white bold">
-                                <i class="fas fa-dot-circle"></i> Tomatos
+                                <i class="fas fa-check-circle"></i> <span class="includeText">Tomatos</span>
                             </h6>
                         </div>
                     </div>
@@ -561,13 +584,28 @@
                     <div data-type="block" class="card widget p-2 bg-light-royal">
                         <div>
                             <h6 class="text-white bold">
-                                <i class="fas fa-circle"></i> Milk
+                                <i class="fas fa-dot-circle"></i> <span class="includeText">Milk</span>
                             </h6>
                             <h6 class="text-white bold">
-                                <i class="fas fa-circle"></i> Eggs
+                                <i class="fas fa-dot-circle"></i> <span class="includeText">Eggs</span>
                             </h6>
                             <h6 class="text-white bold">
-                                <i class="fas fa-circle"></i> Tomatos
+                                <i class="fas fa-dot-circle"></i> <span class="includeText">Tomatos</span>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 p-2">
+                    <div data-type="block" class="card widget p-2 bg-light-royal">
+                        <div>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-circle"></i> <span class="includeText">Milk</span>
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-circle"></i> <span class="includeText">Eggs</span>
+                            </h6>
+                            <h6 class="text-white bold">
+                                <i class="fas fa-circle"></i> <span class="includeText">Tomatos</span>
                             </h6>
                         </div>
                     </div>
@@ -620,7 +658,7 @@
             <div class="row justify-content-center p-3 mx-auto" style="width: 100%;">
                 <div class="col-10 mx-auto p-2">
                     <div class="widget" data-type="button">
-                        <div class="clickmebtn">Click me !</div>
+                        <div class="clickmebtn includeText">Click me !</div>
                     </div>
                 </div>
 
@@ -628,32 +666,32 @@
                 <div class="col-10 mx-auto p-2">
                     <div class="widget" data-type="radio">
                         <div class="engage-card p-3">
-                            <h6 class="text-center text-dark bold">Make a choice:</h6>
+                            <h6 class="text-center text-dark bold includeText">Make a choice:</h6>
                             <div class="choices">
                                 <div class="card-choice d-flex justify-content-between pr-2 m-1">
                                     <div class="d-flex">
                                         <div class="card-choice-seq m-1">1</div>
-                                        <div class="card-choice-title m-1">First choice</div>
+                                        <div class="card-choice-title m-1 includeText">First choice</div>
                                     </div>
-                                    <h6 class="text-danger card-remove-choice bold">&times;</h6>
+                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                 </div>
                                 <div class="card-choice d-flex justify-content-between pr-2 m-1">
                                     <div class="d-flex">
                                         <div class="card-choice-seq m-1">2</div>
-                                        <div class="card-choice-title m-1">Second choice</div>
+                                        <div class="card-choice-title m-1 includeText">Second choice</div>
                                     </div>
-                                    <h6 class="text-danger card-remove-choice bold">&times;</h6>
+                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                 </div>
                                 <div class="card-choice d-flex justify-content-between pr-2 m-1">
                                     <div class="d-flex">
                                         <div class="card-choice-seq m-1">3</div>
-                                        <div class="card-choice-title m-1">Third choice</div>
+                                        <div class="card-choice-title m-1 includeText">Third choice</div>
                                     </div>
-                                    <h6 class="text-danger card-remove-choice bold">&times;</h6>
+                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                 </div>
                             </div>
                             <div class="card-add-choice d-flex m-1">
-                                <div class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
+                                <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
                             </div>
                         </div>
                     </div>
@@ -665,32 +703,32 @@
                 <div class="col-10 mx-auto p-2">
                     <div class="widget" data-type="check">
                         <div class="engage-card p-3">
-                            <h6 class="text-center text-dark bold">What animals do you like</h6>
+                            <h6 class="text-center text-dark bold includeText">What animals do you like</h6>
                             <div class="choices">
                                 <div class="card-choice d-flex justify-content-between pr-2 m-1">
                                     <div class="d-flex">
                                         <div class="card-choice-check m-1"></div>
-                                        <div class="card-choice-title m-1">Dogs</div>
+                                        <div class="card-choice-title m-1 includeText">Dogs</div>
                                     </div>
-                                    <h6 class="text-danger card-remove-choice bold">&times;</h6>
+                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                 </div>
                                 <div class="card-choice d-flex justify-content-between pr-2 m-1">
                                     <div class="d-flex">
                                         <div class="card-choice-check m-1"></div>
-                                        <div class="card-choice-title m-1">Cats</div>
+                                        <div class="card-choice-title m-1 includeText">Cats</div>
                                     </div>
-                                    <h6 class="text-danger card-remove-choice bold">&times;</h6>
+                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                 </div>
                                 <div class="card-choice d-flex justify-content-between pr-2 m-1">
                                     <div class="d-flex">
                                         <div class="card-choice-check m-1"></div>
-                                        <div class="card-choice-title m-1">Fish</div>
+                                        <div class="card-choice-title m-1 includeText">Fish</div>
                                     </div>
-                                    <h6 class="text-danger card-remove-choice bold">&times;</h6>
+                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                 </div>
                             </div>
                             <div class="card-add-choice d-flex m-1">
-                                <div class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
+                                <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
                             </div>
                         </div>
                     </div>
@@ -702,7 +740,7 @@
                 <div class="col-10 mx-auto p-2">
                     <div class="widget" data-type="yesNo">
                         <div class="p-3">
-                            <h6 class="text-center text-white bold">Is it stunny today?</h6>
+                            <h6 class="text-center text-white bold includeText">Is it stunny today?</h6>
                             <div class="nav nav-yesno-answers d-flex m-1 p-2">
                                 <li class="nav-item col-6 text-info bold">Yes</li>
                                 <li class="nav-item col-6 text-danger bold">No</li>
@@ -716,10 +754,8 @@
                 <div class="col-10 mx-auto p-2">
                     <div class="widget" data-type="range">
                         <div class="engage-card p-3">
-                            <h6 class="text-center text-dark bold">Once</h6>
-                            <div class="card-range-bar d-flex m-1">
-                                <div style="font-size: 30px; transform: translate(-50%, -600%);">🤘</div>
-                            </div>
+                            <h6 class="text-center text-dark bold includeText">Once</h6>
+                            <input class="rangeSlider" type="range">
                         </div>
                     </div>
                 </div>
@@ -730,7 +766,7 @@
                 <div class="col-10 mx-auto p-2">
                     <div class="widget" data-type="timer">
                         <div class="engage-card p-3">
-                            <h6 class="text-center text-dark bold">24h chrono</h6>
+                            <h6 class="text-center text-dark bold includeText">24h chrono</h6>
                             <div class="row justify-content-between">
                                 <div class="col-3" style="padding: 0;">
                                     <div class="d-flex justify-content-center">
@@ -849,50 +885,101 @@
                     <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
                         {% for component in story.components.all %}
                             {% if component.type == 'image' %}
-                                <div id="image_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                <div id="image_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
                                     <img class="image-fluid" src="{{component.image.url}}" alt="">
                                     <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
                                 </div>
                             {% elif component.type == 'text' or component.type == 'block' %}
-                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}, {{component.transY}});" class="editable-container">
+                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
                                     {% autoescape off %}
                                         {{component.html}}
-                                    {% endauthescape %}
+                                    {% endautoescape %}
                                     <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
                                 </div>
                             {% elif component.type == 'range' %}
-                                <div style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}px, {{component.transY}}px);" class="editable-container">
-                                    <div class="engage-card p-3">
-                                        <h6 class="text-center text-dark bold">{{component.title}}</h6>
-                                        <div class="card-range-bar d-flex m-1">
-                                            <div style="font-size: 30px; transform: translate(-50%, -600%);">🤘</div>
+                                <div id="range_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <div style="background: {{component.background}};" class="engage-card p-3">
+                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                        <input class="rangeSlider" type="range">
+                                    </div>
+                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
+                                </div>
+                            {% elif component.type == 'yesNo' %}
+                                <div id="yesNo_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <div class="p-3">
+                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                        <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
+                                            <li class="nav-item col-6 text-info bold">Yes</li>
+                                            <li class="nav-item col-6 text-danger bold">No</li>
                                         </div>
                                     </div>
                                     <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
                                 </div>
+                            {% elif component.type == 'timer' %}
+                                <div id="timer_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+
+                                </div>
+                            {% elif component.type == 'button' %}
+                                <div id="button_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <div onclick="window.location.replace('{{component.href}}')" style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
+                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
+                                </div>
+                            {% elif component.type == 'emoji' %}
+                                <div id="emoji_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <img class="emojioneemoji" src="{{component.src}}" alt="">
+                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
+                                </div>
+                            {% elif component.type == 'sticker' or component.type == 'gif' %}
+                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <figure>
+                                        <img class="image-fluid" src="{{component.src}}" alt="">
+                                    </figure>
+                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
+                                </div>
+                            {% elif component.type == 'unsalpsh' %}
+                                <div id="unsalpsh_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <img class="image-fluid" src="{{component.src}}" alt="">
+                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
+                                </div>
                             {% elif component.type == 'check' %}
-                                <div style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}px, {{component.transY}}px);" class="editable-container">
-                                    <div class="engage-card p-3">
-                                        <h6 class="text-center text-dark bold">{{component.title}}</h6>
-                                        {% for choice in component.choices.all %}
-                                            <div class="card-choice d-flex m-1">
-                                                <div class="card-choice-check m-1"></div>
-                                                <div class="card-choice-title m-1">{{choice.title}}</div>
-                                            </div>
-                                        {% endfor %}
+                                <div id="check_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <div style="background: {{component.background}};" class="engage-card p-3">
+                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                        <div class="choices">
+                                            {% for choice in component.choices.all %}
+                                                <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                    <div class="d-flex">
+                                                        <div class="card-choice-check m-1"></div>
+                                                        <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                    </div>
+                                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="card-add-choice d-flex m-1">
+                                            <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
+                                        </div>
                                     </div>
                                     <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
                                 </div>
                             {% elif component.type == 'radio' %}
-                                <div style="width: {{component.width}}; height: {{component.height}}; transform: translate({{component.transX}}px, {{component.transY}}px);" class="editable-container">
-                                    <div class="engage-card p-3">
-                                        <h6 class="text-center text-dark bold">component.title</h6>
-                                        {% for choice in component.choices.all %}
-                                            <div class="card-choice d-flex m-1">
-                                                <div class="card-choice-seq m-1">{{forloop.counter}}</div>
-                                                <div class="card-choice-title m-1">{{choice.title}}</div>
-                                            </div>
-                                        {% endfor %}
+                                <div id="radio_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    <div style="background: {{component.background}};" class="engage-card p-3">
+                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                        <div class="choices">
+                                            {% for choice in component.choices.all %}
+                                                <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                    <div class="d-flex">
+                                                        <div class="card-choice-seq m-1">{{forloop.counter}}</div>
+                                                        <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                    </div>
+                                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="card-add-choice d-flex m-1">
+                                            <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
+                                        </div>
                                     </div>
                                     <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
                                 </div>
@@ -1011,11 +1098,18 @@
                                 <li class="nav-item p-3">
                                     <small class="text-muted">Enter text</small>
                                     <div class="d-block">
-                                        <input onkeyup="setText(this,'0')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
-                                        <div class="d-block threeInuptSpecialTextCase">
-                                            <input onkeyup="setText(this,'1')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
-                                            <input onkeyup="setText(this,'2')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
-                                        </div>
+                                        <input onkeyup="setText(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item pt-1">
+                            <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-link"></i></a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item p-3">
+                                    <small class="text-muted">Enter URL</small>
+                                    <div class="d-block">
+                                        <input onkeyup="setHref(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your url" type="text">
                                     </div>
                                 </li>
                             </ul>
@@ -1278,11 +1372,18 @@
                             <li class="nav-item p-3">
                                 <small class="text-muted">Enter text</small>
                                 <div class="d-block">
-                                    <input onkeyup="setText(this,'0')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
-                                    <div class="d-block threeInuptSpecialTextCase">
-                                        <input onkeyup="setText(this,'1')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
-                                        <input onkeyup="setText(this,'2')" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
-                                    </div>
+                                    <input onkeyup="setText(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item pt-1">
+                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-link"></i></a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item p-3">
+                                <small class="text-muted">Enter URL</small>
+                                <div class="d-block">
+                                    <input onkeyup="setHref(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your url" type="text">
                                 </div>
                             </li>
                         </ul>
@@ -1449,9 +1550,7 @@
                             <label for="shopKey" class="text-dark bold">Shop password*</label>
                             <input type="password" class="form-control" name="shopPass" id="shopPass" placeholder="Enter shop password" required>
                         </div>
-                        <div id="paybal_rendered_buttons">
-
-                        </div>
+                        <button style="width: 100%;" type="submit" class="btn btn-warning">Connect shop</button>
                     </form>
                 </div>
             </div>
@@ -1607,8 +1706,11 @@
 
     function setTextColor(obj){
         var color = $(obj).attr('data-color');
-        $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('color',color);
-        savepro();
+        $(".editable-container.active .includeText:not('.specialTextColor, .text-stroke, .card-choice-title')").css('color',color);
+        var id = $(".editable-container.active").attr('id');
+        var type = "color";
+        var data = color;
+        updateComponent(id, type, data);
     }
 
     function setTextSecondaryColor(obj){
@@ -1619,72 +1721,69 @@
         $(".editable-container.active .specialTextColor").css({'color':color});
         $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('border-color',color);
         $(".editable-container.active h1 i, .editable-container.active h2 i, .editable-container.active h3 i, .editable-container.active h4 i, .editable-container.active h5 i, .editable-container.active h6 i").css('color',color);
-        savepro();
+        var id = $(".editable-container.active").attr('id');
+        var type = "background";
+        var data = color;
+        updateComponent(id, type, data);
     }
 
     function setTextAlign(obj){
         var align = $(obj).attr('data-align');
         $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('text-align',align);
-        savepro();
     }
 
     function setTextFont(obj){
         var font = $(obj).attr('data-font');
         $(".editable-container.active").css('font-family',font);
-        savepro();
     }
 
-    function setText(obj, index){
+    function setText(obj){
         var text = $(obj).val();
-        if($(".editable-container.active .specialTextColor").length > 0){
-            switch(index){
-                case "0":
-                    var line = $(".editable-container.active .specialTextContainer:eq(0)");
-                    break;
-                case "1":
-                    var line = $(".editable-container.active .specialTextContainer:eq(1)");
-                    break;
-                case "2":
-                    var line = $(".editable-container.active .specialTextContainer:eq(2)");
-                    break;
-            }
-            var textArr = text.split(' ');
-            var outText = "";
-            for (var i=0; i<textArr.length-1; i++){
-                outText += textArr[i]+" ";
-            }
-            var specialText = textArr[textArr.length-1];
-            line.html(outText+"<span class='specialTextColor'>"+specialText+"</span>");
+        $(".includeText.active").text(text);
+        var updatingText = $(".includeText.active");
+        if(updatingText.hasClass('card-choice-title')){
+            var choice = updatingText.closest('.card-choice');
+            var id = choice.attr('id').split('_')[1];
+            var data = text;
+            updateChoice(id, data);
         }
         else{
-            if($(".editable-container.active .text-stroke").length > 0){
-                line = $(".editable-container.active .textStrokeContainer")
-                var text = $(obj).val();
-                var textArr = text.split(' ');
-                var outText = "";
-                for (var i=1; i<textArr.length; i++){
-                    outText += textArr[i]+" ";
-                }
-                var specialText = textArr[0];
-                line.html('<span class="text-stroke">'+specialText+'</span> '+outText);
+            var component = updatingText.closest('.editable-container');
+            if(component.attr('id').split('_')[0] == "text" || component.attr('id').split('_')[0] == "block"){
+                var data = component.html();
+                var type = "html";
             }
             else{
-                $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").text(text);
+                var data = text;
+                var type = "title";
             }
+            var id = component.attr('id').split('_')[1];
+            updateComponent(id, type, data);
         }
-        savepro();
+    }
+
+    function setHref(obj){
+        if($(".editable-container.active").attr('id').split('_')[0] == "button"){
+            var href = $(obj).val();
+            var id = $(".editable-container.active").attr('id').split('_')[1];
+            var type = "href";
+            updateComponent(id, type, href);
+            $(".editable-container.active .clickmebtn").attr('onclick','window.location.replace("'+href+'")');
+        }
     }
 
     function setRotationDegree(obj){
         degree = ($(obj).val() - 50) * 3.6;
         $(".editable-container.active").css('transform','rotate('+degree+'deg)');
-        savepro();
+        var id = $(".editable-container.active").attr('id').split('_')[1];
+        var type = "rotation";
+        var finalDeg = degree+'deg';
+        updateComponent(id, type, finalDeg);
     }
 
     function setFontSize(obj){
         size = $(obj).val();
         $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('font-size',size);
-        savepro();
     }
 
 
@@ -1803,15 +1902,15 @@
     $(document).on('mousedown','.editable-container',function(e){
         e.preventDefault();
         e.stopPropagation();
-        $(this).draggable();
-        //containment: "#draggable",
-        //    snap: '.gridlines',
-        //    stop: function () {
-        //        var l = ( 100 * ($(this).position().left + (0.5 * $(this).width())) / parseFloat($(this).parent().width())) + "%" ;
-        //        var t = ( 100 * ($(this).position().top + (0.5 * $(this).height())) / parseFloat($(this).parent().height())) + "%" ;
-        //        $(this).css("left", l);
-        //        $(this).css("top", t);
-        //    }
+        $(this).draggable({
+            stop: function () {
+                var l = $(".editable-container.active").css('left');
+                var t = $(".editable-container.active").css('top');
+                var id = $(".editable-container").attr('id').split('_')[1];
+                updateComponent(id, "top", t);
+                updateComponent(id, "left", l);
+            }
+        });
     });
 
     $(document).on('mousedown','.resizeXbtn',function(e){
@@ -1824,6 +1923,10 @@
                 var newxpos = e.pageX;
                 var widthDifference = newxpos - xpos;
                 $(".editable-container.active").css('width',elementWidth+widthDifference);
+                var finalWidth = elementWidth+widthDifference;
+                var id = $(".editable-container.active").attr('id').split('_')[1];
+                var type = "width";
+                updateComponent(id, type, finalWidth);
             }
         });
         $(document).on('mouseup',function(){
@@ -1979,6 +2082,28 @@
 
 
 
+    function updateComponent(id, type, data){
+        var url = '/updateComponent/'+id+'/'+type+'/';
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {'data': data},
+            success: function (result) {
+                console.log(result);
+            }
+        });
+    }
+
+
+
+    $(document).on('click', '.includeText', function(e){
+        $(".includeText.active").removeClass('active');
+        $(this).addClass('active');
+    });
+
+
+
+
 
     function removeEditableContainer(){
         var objId = $(".editable-container.active").attr('id').split('_')[1];
@@ -1996,7 +2121,7 @@
 
 
     function addChoice(obj){
-        var component = $(obj)
+        var component = $(obj).closest('.editable-container');
         var objId = component.attr('id').split('_')[1];
         var url = '/addChoice/'+objId+'/';
         $.ajax({
@@ -2004,18 +2129,31 @@
             url: url,
             data: null,
             success: function (result) {
-                if (component.getAttribute('data-type') == "check"){
-                    component.innerHTML += '<div id="choice_'+result+'" class="card-choice d-flex m-1"><div class="card-choice-check m-1"></div><div class="card-choice-title m-1">New Choice</div></div>';
+                if (component.attr('id').split('_')[0] == "check"){
+                    component[0].firstElementChild.children[1].innerHTML += '<div id="choice_'+result+'" class="card-choice d-flex justify-content-between pr-2 m-1"><div class="d-flex"><div class="card-choice-check m-1"></div><div class="card-choice-title m-1 includeText">New choice</div></div><h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6></div>';
                 }
-                else if (component.getAttribute('data-type') == "radio"){
-                    component.innerHTML += '<div id="choice_'+result+'" class="card-choice d-flex m-1"><div class="card-choice-seq m-1">'+component.firstElementChild.children.length+1+'</div><div class="card-choice-title m-1">New Choice</div></div>';
+                else if (component.attr('id').split('_')[0] == "radio"){
+                    component[0].firstElementChild.children[1].innerHTML += '<div id="choice_'+result+'" class="card-choice d-flex justify-content-between pr-2 m-1"><div class="d-flex"><div class="card-choice-seq m-1">'+component[0].firstElementChild.children[1].children.length+'</div><div class="card-choice-title m-1 includeText">New choice</div></div><h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6></div>';
                 }
             }
         });
     }
 
+
+    function updateChoice(id, data){
+        var url = '/updateChoice/'+id+'/'+data+'/';
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: null,
+            success: function (result) {
+                null;
+            }
+        });
+    }
+
     function removeChoice(obj){
-        var choice = $(obj)
+        var choice = $(obj).closest('.card-choice');
         var objId = choice.attr('id').split('_')[1];
         var url = '/removeChoice/'+objId+'/';
         $.ajax({
@@ -2030,21 +2168,7 @@
     }
 
 </script>
-<script src="https://www.paypal.com/sdk/js?client-id=AQs7okIY6GdCKIXWqQLKQCdx1Xppq6wDek-cA_aio5UJ6xkoYfj4HeF_n6QDSSpP0DlAi8YzLkAGOb1T&components=buttons"></script>
-<script>
-    paypal.Buttons( {
-    createOrder: function(data, actions)  {
-      // Set up the transaction
-      return actions.order.create( {
-        purchase_units: [ {
-          amount:  {
-            value: '30.00'
-           }
-         }]
-       });
-     }
-   }).render('#paybal_rendered_buttons');
-</script>
+
 {% if plan == "paid" %}
     <script>
         $(document).ready(function(e){
