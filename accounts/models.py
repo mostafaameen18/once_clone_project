@@ -8,3 +8,10 @@ class customuser(models.Model):
     shop_password = models.CharField(max_length=500, unique=True)
     plan = models.CharField(max_length=500, null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
+
+
+
+
+class hanguser(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	code = models.CharField(max_length=6, unique=True)

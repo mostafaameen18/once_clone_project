@@ -18,6 +18,8 @@ def loginView(request):
     return render(request, 'login.html')
 
 def storiesList(request):
+    # if not request.user.is_authenticated:
+    #     return redirect('login')
     stories = storiesSet.objects.filter(user=request.user)
     context = {
         'stories': stories
@@ -46,6 +48,8 @@ def removeStorySet(request, id):
 
 
 def createStoryView(request, storySet):
+    if not request.user.is_authenticated:
+        return redirect('login')
     try:
         ids = []
         storiesSetIds = storiesSet.objects.get(id=storySet)
@@ -152,6 +156,8 @@ def setRange(request, id):
 
 
 def answers(request, storySet):
+    if not request.user.is_authenticated:
+        return redirect('login')
     ids = []
     storiesSetIds = storiesSet.objects.get(id=storySet)
     for i in storiesSetIds.storiesSet.all():

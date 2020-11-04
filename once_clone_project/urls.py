@@ -6,6 +6,7 @@ from clone_app.views import *
 from django.conf import settings
 from django.views.static import serve
 from django.conf.urls.static import static
+from accounts.views import *
 
 
 
@@ -30,6 +31,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('login-now/', TemplateView.as_view(template_name='google/accounts/login.html'), name='login'),
+    path('checkAuthEmail/', checkAuthEmail, name="checkAuthEmail"),
+    path('verifyLogin/', verifyLogin, name="verifyLogin"),
+    path('verifyLoginPro/<str:code>/', verifyLoginPro, name="verifyLoginPro"),
+    path('verifyLoginRedirect/<str:code>/', verifyLoginRedirect, name="verifyLoginRedirect"),
+    path('resendVerificationEmail/',resendVerificationEmail, name="resendVerificationEmail"),
     re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

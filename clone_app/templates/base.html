@@ -40,7 +40,7 @@
         <div class="l-menu__links u-fb u-va">
           {% if user.is_authenticated %}
           <h1>Logged in</h1>
-          <a style="--btn-color: var(--dark-grey); --bckg-color: var(--white);" class="c-form__btn c-form__btn--small t-fs--base t-fw--xbui l-hpl l-hpr l-hml" href="{% url 'create-story' %}">
+          <a style="--btn-color: var(--dark-grey); --bckg-color: var(--white);" class="c-form__btn c-form__btn--small t-fs--base t-fw--xbui l-hpl l-hpr l-hml" href="{% url 'create-story' 1 %}">
             Create Story
           </a>
           {% else %}

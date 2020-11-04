@@ -13,7 +13,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'g%xv8ldj5m5i(2^72$u##12&3opwu95u9u9l=qo(tmv!d5+k0n'
 
 
-
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'nocode.designer@gmail.com'
+EMAIL_HOST_PASSWORD = 'jspmam7l535m,la1'
+EMAIL_PORT = 587
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
