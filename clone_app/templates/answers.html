@@ -37,7 +37,7 @@
             visibility: hidden;
         }
         .editable-container{
-            position: relative;
+            position: absolute;
             border: none;
             transition: all 0.2s ease;
             top: 50%;
@@ -445,7 +445,7 @@
                                             </div>
                                             <div style="width: 100%; padding: 5px;">
                                                 <h6 class="text-right text-info bold">
-                                                    {{ choice.chosen|div:component.choiceSum|mul:100 }} % ({{choice.chosen}})
+                                                    {% if component.choiceSum > 0 %}<span class="floatNum">{{ choice.chosen|div:component.choiceSum|mul:100 }}</span>{% endif %} % ({{choice.chosen}})
                                                 </h6>
                                             </div>
                                         {% endfor %}
@@ -463,7 +463,7 @@
                                                 </div>
                                                 <div style="width: 100%; padding: 5px;">
                                                     <h6 class="text-right text-info bold">
-                                                        {{ choice.chosen|div:component.choiceSum|mul:100 }} % ({{choice.chosen}})
+                                                        {% if component.choiceSum > 0 %}<span class="floatNum">{{ choice.chosen|div:component.choiceSum|mul:100 }}</span>{% endif %} % ({{choice.chosen}})
                                                     </h6>
                                                 </div>
                                             </div>
@@ -477,7 +477,7 @@
                                         <input class="rangeSlider" type="range">
                                     </div>
                                     <div class="text-info text-center">
-                                        {{ component.rangeCount|div:component.rangeTimes|mul:100 }} % ({{component.rangeTimes}})
+                                        {% if component.rangeTimes > 0 %}<span class="floatNum">{{ component.rangeCount|div:component.rangeTimes|mul:100 }}</span>{% endif %} % ({{component.rangeTimes}})
                                     </div>
                                 </div>
                             {% elif component.type == 'yesNo' %}
@@ -490,10 +490,10 @@
                                         </div>
                                         <div class="d-flex justify-content-between">
                                             <div class="text-info text-center">
-                                                {{ component.yesTimes|div:component.yesNoCount|mul:100 }} % ({{component.yesTimes}})
+                                                {% if component.yesNoCount > 0 %}<span class="floatNum">{{ component.yesTimes|div:component.yesNoCount|mul:100 }}</span>{% endif %} % ({{component.yesTimes}})
                                             </div>
                                             <div class="text-info text-center">
-                                                {{ component.noTimes|div:component.yesNoCount|mul:100 }} % ({{component.noTimes}})
+                                                {% if component.yesNoCount > 0 %}<span class="floatNum">{{ component.noTimes|div:component.yesNoCount|mul:100 }}</span>{% endif %} % ({{component.noTimes}})
                                             </div>
                                         </div>
                                     </div>
@@ -515,6 +515,12 @@
 <script>
     $(".contentcard").each(function(){
         $(this).css({'width':'315px', 'height':'450px', 'transform':'scale(0.22)', 'position':'relative', 'left':'-100px', 'top':'-170px'});
+    });
+
+    $(".floatNum").each(function(){
+        var num = $(this).text();
+        var newnum = (Math.round(num * 100) / 100).toFixed(2);
+        $(this).text(newnum);
     });
 
 </script>

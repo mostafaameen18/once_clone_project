@@ -65,10 +65,26 @@ class story(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    views = models.IntegerField(default=0)
     background = models.CharField(max_length=500, default="white")
     components = models.ManyToManyField(components, null=True, blank=True)
 
     def __str__(self):
         return str(self.user)
+
+
+class storiesSet(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    storiesSet = models.ManyToManyField(story)
+    date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    name = models.CharField(max_length=500, default="My Once Story")
+    views = models.IntegerField(default=0)
+
+    def getFirstStory(self):
+        try:
+            story = self.storiesSet.all()[0]
+            return story
+        except:
+            return False
+
+        
 

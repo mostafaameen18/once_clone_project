@@ -36,7 +36,7 @@
             visibility: hidden;
         }
         .editable-container{
-            position: relative;
+            position: absolute;
             border: none;
             transition: all 0.2s ease;
             top: 50%;
@@ -240,7 +240,7 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item m-md-2">
-                    <a class="text-royal btn btn-fancy bold nav-link" href="#!"><i class="fas fa-link"></i> Share</a>
+                    <a class="text-royal btn btn-info bold nav-link" href="{% url 'createNewStorySet' %}"><i class="fas fa-plus"></i> Create new story</a>
                 </li>
                 <li class="nav-item pt-2">
                     <a class="nav-link dropdown-fancy" data-toggle="dropdown">M</a>
@@ -275,32 +275,92 @@
 
     <div class="section">
         <table class="table table-hover">
-            {% for i in stories %}
+            {% for story in stories %}
                 <tr class="redirecting">
                     <td>
+                        
                         <div class="contentcard">
-                            {% autoescape off %}
-                                {{i.story}}
-                            {%endautoescape%}
+                            <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.getFirstStory.background}};">
+                                {% for component in story.getFirstStory.components.all %}
+                                    <div class="editableContainerAbsoluteContainer">
+                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                            {% if component.type == 'image' %}
+                                                <img class="image-fluid" src="{{component.image.url}}" alt="">
+                                            {% elif component.type == 'text' or component.type == 'block' %}
+                                                {% autoescape off %}
+                                                    {{component.html}}
+                                                {% endautoescape %}
+                                            {% elif component.type == 'range' %}
+                                                <div style="background: {{component.background}};" class="engage-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <input class="rangeSlider" type="range">
+                                                </div>
+                                            {% elif component.type == 'yesNo' %}
+                                                <div class="p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
+                                                        <li class="yesNoAns yesAnswer nav-item col-6 text-info bold">Yes</li>
+                                                        <li class="yesNoAns noAnswer nav-item col-6 text-danger bold">No</li>
+                                                    </div>
+                                                </div>
+                                            {% elif component.type == 'timer' %}
+                                        
+
+                                            {% elif component.type == 'button' %}
+                                                <div onclick="window.location.replace('{{component.href}}')" style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
+                                            {% elif component.type == 'emoji' %}
+                                                <img class="emojioneemoji" src="{{component.src}}" alt="">
+                                            {% elif component.type == 'sticker' or component.type == 'gif' %}
+                                                <figure>
+                                                    <img class="image-fluid" src="{{component.src}}" alt="">
+                                                </figure>
+                                            {% elif component.type == 'unsalpsh' %}
+                                                <img class="image-fluid" src="{{component.src}}" alt="">
+                                            {% elif component.type == 'check' %}
+                                                <div style="background: {{component.background}};" class="engage-card check-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div class="choices">
+                                                        {% for choice in component.choices.all %}
+                                                            <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                                <div class="d-flex">
+                                                                    <div class="card-choice-check m-1"></div>
+                                                                    <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% elif component.type == 'radio' %}
+                                                <div style="background: {{component.background}};" class="engage-card radio-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div class="choices">
+                                                        {% for choice in component.choices.all %}
+                                                            <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                                <div class="d-flex">
+                                                                    <div class="card-choice-seq m-1">{{forloop.counter}}</div>
+                                                                    <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </td>
                     <td>
-                        <h6 class="text-info bold"><a href="{% url 'create-story' %}" class="text-info">My Once Story</a></h6>
-                        <h6 class="text-muted">{{i.date}}</h6>
+                        <h6 class="text-info bold"><a href="{% url 'create-story' story.id %}" class="text-info">{{story.name}}</a></h6>
+                        <h6 class="text-muted">{{story.date}}</h6>
                     </td>
                     <td>
                         <h6 class="text-dark">
                             <i class="fas fa-eye"></i>
-                            {{i.views}}
+                            {{story.views}}
                         </h6>
-                    </td>
-                    <td>
-                        <h6 class="text-dark">
-                            <i class="fas fa-bars"></i>
-                            {{i.answers}}
-                        </h6>
-                    </td>
-                    <td>nothing</td>
+                    </td>                    
                     <td>
                         <a data-toggle="dropdown" class="nav-link"><i class="fas fa-ellipsis-v"></i></a>
                         <ul class="dropdown-menu">
@@ -308,10 +368,10 @@
                                 <a href="#!" class="nav-link"><i class="fas fa-hashtag text-info"></i> Export</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'duplicateStoryList' i.id %}" class="nav-link"><i class="fas fa-clone text-dark"></i> Duplicate</a>
+                                <a href="{% url 'duplicateStorySet' story.id %}" class="nav-link"><i class="fas fa-clone text-dark"></i> Duplicate</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'removeStoryList' i.id %}" class="nav-link"><i class="fas fa-trash text-danger"></i> Remove</a>
+                                <a href="{% url 'removeStorySet' story.id %}" class="nav-link"><i class="fas fa-trash text-danger"></i> Remove</a>
                             </li>
                         </ul>
                     </td>

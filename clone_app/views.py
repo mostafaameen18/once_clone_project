@@ -18,55 +18,69 @@ def loginView(request):
     return render(request, 'login.html')
 
 def storiesList(request):
-    stories = story.objects.filter(user=request.user)
+    stories = storiesSet.objects.filter(user=request.user)
     context = {
         'stories': stories
     }
     return render(request, 'list.html', context)
 
-def duplicateStoryList(request, id):
-    original = story.objects.get(id=id)
-    copy = story(user=request.user, story=original.story)
+def createNewStorySet(request):
+    insert = storiesSet(user=request.user)
+    insert.save()
+    return redirect("create-story", insert.id)
+
+def duplicateStorySet(request, id):
+    original = storiesSet.objects.get(id=id)
+    copy = storiesSet(user=request.user)
     copy.save()
-    for image in original.story_images.all():
-        copy.story_images.add(image)
+    for story in original.storiesSet.all():
+        copy.storiesSet.add(story)
     copy.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def removeStoryList(request, id):
-    original = story.objects.get(id=id)
+def removeStorySet(request, id):
+    original = storiesSet.objects.get(id=id)
     original.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def createStoryView(request):
-    stories = story.objects.filter(user=request.user)
-    stories_images = images.objects.filter(user=request.user)
-
-    context = {
-        'stories': stories,
-        'images': stories_images,
-    }
+def createStoryView(request, storySet):
     try:
-        mycustomuser = customuser.objects.get(user=request.user)
-        plan = mycustomuser.plan
-        if plan == "paid":
+        ids = []
+        storiesSetIds = storiesSet.objects.get(id=storySet)
+        for i in storiesSetIds.storiesSet.all():
+            ids.append(i.id)
+        stories = story.objects.filter(user=request.user, id__in=ids)
+        stories_images = images.objects.filter(user=request.user)
+
+        context = {
+            'stories': stories,
+            'images': stories_images,
+            'storySet': storySet
+        }
+        try:
+            mycustomuser = customuser.objects.get(user=request.user)
             url = "https://{}:{}@{}.myshopify.com/admin/api/2020-10/products.json".format(mycustomuser.shop_api_key, mycustomuser.shop_password, mycustomuser.shop_name)
             res = requests.get(url)
             context['products'] = json.dumps(res.json())
-        context['customuser'] = mycustomuser
-        context['plan'] = plan
+            context['customuser'] = mycustomuser
+            context['plan'] = "paid"
+        except:
+            pass
+        return render(request, 'story.html', context)
     except:
-        pass
-    return render(request, 'story.html', context)
+        return redirect('storiesList')
 
 
-def preview(request, id):
-    stories = story.objects.filter(user=User.objects.get(id=id))
-    for i in stories:
-        i.views += 1
-        i.save()
+def preview(request, id, storySet):
+    ids = []
+    storiesSetIds = storiesSet.objects.get(id=storySet)
+    for i in storiesSetIds.storiesSet.all():
+        ids.append(i.id)
+    stories = story.objects.filter(user=User.objects.get(id=id), id__in=ids)
+    storiesSetIds.views += 1
+    storiesSetIds.save()
     context = {
         'stories': stories
     }
@@ -137,8 +151,12 @@ def setRange(request, id):
 
 
 
-def answers(request):
-    mystories = story.objects.filter(user=request.user)
+def answers(request, storySet):
+    ids = []
+    storiesSetIds = storiesSet.objects.get(id=storySet)
+    for i in storiesSetIds.storiesSet.all():
+        ids.append(i.id)
+    mystories = story.objects.filter(user=request.user, id__in=ids)
     context = {
         "stories": mystories
     }
@@ -151,11 +169,10 @@ def connectShop(request):
     shopKey = request.POST.get('shopKey')
     shopPass = request.POST.get('shopPass')
 
-    mycustomuser = customuser.objects.get_or_create(user=request.user, shop_name=shopName, shop_api_key=shopKey, shop_password=shopPass)
-    mycustomuser.plan = "paid"
+    mycustomuser = customuser(user=request.user, shop_name=shopName, shop_api_key=shopKey, shop_password=shopPass)
     mycustomuser.save()
 
-    return redirect('create-story')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 
@@ -165,10 +182,13 @@ def connectShop(request):
 
 
 @csrf_exempt
-def create_story(request):
+def create_story(request, storySet):
     user = request.user
     insert = story(user=user)
     insert.save()
+    myStorySet = storiesSet.objects.get(id=storySet)
+    myStorySet.storiesSet.add(insert)
+    myStorySet.save()
     return HttpResponse(insert.id)
 
 @csrf_exempt

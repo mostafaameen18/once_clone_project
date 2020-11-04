@@ -11,7 +11,7 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path("create_story/", create_story, name="create_story"),
+    path("create_story/<int:storySet>/", create_story, name="create_story"),
     path("update_story/<int:id>/<str:bg>/", update_story, name="update_story"),
     path("remove_story/<int:id>/", remove_story, name="remove_story"),
     path("createComponent/<int:id>/<str:type>/", createComponent, name="createComponent"),

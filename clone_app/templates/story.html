@@ -35,8 +35,16 @@
             height: 0;
             visibility: hidden;
         }
+        .editableContainerAbsoluteContainer{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
         .editable-container{
             position: relative;
+            z-index: 5;
             border: none;
             transition: all 0.2s ease;
             top: 50%;
@@ -417,7 +425,7 @@
 <body>
 
     <nav id="navbar" class="navbar navbar-expand justify-content-between navbar-light bg-light">
-        <a href="#!" style="margin: 0; padding: 0px; height: 40px;" class="navbar-brand d-flex">
+        <a href="{% url 'storiesList' %}" style="margin: 0; padding: 0px; height: 40px;" class="navbar-brand d-flex">
             <div class="d-flex" style="width: auto; height: 40px;">
                 <img class="image-fluid" src="{% static 'img/logo.png' %}">
                 <h4 class="bold text-royal p-2">ONCE</h4>
@@ -433,12 +441,15 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
+                <li class="nav-item" style="line-height: 3;">
+                    <a class="nav-link text-royal bold" href="{% url 'answers' storySet %}">Answers</a>
+                </li>
                 <li class="nav-item m-md-2">
                     <a data-toggle="dropdown" class="text-royal btn btn-fancy bold nav-link" href="#!"><i class="fas fa-link"></i> Share</a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-item">
                             <div class="d-flex">
-                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://127.0.0.1:8000/preview/{{request.user.id}}/">
+                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://ec2-3-209-124-56.compute-1.amazonaws.com/preview/{{request.user.id}}/{{storySet}}/">
                                 <a onclick="copyPreviewLink()" href="#!" class="btn btn-fancy"><i class="fas fa-copy"></i></a>
                             </div>
                         </li>
@@ -814,7 +825,11 @@
             </div>
         </div>
         <div id="cart" class="tab-pane">
-            {% if plan == "free" %}
+            {% if plan %}
+            	<div id="shopProductsList" class="p-3">
+
+                </div>
+            {% else %}
                 <div class="p-3">
                     <div class="badge badge-warning"><h6 class="bold text-dark pt-1"><i class="fas fa-gem"></i> Premium</h6></div>
                     <br/>
@@ -862,10 +877,6 @@
                         </div>
                     </div>
                 </div>
-            {% else %}
-                <div id="shopProductsList" class="p-3">
-
-                </div>
             {% endif %}
         </div>
     </div>
@@ -884,106 +895,80 @@
                 <div id="story_{{story.id}}" class="contentcard p-2">
                     <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
                         {% for component in story.components.all %}
-                            {% if component.type == 'image' %}
-                                <div id="image_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <img class="image-fluid" src="{{component.image.url}}" alt="">
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'text' or component.type == 'block' %}
+                            <div class="editableContainerAbsoluteContainer">
                                 <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    {% autoescape off %}
-                                        {{component.html}}
-                                    {% endautoescape %}
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'range' %}
-                                <div id="range_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <div style="background: {{component.background}};" class="engage-card p-3">
-                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
-                                        <input class="rangeSlider" type="range">
-                                    </div>
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'yesNo' %}
-                                <div id="yesNo_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <div class="p-3">
-                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
-                                        <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
-                                            <li class="nav-item col-6 text-info bold">Yes</li>
-                                            <li class="nav-item col-6 text-danger bold">No</li>
+                                    {% if component.type == 'image' %}
+                                        <img class="image-fluid" src="{{component.image.url}}" alt="">
+                                    {% elif component.type == 'text' or component.type == 'block' %}
+                                        {% autoescape off %}
+                                            {{component.html}}
+                                        {% endautoescape %}
+                                    {% elif component.type == 'range' %}
+                                        <div style="background: {{component.background}};" class="engage-card p-3">
+                                            <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                            <input class="rangeSlider" type="range">
                                         </div>
-                                    </div>
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'timer' %}
-                                <div id="timer_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                    {% elif component.type == 'yesNo' %}
+                                        <div class="p-3">
+                                            <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                            <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
+                                                <li class="nav-item col-6 text-info bold">Yes</li>
+                                                <li class="nav-item col-6 text-danger bold">No</li>
+                                            </div>
+                                        </div>
+                                    {% elif component.type == 'timer' %}
+                                
 
-                                </div>
-                            {% elif component.type == 'button' %}
-                                <div id="button_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <div onclick="window.location.replace('{{component.href}}')" style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'emoji' %}
-                                <div id="emoji_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <img class="emojioneemoji" src="{{component.src}}" alt="">
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'sticker' or component.type == 'gif' %}
-                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <figure>
+                                    {% elif component.type == 'button' %}
+                                        <div onclick="window.location.replace('{{component.href}}')" style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
+                                    {% elif component.type == 'emoji' %}
+                                        <img class="emojioneemoji" src="{{component.src}}" alt="">
+                                    {% elif component.type == 'sticker' or component.type == 'gif' %}
+                                        <figure>
+                                            <img class="image-fluid" src="{{component.src}}" alt="">
+                                        </figure>
+                                    {% elif component.type == 'unsalpsh' %}
                                         <img class="image-fluid" src="{{component.src}}" alt="">
-                                    </figure>
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'unsalpsh' %}
-                                <div id="unsalpsh_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <img class="image-fluid" src="{{component.src}}" alt="">
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'check' %}
-                                <div id="check_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <div style="background: {{component.background}};" class="engage-card p-3">
-                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
-                                        <div class="choices">
-                                            {% for choice in component.choices.all %}
-                                                <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
-                                                    <div class="d-flex">
-                                                        <div class="card-choice-check m-1"></div>
-                                                        <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                    {% elif component.type == 'check' %}
+                                        <div style="background: {{component.background}};" class="engage-card p-3">
+                                            <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                            <div class="choices">
+                                                {% for choice in component.choices.all %}
+                                                    <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                        <div class="d-flex">
+                                                            <div class="card-choice-check m-1"></div>
+                                                            <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                        </div>
+                                                        <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                                     </div>
-                                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
-                                                </div>
-                                            {% endfor %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class="card-add-choice d-flex m-1">
+                                                <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
+                                            </div>
                                         </div>
-                                        <div class="card-add-choice d-flex m-1">
-                                            <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
-                                        </div>
-                                    </div>
-                                    <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
-                                </div>
-                            {% elif component.type == 'radio' %}
-                                <div id="radio_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
-                                    <div style="background: {{component.background}};" class="engage-card p-3">
-                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
-                                        <div class="choices">
-                                            {% for choice in component.choices.all %}
-                                                <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
-                                                    <div class="d-flex">
-                                                        <div class="card-choice-seq m-1">{{forloop.counter}}</div>
-                                                        <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                    {% elif component.type == 'radio' %}
+                                        <div style="background: {{component.background}};" class="engage-card p-3">
+                                            <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                            <div class="choices">
+                                                {% for choice in component.choices.all %}
+                                                    <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                        <div class="d-flex">
+                                                            <div class="card-choice-seq m-1">{{forloop.counter}}</div>
+                                                            <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                        </div>
+                                                        <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
                                                     </div>
-                                                    <h6 style="cursor: pointer;" onclick="removeChoice(this)" class="text-danger card-remove-choice bold">&times;</h6>
-                                                </div>
-                                            {% endfor %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class="card-add-choice d-flex m-1">
+                                                <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
+                                            </div>
                                         </div>
-                                        <div class="card-add-choice d-flex m-1">
-                                            <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
-                                        </div>
-                                    </div>
+                                    {% endif %}
                                     <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
                                 </div>
-                            {% endif %}
+                            </div>
                         {% endfor %}
                     </div>
                     <ul class="nav d-block storyContentControl storyContentControl-oneColor">
@@ -1826,6 +1811,9 @@
         var widget = $(this).html();
         var type = $(this).attr('data-type');
 
+        var editableContainerAbsoluteContainer = document.createElement('div');
+        editableContainerAbsoluteContainer.className = "editableContainerAbsoluteContainer";
+
         var editableContainer = document.createElement('div');
         editableContainer.className = "editable-container";
 
@@ -1838,9 +1826,10 @@
         resizeButton.appendChild(resizeBtnIcon);
         editableContainer.innerHTML = widget;
         editableContainer.appendChild(resizeButton);
+        editableContainerAbsoluteContainer.appendChild(editableContainer);        
 
 
-        $(".contentcard.active .innerStoryCard").append(editableContainer);
+        $(".contentcard.active .innerStoryCard").append(editableContainerAbsoluteContainer);
         if(type == "image"){
             dataSrc = $(this).attr('id').split('_')[1];
             createComponent(type, dataSrc, editableContainer);
@@ -1867,6 +1856,9 @@
         var widget = $(this).html();
         var type = "emoji";
 
+        var editableContainerAbsoluteContainer = document.createElement('div');
+        editableContainerAbsoluteContainer.className = "editableContainerAbsoluteContainer";
+
         var editableContainer = document.createElement('div');
         editableContainer.className = "editable-container";
 
@@ -1879,9 +1871,10 @@
         resizeButton.appendChild(resizeBtnIcon);
         editableContainer.innerHTML = widget;
         editableContainer.appendChild(resizeButton);
+        editableContainerAbsoluteContainer.appendChild(editableContainer);
 
 
-        $(".contentcard.active .innerStoryCard").append(editableContainer);
+        $(".contentcard.active .innerStoryCard").append(editableContainerAbsoluteContainer);
         createComponent(type, dataSrc, editableContainer);
     });
 
@@ -1906,7 +1899,7 @@
             stop: function () {
                 var l = $(".editable-container.active").css('left');
                 var t = $(".editable-container.active").css('top');
-                var id = $(".editable-container").attr('id').split('_')[1];
+                var id = $(".editable-container.active").attr('id').split('_')[1];
                 updateComponent(id, "top", t);
                 updateComponent(id, "left", l);
             }
@@ -2002,13 +1995,13 @@
 
 
 
-
+    var storySet = "{{storySet}}";
 
 
     function addStory(){
         $.ajax({
              type: "POST",
-             url: "/create_story/",
+             url: "/create_story/"+storySet+"/",
              data: null,
              contentType: false,
              processData: false,
@@ -2169,7 +2162,7 @@
 
 </script>
 
-{% if plan == "paid" %}
+{% if plan %}
     <script>
         $(document).ready(function(e){
             var data = {{products|safe}}.products;
