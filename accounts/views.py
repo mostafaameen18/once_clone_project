@@ -30,11 +30,14 @@ def checkAuthEmail(request):
 	min_length = 6
 	max_length = 6
 	code = "".join(choice(chars) for x in range(randint(min_length, max_length)))
-	insertuser = hanguser(user=user, code=code)
-	insertuser.save()
-		
-	print(code)
 
+	if len(hanguser.objects.filter(user=user)) > 0:
+		insertuser = hanguser.objects.get(user=user)
+		insertuser.code = code
+		insertuser.save()
+	else:
+		insertuser = hanguser(user=user, code=code)
+		insertuser.save()
 
 	subject = 'Email verification link'
 	message = 'Copy 6 digit number or follow the link bellow'
@@ -49,27 +52,30 @@ def checkAuthEmail(request):
 
 def resendVerificationEmail(request):
 
-	email = request.COOKIES['pendingEmail']
+	if "pendingEmail" in request.COOKIES:
+		email = request.COOKIES['pendingEmail']
 
-	
-	letters = string.ascii_letters
-	digits = string.digits
-	chars = letters + digits
-	min_length = 6
-	max_length = 6
-	code = "".join(choice(chars) for x in range(randint(min_length, max_length)))		
+		
+		letters = string.ascii_letters
+		digits = string.digits
+		chars = letters + digits
+		min_length = 6
+		max_length = 6
+		code = "".join(choice(chars) for x in range(randint(min_length, max_length)))		
 
-	hunguser = hanguser.objects.get(user=User.objects.get(username=email))
-	hunguser.code = code
-	hunguser.save()
+		hunguser = hanguser.objects.get(user=User.objects.get(username=email))
+		hunguser.code = code
+		hunguser.save()
 
-	subject = 'Email verification link'
-	message = 'Copy 6 digit number or follow the link bellow'
-	msg_html = render_to_string('email.html', {'code': code})
-	from_email = settings.EMAIL_HOST_USER
-	to_list = [email, settings.EMAIL_HOST_USER]
-	send_mail(subject, message, from_email, to_list, html_message=msg_html, fail_silently=False)
-	return redirect('verifyLogin')
+		subject = 'Email verification link'
+		message = 'Copy 6 digit number or follow the link bellow'
+		msg_html = render_to_string('email.html', {'code': code})
+		from_email = settings.EMAIL_HOST_USER
+		to_list = [email, settings.EMAIL_HOST_USER]
+		send_mail(subject, message, from_email, to_list, html_message=msg_html, fail_silently=False)
+		return redirect('verifyLogin')
+	else:
+		return HttpResponse('wrong email address')
 
 
 

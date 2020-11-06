@@ -1,0 +1,165 @@
+1604654783535	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.A2p45dlej6gJ"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604654791825	Marionette	INFO	Listening on port 37859
+1604654792035	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.error: services.settings: 
+  main/fxmonitor-breaches Signature failed  TypeError: NetworkError when attempting to fetch resource.
+console.error: services.settings: 
+  main/message-groups Signature failed  TypeError: NetworkError when attempting to fetch resource.
+1604654805204	Marionette	INFO	Stopped listening on port 37859
+1604655035506	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.7yNP4ZES3pGx"
+*** You are running in headless mode.
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604655040196	Marionette	INFO	Listening on port 44761
+1604655040288	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604655043287	Marionette	INFO	Stopped listening on port 44761
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+console.warn: SearchService: "_init: abandoning init due to shutting down"
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: resource://gre/modules/osfile/osfile_async_front.jsm, line 426: Error: OS.File has been shut down. Rejecting post to stat
+ExceptionHandler::GenerateDump cloned child 10843
+ExceptionHandler::WaitForContinueSignal waiting for continue signal...
+ExceptionHandler::SendContinueSignalToChild sent continue signal to child
+1604655134810	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.EhiVzvrFjry3"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604655140198	Marionette	INFO	Listening on port 40595
+1604655140263	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604655143427	Marionette	INFO	Stopped listening on port 40595
+console.error: services.settings: 
+  main/fxmonitor-breaches Signature failed  TypeError: NetworkError when attempting to fetch resource.
+console.error: services.settings: 
+  main/message-groups Signature failed  TypeError: NetworkError when attempting to fetch resource.
+console.error: services.settings: 
+  main/partitioning-exempt-urls Signature failed  TypeError: NetworkError when attempting to fetch resource.
+1604655154645	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.xUPg3SLKi9hn"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604655159906	Marionette	INFO	Listening on port 33087
+1604655160007	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604655174340	Marionette	INFO	Stopped listening on port 33087
+1604655436282	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.GLASz0DPlS5w"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604655441574	Marionette	INFO	Listening on port 44837
+1604655441642	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://mostafaameen.myshopify.com"
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://mostafaameen.myshopify.com"
+console.error: (new TypeError("parent is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 67))
+TypeError: parent is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:67:24
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:226:34
+emit@resource://devtools/shared/event-emitter.js:172:18
+emit@resource://devtools/shared/event-emitter.js:324:18
+getMutations@resource://devtools/client/fronts/walker.js:405:10
+
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://mostafaameen.myshopify.com"
+1604659694694	Marionette	INFO	Stopped listening on port 44837
+1604667770816	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.Ys1lbfYq1QtY"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604667783579	Marionette	INFO	Listening on port 40363
+1604667783791	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604667873425	Marionette	INFO	Stopped listening on port 40363
+1604667880892	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.K8liyGKAPYqQ"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604667886075	Marionette	INFO	Listening on port 46251
+1604667886173	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 271: NS_ERROR_FAILURE: Should pass a non-null uri
+1604667995352	Marionette	INFO	Stopped listening on port 46251
+1604668286454	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.m8hKPsrLtHrn"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604668291703	Marionette	INFO	Listening on port 34421
+1604668291821	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604668325985	Marionette	INFO	Stopped listening on port 34421
+1604668327366	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.YWWn98LB7kEm"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604668332405	Marionette	INFO	Listening on port 44907
+1604668332530	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604668370524	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.eBVPFjCX5rFo"
+1604668370873	Marionette	INFO	Stopped listening on port 44907
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604668375745	Marionette	INFO	Listening on port 33927
+1604668375884	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604668412073	Marionette	INFO	Stopped listening on port 33927
+1604668414010	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.xIrr4tgMHgzZ"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604668419109	Marionette	INFO	Listening on port 41463
+1604668419183	Marionette	WARN	TLS certificate errors will be ignored for this session
+1604668472958	Marionette	INFO	Stopped listening on port 41463
+1604668474147	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.47PoTdvKjhE0"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604668479330	Marionette	INFO	Listening on port 42753
+1604668479404	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+1604668525039	Marionette	INFO	Stopped listening on port 42753
+1604668526154	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.bNJhkvDO8O3V"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604668531285	Marionette	INFO	Listening on port 35701
+1604668531420	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+console.error: (new TypeError("currentNode is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 66))
+TypeError: currentNode is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:66:20
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:226:34
+emit@resource://devtools/shared/event-emitter.js:172:18
+emit@resource://devtools/shared/event-emitter.js:324:18
+getMutations@resource://devtools/client/fronts/walker.js:405:10
+
+console.error: "Error while calling actor 'layout's method 'getGrids'" "node is null"
+console.error: "getGrids@resource://devtools/server/actors/layout.js:502:26\ngetGrids@resource://devtools/server/actors/layout.js:507:43\nhandler@resource://devtools/shared/protocol/Actor.js:172:37\nonPacket@resource://devtools/server/devtools-server-connection.js:379:58\nreceiveMessage@resource://devtools/shared/transport/child-transport.js:66:16\n"
+console.error: "Error while calling actor 'layout's method 'getGrids'" "node is null"
+console.error: "getGrids@resource://devtools/server/actors/layout.js:502:26\ngetGrids@resource://devtools/server/actors/layout.js:507:43\nhandler@resource://devtools/shared/protocol/Actor.js:172:37\nonPacket@resource://devtools/server/devtools-server-connection.js:379:58\nreceiveMessage@resource://devtools/shared/transport/child-transport.js:66:16\n"
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+1604669018969	Marionette	INFO	Stopped listening on port 35701
+1604669032032	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.RX0mNMeqx8qz"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604669037231	Marionette	INFO	Listening on port 38735
+1604669037303	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+1604669083126	Marionette	INFO	Stopped listening on port 38735
+1604669084602	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.kFgTqo55IwGE"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604669089541	Marionette	INFO	Listening on port 42443
+1604669089670	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+1604669131007	Marionette	INFO	Stopped listening on port 42443
+1604669135502	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.mBPOJv7uFh6G"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1604669140807	Marionette	INFO	Listening on port 38613
+1604669140860	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+1604669378922	Marionette	INFO	Stopped listening on port 38613

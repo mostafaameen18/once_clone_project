@@ -211,6 +211,30 @@
             height: 100%;
             border-radius: 5px;
         }
+        .productBuyCard{
+            width: 90%;
+            height: auto;
+            margin: auto;
+        }
+        .productBuyCard .card-body{
+            border-top-left-radius: 15px;
+            box-shadow: 0px 0px 10px gray;
+            border-top-right-radius: 15px;
+        }
+        .hiddenInput, .hiddenInput:focus{
+            background: transparent;
+            border: none;
+            outline: none;
+            text-align: center;
+            width: 100%;
+        }
+        .changeQuantityBtn{
+            width: 100%;
+            height: 30px;
+            border: 2px solid #333;
+            border-radius: 25px;
+            display: inline-block;
+        }
 
 
 
@@ -340,6 +364,168 @@
                     </div>
                 </div>
             {% endfor %}
+            {% if storySet.product %}
+                <div class="swiper-slide">
+                    <div id="story_{{story.id}}" class="contentcard">
+                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
+
+                            <div class="card productBuyCard">
+                                <div class="card-image-top" style="width: 100%; height: 100px;">
+                                    <img class="image-fluid" src="{{storySet.src}}">
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.title}}</h5>
+                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.price}}$</h5>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="col-4 text-center">
+                                            <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
+                                        </div>
+                                        <div class="col-4">
+                                            <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; margin-top: 10px;">
+                                        <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div id="story_{{story.id}}" class="contentcard">
+                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
+
+                            <div class="card productBuyCard p-2">
+                                <div class="p-2">
+                                    <h3 class="text-dark" style="font-weight: bold">
+                                        <i class="fas fa-user text-info"></i> Personal Info.
+                                    </h3>
+                                </div>
+                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
+                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
+                                        <div class="col-6 p-2">
+                                            <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name">
+                                        </div>
+                                        <div class="col-6 p-2">
+                                            <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name">
+                                        </div>
+                                    </div>
+                                    <div class="p-2">
+                                        <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                    </div>
+                                    <div class="p-2">
+                                        <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone Number">
+                                    </div>
+                                    <div style="width: 100%; margin-top: 10px;">
+                                        <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Delivery Infos</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div id="story_{{story.id}}" class="contentcard">
+                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
+
+                            <div class="card productBuyCard p-2">
+                                <div class="p-2">
+                                    <h3 class="text-dark" style="font-weight: bold">
+                                        <i class="fas fa-map-marker-alt text-info"></i> Delivery Info.
+                                    </h3>
+                                </div>
+                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
+                                    <div class="p-2">
+                                        <input type="text" class="form-control" name="addressLine1" id="addressLine1" placeholder="Address Line 1">
+                                    </div>
+                                    <div class="p-2">
+                                        <input type="text" class="form-control" name="addressLine2" id="addressLine2" placeholder="Address Line 2">
+                                    </div>
+                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
+                                        <div class="col-4 p-2">
+                                            <input type="text" class="form-control" name="city" id="city" placeholder="City">
+                                        </div>
+                                        <div class="col-4 p-2">
+                                            <input type="text" class="form-control" name="state" id="state" placeholder="State">
+                                        </div>
+                                        <div class="col-4 p-2">
+                                            <input type="text" class="form-control" name="postal" id="postal" placeholder="Postal Code">
+                                        </div>
+                                    </div>
+                                    <div class="p-2">
+                                        <input type="text" class="form-control" name="country" id="country" placeholder="Country">
+                                    </div>
+                                    
+                                    <div style="width: 100%; margin-top: 10px;">
+                                        <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Payment</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div id="story_{{story.id}}" class="contentcard">
+                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
+
+                            <div class="card productBuyCard p-2">
+                                <div class="p-2">
+                                    <h3 class="text-dark" style="font-weight: bold">
+                                        <i class="fas fa-credit-card text-info"></i> Payment.
+                                    </h3>
+                                </div>
+                                <div class="pt-2 pb-2">
+                                    <div class="d-flex justify-content-between shopProduct">
+                                        <div class="d-table" style="width: 50px; height: 50px; border-radius: 5px;">
+                                            <img src="{{storySet.src}}" class="image-fluid">
+                                        </div>
+                                        <div class="d-block pt-2" style="height: 50px; width: 160px;">
+                                            <div style="font-size:10px" class="text-dark bold">{{storySet.title}}</div>
+                                            <small style="font-size:10px" class="text-dark bold">Quantity: <span class="changableQuantity">1</span></small>
+                                        </div>
+                                        <div class="d-table" style="height: 50px;">
+                                            <h6 class="v-center text-muted">{{storySet.price}} <i class="fas fa-dollar-sign"></i></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
+                                    <div class="p-2">
+                                        <input type="text" class="form-control" name="cardNumber" id="cardNumber" placeholder="Card Number">
+                                    </div>
+                                    
+                                    <div class="p-2">
+                                        <input type="text" class="form-control" name="cardHolderName" id="cardHolderName" placeholder="Card Holder Name">
+                                    </div>
+                                    
+                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
+                                        <div class="col-8 p-2">
+                                            <input type="rel" class="form-control" name="expiryDate" id="expiryDate" placeholder="Expiry Date (MM/YYYY)">
+                                        </div>
+                                        <div class="col-4 p-2">
+                                            <input type="text" class="form-control" name="securityCode" id="securityCode" placeholder="Security Code">
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div style="width: 100%; margin-top: 10px;">
+                                        <button onclick="performCheckout()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Pay <span class="changablePrice">{{storySet.price}}</span>$</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
         <div class="swiper-pagination"></div>
         <div class="swiper-button-next"></div>
@@ -375,6 +561,23 @@
 
 
 
+
+    function changeQuantity(type){
+        if(type == "minus"){
+            var quantity = Number($("#quantity").val());
+            if(quantity > 1){
+                quantity -= 1;
+                $("#quantity").val(quantity);
+            }
+        }
+        else{
+            var quantity = Number($("#quantity").val());
+            quantity += 1;
+            $("#quantity").val(quantity);
+        }
+        $(".changablePrice").text(Number("{{storySet.price}}")*quantity);
+        $(".changableQuantity").text(quantity);
+    }
 
 
 
@@ -521,6 +724,35 @@
             processData: false,
             success: function(result) {
                 rangeValue = newRangeValue;
+            }
+        });
+    }
+
+console.log("{{storySet.id}}");
+    function performCheckout(){
+        $.ajax({
+            type: "POST",
+            url: "/performCheckout/",
+            data: {
+                "quantity": $("#quantity").val(),
+                "fname": $("#fname").val(),
+                "lname": $("#lname").val(),
+                "email": $("#email").val(),
+                "phone": $("#phone").val(),
+                "addressLine1": $("#addressLine1").val(),
+                "addressLine2": $("#addressLine2").val(),
+                "city": $("#city").val(),
+                "state": $("#state").val(),
+                "country": $("#country").val(),
+                "postal": $("#postal").val(),
+                "cardNumber": $("#cardNumber").val(),
+                "cardHolderName": $("#cardHolderName").val(),
+                "expiryDate": $("#expiryDate").val(),
+                "securityCode": $("#securityCode").val(),
+                "storySet": "{{storySet.id}}",
+            },
+            success: function(result) {
+                null;
             }
         });
     }

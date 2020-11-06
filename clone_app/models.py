@@ -74,9 +74,16 @@ class story(models.Model):
 
 class storiesSet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=10, blank=True, null=True)
     storiesSet = models.ManyToManyField(story)
     date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     name = models.CharField(max_length=500, default="My Once Story")
+    product = models.CharField(max_length=500, null=True, blank=True)
+    handle = models.CharField(max_length=500, null=True, blank=True)
+    title = models.CharField(max_length=500, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    price = models.FloatField(max_length=500, null=True, blank=True)
+    src = models.TextField(null=True, blank=True)
     views = models.IntegerField(default=0)
 
     def getFirstStory(self):

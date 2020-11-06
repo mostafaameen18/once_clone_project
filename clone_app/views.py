@@ -9,7 +9,9 @@ import requests
 import json
 from requests.auth import HTTPBasicAuth
 from django.http import JsonResponse
-
+import string
+from random import *
+import time
 
 def homeView(request):
     return render(request, 'index.html')
@@ -27,7 +29,14 @@ def storiesList(request):
     return render(request, 'list.html', context)
 
 def createNewStorySet(request):
-    insert = storiesSet(user=request.user)
+    letters = string.ascii_letters
+    digits = string.digits
+    chars = letters + digits
+    min_length = 6
+    max_length = 6
+    code = "".join(choice(chars) for x in range(randint(min_length, max_length)))
+
+    insert = storiesSet(user=request.user, code=code)
     insert.save()
     return redirect("create-story", insert.id)
 
@@ -61,11 +70,12 @@ def createStoryView(request, storySet):
         context = {
             'stories': stories,
             'images': stories_images,
-            'storySet': storySet
+            'storySet': storySet,
+            'entireStorySet': storiesSetIds
         }
         try:
             mycustomuser = customuser.objects.get(user=request.user)
-            url = "https://{}:{}@{}.myshopify.com/admin/api/2020-10/products.json".format(mycustomuser.shop_api_key, mycustomuser.shop_password, mycustomuser.shop_name)
+            url = "https://{}:{}@{}/admin/api/2020-10/products.json".format(mycustomuser.shop_api_key, mycustomuser.shop_password, mycustomuser.shop_name)
             res = requests.get(url)
             context['products'] = json.dumps(res.json())
             context['customuser'] = mycustomuser
@@ -77,18 +87,100 @@ def createStoryView(request, storySet):
         return redirect('storiesList')
 
 
-def preview(request, id, storySet):
+@csrf_exempt
+def addProductSell(request, storySetId):
+
+    handle = request.POST.get('handle')
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    price = request.POST.get('price')
+    src = request.POST.get('src')
+    productId = request.POST.get('id')
+
+    storySet = storiesSet.objects.get(id=storySetId)
+    storySet.handle = handle
+    storySet.title = title
+    storySet.description = description
+    storySet.price = price
+    storySet.src = src
+    storySet.product = productId
+    storySet.save()
+    return HttpResponse('done')
+
+
+def preview(request, code):
     ids = []
-    storiesSetIds = storiesSet.objects.get(id=storySet)
+    storiesSetIds = storiesSet.objects.get(code=code)
     for i in storiesSetIds.storiesSet.all():
         ids.append(i.id)
-    stories = story.objects.filter(user=User.objects.get(id=id), id__in=ids)
+    stories = story.objects.filter(id__in=ids)
     storiesSetIds.views += 1
     storiesSetIds.save()
     context = {
-        'stories': stories
+        'stories': stories,
+        'storySet': storiesSetIds
     }
     return render(request, 'preview.html', context)
+
+@csrf_exempt
+def performCheckout(request):
+    from selenium import webdriver
+    from selenium.webdriver.firefox.options import Options
+    from selenium.webdriver.support.ui import Select
+
+
+    quantity = request.POST['quantity']
+    fname = request.POST.get('fname')
+    lname = request.POST.get('lname')
+    email = request.POST.get('email')
+    phone = request.POST.get('phone')
+    addressLine1 = request.POST.get('addressLine1')
+    addressLine2 = request.POST.get('addressLine2')
+    city = request.POST.get('city')
+    state = request.POST.get('state')
+    country = request.POST.get('country')
+    postal = request.POST.get('postal')
+    cardNumber = request.POST.get('cardNumber')
+    cardHolderName = request.POST.get('cardHolderName')
+    expiryDate = request.POST.get('expiryDate')
+    securityCode = request.POST.get('securityCode')
+    storySetId = request.POST.get('storySet')
+    mycustomuser = customuser.objects.get(user=storiesSet.objects.get(id=storySetId).user)
+
+    url = "https://{}/products/{}/".format(mycustomuser.shop_name, storiesSet.objects.get(id=storySetId).handle)
+    options = Options()
+    # options.headless = True
+    driver = webdriver.Firefox(options=options, executable_path="geckodriver")
+    driver.get(url)
+    driver.find_element_by_id("password").send_keys('zaffot')
+    driver.find_element_by_xpath('/html/body/div/div[2]/div[2]/form/button').click()
+    driver.get(url)
+    driver.find_element_by_xpath('/html/body/div[3]/main/div[1]/div/div/div[2]/div[1]/form/div[2]/div/button').click()
+    time.sleep(2)
+    driver.get("https://{}/cart".format(mycustomuser.shop_name))
+    driver.find_element_by_xpath('//*[@id="updates_large_36877700563110:50daaab6a50d082b93e922a89edee8e2"]').send_keys(quantity)
+    driver.find_element_by_xpath('/html/body/div[3]/main/div/div/div[1]/form/div/div/div/div[4]/div[1]/input').click()
+    driver.find_element_by_id('checkout_email_or_phone').send_keys(email)
+    driver.find_element_by_id('checkout_shipping_address_first_name').send_keys(fname)
+    driver.find_element_by_id('checkout_shipping_address_last_name').send_keys(lname)
+    driver.find_element_by_id('checkout_shipping_address_address1').send_keys(addressLine1)
+    driver.find_element_by_id('checkout_shipping_address_address2').send_keys(addressLine2)
+    driver.find_element_by_id('checkout_shipping_address_city').send_keys(city)
+    select = Select(driver.find_element_by_id('checkout_shipping_address_country'))
+    select.select_by_visible_text(country)
+    select = Select(driver.find_element_by_id('checkout_shipping_address_province'))
+    select.select_by_visible_text(state)
+    driver.find_element_by_id('checkout_shipping_address_zip').send_keys(postal)
+    driver.find_element_by_id('continue_button').click()
+    driver.find_element_by_id('continue_button').click()
+    driver.find_element_by_id('number').send_keys(cardNumber)
+    driver.find_element_by_id('name').send_keys(cardHolderName)
+    driver.find_element_by_id('expiry').send_keys(expiryDate)
+    driver.find_element_by_id('verification_value').send_keys(securityCode)
+    driver.find_element_by_id('continue_button').click()
+    time.sleep(2)
+    driver.quit()
+    return HttpResponse('done')
 
 
 def addCheckRadio(request, id):

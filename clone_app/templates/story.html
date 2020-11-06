@@ -420,6 +420,18 @@
 		    background-position: center;
 		}
 
+        .shopProduct{
+            height: auto; 
+            width: 98%;
+            margin: auto;
+            background: rgba(225, 223, 223, 0.1);
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .shopProduct.active{
+            background: darkred;
+        }
+
     </style>
 </head>
 <body>
@@ -449,7 +461,7 @@
                     <ul class="dropdown-menu">
                         <li class="dropdown-item">
                             <div class="d-flex">
-                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://ec2-3-209-124-56.compute-1.amazonaws.com/preview/{{request.user.id}}/{{storySet}}/">
+                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://ec2-3-209-124-56.compute-1.amazonaws.com/preview/{{entireStorySet.code}}">
                                 <a onclick="copyPreviewLink()" href="#!" class="btn btn-fancy"><i class="fas fa-copy"></i></a>
                             </div>
                         </li>
@@ -1524,8 +1536,8 @@
                     <form id="connectShopForm" method="post" action="{% url 'connectShop' %}">
                     {% csrf_token %}
                         <div class="form-group">
-                            <label for="shopName" class="text-dark bold">Shop Name*</label>
-                            <input type="text" class="form-control" name="shopName" id="shopName" placeholder="Enter shop name" required>
+                            <label for="shopName" class="text-dark bold">Shop Domain*</label>
+                            <input type="text" class="form-control" name="shopName" id="shopName" placeholder="Enter shop domain (doesn't include http, https)" required>
                         </div>
                         <div class="form-group">
                             <label for="shopKey" class="text-dark bold">Shop API Key*</label>
@@ -2166,6 +2178,7 @@
     <script>
         $(document).ready(function(e){
             var data = {{products|safe}}.products;
+            console.log(data);
             for(var i=0; i<data.length; i++){
                 var productsContainer = document.getElementById('shopProductsList');
 
@@ -2173,8 +2186,19 @@
                 topPaddingContainer.className = "pt-2 pb-2";
 
                 var displayFlexContainer = document.createElement('div');
-                displayFlexContainer.className = "d-flex justify-content-between";
-                displayFlexContainer.setAttribute('style','height: auto; width: 98%;margin: auto;background: rgba(225, 223, 223, 0.1);padding: 5px;border-radius: 5px;');
+                if("{{entireStorySet.product}}" == data[i].id){
+                    displayFlexContainer.className = "d-flex justify-content-between shopProduct active";
+                }
+                else{
+                    displayFlexContainer.className = "d-flex justify-content-between shopProduct";
+                }
+                
+                displayFlexContainer.setAttribute('data-id',data[i].id);
+                displayFlexContainer.setAttribute('data-price',data[i].variants[0].price);
+                displayFlexContainer.setAttribute('data-title',data[i].title);
+                displayFlexContainer.setAttribute('data-description',data[i].body_html);
+                displayFlexContainer.setAttribute('data-src',data[i].image.src);
+                displayFlexContainer.setAttribute('data-handle', data[i].handle);
 
 
                 // sibling 1
@@ -2226,11 +2250,46 @@
                 displayFlexContainer.appendChild(productPriceCon);
 
                 topPaddingContainer.appendChild(displayFlexContainer);
-                productsContainer.appendChild(topPaddingContainer);
+                if("{{entireStorySet.product}}" == data[i].id){
+                    productsContainer.prepend(topPaddingContainer);
+                }
+                else{
+                    productsContainer.appendChild(topPaddingContainer);
+                }
+                
 
 
             }
         });
+
+        $(document).on('click', '.shopProduct', function(){
+            $(".shopProduct.active").removeClass('active');
+            $(this).addClass('active');
+            var id = $(this).attr('data-id');
+            var handle = $(this).attr('data-handle')
+            var title = $(this).attr('data-title');
+            var description = $(this).attr('data-description');
+            var price = $(this).attr('data-price');
+            var src = $(this).attr('data-src');
+            var url = "/addProductSell/{{storySet}}/";
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    "handle": handle,
+                    "title": title,
+                    "description": description,
+                    "price": price,
+                    "src": src,
+                    "id": id,
+                },
+                success: function (result) {
+                    null;
+                }
+            });
+        });
+
+        
 
     </script>
 {% endif %}

@@ -12,6 +12,8 @@ from accounts.views import *
 
 
 urlpatterns = [
+    path('addProductSell/<int:storySetId>/', addProductSell, name="addProductSell"),
+    path('performCheckout/',performCheckout,name="performCheckout"),
     path("create_story/<int:storySet>/", create_story, name="create_story"),
     path("update_story/<int:id>/<str:bg>/", update_story, name="update_story"),
     path("remove_story/<int:id>/", remove_story, name="remove_story"),
