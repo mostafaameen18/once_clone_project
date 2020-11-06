@@ -149,7 +149,7 @@ def performCheckout(request):
 
     url = "https://{}/products/{}/".format(mycustomuser.shop_name, storiesSet.objects.get(id=storySetId).handle)
     options = Options()
-    # options.headless = True
+    options.headless = True
     driver = webdriver.Firefox(options=options, executable_path="geckodriver")
     driver.get(url)
     driver.find_element_by_id("password").send_keys('zaffot')
