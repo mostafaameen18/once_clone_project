@@ -30,6 +30,14 @@
     <script type="text/javascript" src="{% static 'js/trumbowyg.giphy.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
     <style>
+        .resizeXbtn{
+            visibility: hidden;
+            display: none;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
         .invisible{
             position: absolute;
             width: 0;
@@ -334,7 +342,7 @@
     <div id="header">
         <span class="text-muted">Welcome</span>
         <div class="stories_num">
-            <h2 class="text-dark"><span class="text-dark bold">1 Answer</span></h2>
+            <h2 class="text-dark">{% if totalAnswers == 0 %}No Answers{% elif totalAnswers > 0 %}<span class="text-dark bold">{{totalAnswers}}</span> {% if totalAnswers == 1 %}Answer{%else%}Answers{%endif%}{%endif%}</h2>
         </div>
     </div>
 
@@ -350,7 +358,7 @@
                             <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
                                 {% for component in story.components.all %}
                                     <div class="editableContainerAbsoluteContainer">
-                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}}; transform: translate(-50%, -50%) rotate({{component.rotation}});" class="editable-container">
                                             {% if component.type == 'image' %}
                                                 <img class="image-fluid" src="{{component.image.url}}" alt="">
                                             {% elif component.type == 'text' or component.type == 'block' %}
@@ -421,72 +429,74 @@
                 </div>
 
                 {% for component in story.components.all %}
-                    <div class="p-2">
-                        <div class="padding:0; margin: 0;">
-                            <div id="{{component.type}}_{{component.id}}" style="background: {{component.background}}; width: 250px; height: auto; border-radius: 5px; box-shadow: 0px 0px 10px grey;">
-                                {% if component.type == 'check' %}
-                                    <div class="engage-card check-card p-3">
-                                        <h6 class="text-center text-dark bold">{{component.title}}</h6>
-                                        {% for choice in component.choices.all %}
-                                            <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between m-1">
-                                                <div class="d-flex">
-                                                    <div class="card-choice-check m-1"></div>
-                                                    <div class="card-choice-title m-1">{{choice.title}}</div>
+                    {% if component.type == "check" or component.type == "radio" or component.type == "range" or component.type == "yesNo" %}
+                        <div class="p-2">
+                            <div class="padding:0; margin: 0;">
+                                <div id="{{component.type}}_{{component.id}}" style="background: {{component.background}}; width: 250px; height: auto; border-radius: 5px; box-shadow: 0px 0px 10px grey;">
+                                    {% if component.type == 'check' %}
+                                        <div class="engage-card check-card p-3">
+                                            <h6 class="text-center text-dark bold">{{component.title}}</h6>
+                                            {% for choice in component.choices.all %}
+                                                <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between m-1">
+                                                    <div class="d-flex">
+                                                        <div class="card-choice-check m-1"></div>
+                                                        <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                    </div>
+                                                    <div style="padding-top: 2px; padding-right: 2px;">
+                                                        <h6 class="text-right text-info bold">
+                                                            {% if component.choiceSum > 0 %}<span class="floatNum">{{ choice.chosen|div:component.choiceSum|mul:100 }}</span> %{% endif %} ({{choice.chosen}})
+                                                        </h6>
+                                                    </div>
                                                 </div>
-                                                <div style="padding-top: 2px; padding-right: 2px;">
-                                                    <h6 class="text-right text-info bold">
-                                                        {% if component.choiceSum > 0 %}<span class="floatNum">{{ choice.chosen|div:component.choiceSum|mul:100 }}</span> %{% endif %} ({{choice.chosen}})
-                                                    </h6>
-                                                </div>
-                                            </div>
-                                            
-                                        {% endfor %}
-                                    </div>
-                                {% elif component.type == 'radio' %}
-                                    <div class="engage-card radio-card p-3">
-                                        <h6 class="text-center text-dark bold">component.title</h6>
-                                        {% for choice in component.choices.all %}
-                                            <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between m-1">
-                                                <div class="d-flex">
-                                                    <div class="card-choice-seq m-1">{{forloop.counter}}</div>
-                                                    <div class="card-choice-title m-1">{{choice.title}}</div>
-                                                </div>
-                                                <div style="padding-top: 2px; padding-right: 2px;">
-                                                    <h6 class="text-right text-info bold">
-                                                        {% if component.choiceSum > 0 %}<span class="floatNum">{{ choice.chosen|div:component.choiceSum|mul:100 }}</span> %{% endif %} ({{choice.chosen}})
-                                                    </h6>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% elif component.type == 'range' %}
-                                    <div style="background: {{component.background}};" class="engage-card p-3">
-                                        <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
-                                        <input class="rangeSlider" type="range">
-                                    </div>
-                                    <div class="text-info text-center">
-                                        {% if component.rangeTimes > 0 %}<span class="floatNum">{{ component.rangeCount|div:component.rangeTimes|mul:100 }}</span>{% endif %} % ({{component.rangeTimes}})
-                                    </div>
-                                {% elif component.type == 'yesNo' %}
-                                    <div class="p-3">
-                                        <h6 style="color: {{component.color}};" class="text-center bold">{{component.title}}</h6>
-                                        <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
-                                            <li style="cursor: pointer;" class="yesAnswer yesNoAns nav-item col-6 text-info bold">Yes</li>
-                                            <li style="cursor: pointer;" class="noAnswer yesNoAns nav-item col-6 text-danger bold">No</li>
+                                                
+                                            {% endfor %}
                                         </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="text-info text-center">
-                                                {% if component.yesNoCount > 0 %}<span class="floatNum">{{ component.yesTimes|div:component.yesNoCount|mul:100 }}</span>{% endif %} % ({{component.yesTimes}})
+                                    {% elif component.type == 'radio' %}
+                                        <div class="engage-card radio-card p-3">
+                                            <h6 class="text-center text-dark bold">component.title</h6>
+                                            {% for choice in component.choices.all %}
+                                                <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between m-1">
+                                                    <div class="d-flex">
+                                                        <div class="card-choice-seq m-1">{{forloop.counter}}</div>
+                                                        <div class="card-choice-title m-1">{{choice.title}}</div>
+                                                    </div>
+                                                    <div style="padding-top: 2px; padding-right: 2px;">
+                                                        <h6 class="text-right text-info bold">
+                                                            {% if component.choiceSum > 0 %}<span class="floatNum">{{ choice.chosen|div:component.choiceSum|mul:100 }}</span> %{% endif %} ({{choice.chosen}})
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% elif component.type == 'range' %}
+                                        <div style="background: {{component.background}};" class="engage-card p-3">
+                                            <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                            <input class="rangeSlider" type="range">
+                                        </div>
+                                        <div class="text-info text-center">
+                                            {% if component.rangeTimes > 0 %}<span class="floatNum">{{ component.rangeTimes|div:component.rangeCount }}</span>{% endif %} % ({{component.rangeCount}})
+                                        </div>
+                                    {% elif component.type == 'yesNo' %}
+                                        <div class="p-3">
+                                            <h6 style="color: {{component.color}};" class="text-center bold">{{component.title}}</h6>
+                                            <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
+                                                <li style="cursor: pointer;" class="yesAnswer yesNoAns nav-item col-6 text-info bold">Yes</li>
+                                                <li style="cursor: pointer;" class="noAnswer yesNoAns nav-item col-6 text-danger bold">No</li>
                                             </div>
-                                            <div class="text-info text-center">
-                                                {% if component.yesNoCount > 0 %}<span class="floatNum">{{ component.noTimes|div:component.yesNoCount|mul:100 }}</span>{% endif %} % ({{component.noTimes}})
+                                            <div class="d-flex justify-content-between">
+                                                <div class="text-info text-center">
+                                                    {% if component.yesNoCount > 0 %}<span class="floatNum">{{ component.yesTimes|div:component.yesNoCount|mul:100 }}</span>{% endif %} % ({{component.yesTimes}})
+                                                </div>
+                                                <div class="text-info text-center">
+                                                    {% if component.yesNoCount > 0 %}<span class="floatNum">{{ component.noTimes|div:component.yesNoCount|mul:100 }}</span>{% endif %} % ({{component.noTimes}})
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                {% endif %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         {% endfor %}

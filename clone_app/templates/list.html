@@ -29,6 +29,14 @@
     <script type="text/javascript" src="{% static 'js/trumbowyg.giphy.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script> 
     <style>
+        .resizeXbtn{
+            visibility: hidden;
+            display: none;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
         .invisible{
             position: absolute;
             width: 0;
@@ -283,7 +291,7 @@
                             <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.getFirstStory.background}};">
                                 {% for component in story.getFirstStory.components.all %}
                                     <div class="editableContainerAbsoluteContainer">
-                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}}; transform: translate(-50%, -50%) rotate({{component.rotation}});" class="editable-container">
                                             {% if component.type == 'image' %}
                                                 <img class="image-fluid" src="{{component.image.url}}" alt="">
                                             {% elif component.type == 'text' or component.type == 'block' %}

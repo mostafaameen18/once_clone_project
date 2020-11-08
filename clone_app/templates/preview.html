@@ -24,6 +24,14 @@
     <script src="{% static 'js/fontawesome.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/emojionearea.min.js' %}"></script>
     <style>
+        .resizeXbtn{
+            visibility: hidden;
+            display: none;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
         .editableContainerAbsoluteContainer{
             position: absolute;
             top: 0;
@@ -49,7 +57,12 @@
 			color: white;
 			font-weight: bold;
 			line-height: 50px;
+            cursor: pointer;
 		}
+
+        .clickmebtn a, .clickmebtn a:hover{
+            text-decoration: none;
+        }
 
 		.engage-card{
 			background: white;
@@ -295,7 +308,7 @@
                         <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
                             {% for component in story.components.all %}
                             <div class="editableContainerAbsoluteContainer">
-                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}}; transform: translate(-50%, -50%) rotate({{component.rotation}});" class="editable-container">
                                     {% if component.type == 'image' %}
                                         <img class="image-fluid" src="{{component.image.url}}" alt="">
                                     {% elif component.type == 'text' or component.type == 'block' %}
@@ -305,7 +318,7 @@
                                     {% elif component.type == 'range' %}
                                         <div style="background: {{component.background}};" class="engage-card p-3">
                                             <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
-                                            <input onchange="" ="setRange(this)" class="rangeSlider" type="range">
+                                            <input onchange="setRange(this)" class="rangeSlider" type="range">
                                         </div>
                                     {% elif component.type == 'yesNo' %}
                                         <div class="p-3">
@@ -319,7 +332,10 @@
                                 
 
                                     {% elif component.type == 'button' %}
-                                        <div onclick="window.location.replace('{{component.href}}')" style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
+                                        <div style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">
+                                        <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="display: block color: {{component.color}};">{{component.title}}</a>
+
+                                        </div>
                                     {% elif component.type == 'emoji' %}
                                         <img class="emojioneemoji" src="{{component.src}}" alt="">
                                     {% elif component.type == 'sticker' or component.type == 'gif' %}
@@ -364,167 +380,262 @@
                     </div>
                 </div>
             {% endfor %}
-            {% if storySet.product %}
-                <div class="swiper-slide">
-                    <div id="story_{{story.id}}" class="contentcard">
-                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
+            {% if checkoutStory %}
+                {% for story in checkoutStory %}
+                    <div class="swiper-slide">
+                        <div id="story_{{story.id}}" class="contentcard">
+                            <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}}">
 
-                            <div class="card productBuyCard">
-                                <div class="card-image-top" style="width: 100%; height: 100px;">
-                                    <img class="image-fluid" src="{{storySet.src}}">
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.title}}</h5>
-                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.price}}$</h5>
+                                {% for component in story.components.all %}
+                                    <div class="editableContainerAbsoluteContainer">
+                                        <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}}; transform: translate(-50%, -50%) rotate({{component.rotation}});" class="editable-container">
+                                            {% if component.type == 'image' %}
+                                                <img class="image-fluid" src="{{component.image.url}}" alt="">
+                                            {% elif component.type == 'text' or component.type == 'block' %}
+                                                {% autoescape off %}
+                                                    {{component.html}}
+                                                {% endautoescape %}
+                                            {% elif component.type == 'range' %}
+                                                <div style="background: {{component.background}};" class="engage-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <input onchange="setRange(this)" class="rangeSlider" type="range">
+                                                </div>
+                                            {% elif component.type == 'yesNo' %}
+                                                <div class="p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div style="background: {{component.background}}" class="nav nav-yesno-answers d-flex m-1 p-2">
+                                                        <li class="yesNoAns yesAnswer nav-item col-6 text-info bold">Yes</li>
+                                                        <li class="yesNoAns noAnswer nav-item col-6 text-danger bold">No</li>
+                                                    </div>
+                                                </div>
+                                            {% elif component.type == 'timer' %}
+                                        
+
+                                            {% elif component.type == 'button' %}
+                                                <div style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">
+                                                <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="display: block color: {{component.color}};">{{component.title}}</a>
+
+                                                </div>
+                                            {% elif component.type == 'emoji' %}
+                                                <img class="emojioneemoji" src="{{component.src}}" alt="">
+                                            {% elif component.type == 'sticker' or component.type == 'gif' %}
+                                                <figure>
+                                                    <img class="image-fluid" src="{{component.src}}" alt="">
+                                                </figure>
+                                            {% elif component.type == 'unsalpsh' %}
+                                                <img class="image-fluid" src="{{component.src}}" alt="">
+                                            {% elif component.type == 'check' %}
+                                                <div style="background: {{component.background}};" class="engage-card check-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div class="choices">
+                                                        {% for choice in component.choices.all %}
+                                                            <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                                <div class="d-flex">
+                                                                    <div class="card-choice-check m-1"></div>
+                                                                    <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% elif component.type == 'radio' %}
+                                                <div style="background: {{component.background}};" class="engage-card radio-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div class="choices">
+                                                        {% for choice in component.choices.all %}
+                                                            <div id="choice_{{choice.id}}" class="card-choice d-flex justify-content-between pr-2 m-1">
+                                                                <div class="d-flex">
+                                                                    <div class="card-choice-seq m-1">{{forloop.counter}}</div>
+                                                                    <div class="card-choice-title m-1 includeText">{{choice.title}}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="col-4 text-center">
-                                            <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
+                                {% endfor %}
+
+                                <div class="editableContainerAbsoluteContainer" style="padding: 3px; padding-top: 100px; overflow: hidden;">
+                                    <div class="card productBuyCard">
+                                        <ul class="nav" role="tablist" style="visibility: hidden;">
+                                            <li class="nav-item">
+                                                <a data-toggle="tab" class="nav-link active" id="productQuantityFormToggler" href="#productQuantityForm"></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a data-toggle="tab" class="nav-link" id="personalInfoFormToggler" href="#personalInfoForm"></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a data-toggle="tab" class="nav-link" id="shippingLocationFormToggler" href="#shippingLocationForm"></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a data-toggle="tab" class="nav-link" id="productPaymentFormToggler" href="#productPaymentForm"></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a data-toggle="tab" class="nav-link" id="WaitingResponseCardToggler" href="#WaitingResponseCard"></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a data-toggle="tab" class="nav-link" id="checkoutSuccessResponseCardToggler" href="#checkoutSuccessResponseCard"></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a data-toggle="tab" class="nav-link" id="checkoutFailedResponseCardToggler" href="#checkoutFailedResponseCard"></a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="productQuantityForm" class="tab-pane active">
+                                                <div class="card-image-top" style="width: 100%; height: 100px;">
+                                                    <img class="image-fluid" src="{{storySet.src}}">
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.title}}</h5>
+                                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.price}}$</h5>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="col-4 text-center">
+                                                            <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
+                                                        </div>
+                                                        <div class="col-4 text-center">
+                                                            <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
+                                                        </div>
+                                                    </div>
+                                                    <div style="width: 100%; margin-top: 10px;">
+                                                        <button onclick="$('#personalInfoFormToggler').click()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="personalInfoForm" class="tab-pane fade show">
+                                                <a class="nav-link text-info" onclick="$('#productQuantityFormToggler').click()"><i class="fas fa-arrow-left"></i></a>
+                                                <div class="p-2">
+                                                    <h3 class="text-dark" style="font-weight: bold">
+                                                        <i class="fas fa-user text-info"></i> Personal Info.
+                                                    </h3>
+                                                </div>
+                                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
+                                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
+                                                        <div class="col-6 p-2">
+                                                            <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name">
+                                                        </div>
+                                                        <div class="col-6 p-2">
+                                                            <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone Number">
+                                                    </div>
+                                                    <div style="width: 100%; margin-top: 10px;">
+                                                        <button onclick="$('#shippingLocationFormToggler').click()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Delivery Infos</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="shippingLocationForm" class="tab-pane fade show">
+                                                <a class="nav-link text-info" onclick="$('#personalInfoFormToggler').click()"><i class="fas fa-arrow-left"></i></a>
+                                                <div class="p-2">
+                                                    <h3 class="text-dark" style="font-weight: bold">
+                                                        <i class="fas fa-map-marker-alt text-info"></i> Delivery Info.
+                                                    </h3>
+                                                </div>
+                                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
+                                                    <div class="p-2">
+                                                        <input type="text" class="form-control" name="addressLine1" id="addressLine1" placeholder="Address Line 1">
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <input type="text" class="form-control" name="addressLine2" id="addressLine2" placeholder="Address Line 2">
+                                                    </div>
+                                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
+                                                        <div class="col-4 p-2">
+                                                            <input type="text" class="form-control" name="city" id="city" placeholder="City">
+                                                        </div>
+                                                        <div class="col-4 p-2">
+                                                            <input type="text" class="form-control" name="state" id="state" placeholder="State">
+                                                        </div>
+                                                        <div class="col-4 p-2">
+                                                            <input type="text" class="form-control" name="postal" id="postal" placeholder="Postal Code">
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <input type="text" class="form-control" name="country" id="country" placeholder="Country">
+                                                    </div>
+                                                    
+                                                    <div style="width: 100%; margin-top: 10px;">
+                                                        <button onclick="$('#productPaymentFormToggler').click()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Payment</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="productPaymentForm" class="tab-pane fade show">
+                                                <a class="nav-link text-info" onclick="$('#shippingLocationFormToggler').click()"><i class="fas fa-arrow-left"></i></a>
+                                                <div class="p-2">
+                                                    <h3 class="text-dark" style="font-weight: bold">
+                                                        <i class="fas fa-credit-card text-info"></i> Payment.
+                                                    </h3>
+                                                </div>
+                                                <div class="pt-2 pb-2">
+                                                    <div class="d-flex justify-content-between shopProduct">
+                                                        <div class="d-table" style="width: 50px; height: 50px; border-radius: 5px;">
+                                                            <img src="{{storySet.src}}" class="image-fluid">
+                                                        </div>
+                                                        <div class="d-block pt-2" style="height: 50px; width: 160px;">
+                                                            <div style="font-size:10px" class="text-dark bold">{{storySet.title}}</div>
+                                                            <small style="font-size:10px" class="text-dark bold">Quantity: <span class="changableQuantity">1</span></small>
+                                                        </div>
+                                                        <div class="d-table" style="height: 50px;">
+                                                            <h6 class="v-center text-muted">{{storySet.price}} <i class="fas fa-dollar-sign"></i></h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
+                                                    <div class="p-2">
+                                                        <input type="text" class="form-control" name="cardNumber" id="cardNumber" placeholder="Card Number">
+                                                    </div>
+                                                    
+                                                    <div class="p-2">
+                                                        <input type="text" class="form-control" name="cardHolderName" id="cardHolderName" placeholder="Card Holder Name">
+                                                    </div>
+                                                    
+                                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
+                                                        <div class="col-8 p-2">
+                                                            <input type="rel" class="form-control" name="expiryDate" id="expiryDate" placeholder="Expiry Date (MM/YYYY)">
+                                                        </div>
+                                                        <div class="col-4 p-2">
+                                                            <input type="text" class="form-control" name="securityCode" id="securityCode" placeholder="Security Code">
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    
+                                                    <div style="width: 100%; margin-top: 10px;">
+                                                        <button onclick="performCheckout()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Pay <span class="changablePrice">{{storySet.price}}</span>$</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="WaitingResponseCard" class="tab-pane fade show">
+                                                <div style="height: 100px; text-align: center; padding-top: 20px;">
+                                                    <div class="spinner-border text-info" role="status"></div>
+                                                </div>
+                                            </div>
+                                            <div id="checkoutSuccessResponseCard" class="tab-pane fade show">
+                                                <div style="width: 100%; height: 200px; background: url({% static 'img/successBg.png' %}); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                                                    <h1 class="text-center mt-3 text-success bold">Done successfully</h1>
+                                                </div>
+                                            </div>
+                                            <div id="checkoutSuccessResponseCard" class="tab-pane fade show">
+                                                <div style="width: 100%; height: 200px;">
+                                                    <h1 class="text-center mt-3 text-danger bold">Something went wrong !!</h1>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-4">
-                                            <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
-                                        </div>
-                                        <div class="col-4 text-center">
-                                            <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
-                                        </div>
-                                    </div>
-                                    <div style="width: 100%; margin-top: 10px;">
-                                        <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-                </div>
-                <div class="swiper-slide">
-                    <div id="story_{{story.id}}" class="contentcard">
-                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
-
-                            <div class="card productBuyCard p-2">
-                                <div class="p-2">
-                                    <h3 class="text-dark" style="font-weight: bold">
-                                        <i class="fas fa-user text-info"></i> Personal Info.
-                                    </h3>
-                                </div>
-                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
-                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
-                                        <div class="col-6 p-2">
-                                            <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name">
-                                        </div>
-                                        <div class="col-6 p-2">
-                                            <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name">
-                                        </div>
-                                    </div>
-                                    <div class="p-2">
-                                        <input type="email" class="form-control" name="email" id="email" placeholder="Email">
-                                    </div>
-                                    <div class="p-2">
-                                        <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone Number">
-                                    </div>
-                                    <div style="width: 100%; margin-top: 10px;">
-                                        <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Delivery Infos</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            
-
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div id="story_{{story.id}}" class="contentcard">
-                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
-
-                            <div class="card productBuyCard p-2">
-                                <div class="p-2">
-                                    <h3 class="text-dark" style="font-weight: bold">
-                                        <i class="fas fa-map-marker-alt text-info"></i> Delivery Info.
-                                    </h3>
-                                </div>
-                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
-                                    <div class="p-2">
-                                        <input type="text" class="form-control" name="addressLine1" id="addressLine1" placeholder="Address Line 1">
-                                    </div>
-                                    <div class="p-2">
-                                        <input type="text" class="form-control" name="addressLine2" id="addressLine2" placeholder="Address Line 2">
-                                    </div>
-                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
-                                        <div class="col-4 p-2">
-                                            <input type="text" class="form-control" name="city" id="city" placeholder="City">
-                                        </div>
-                                        <div class="col-4 p-2">
-                                            <input type="text" class="form-control" name="state" id="state" placeholder="State">
-                                        </div>
-                                        <div class="col-4 p-2">
-                                            <input type="text" class="form-control" name="postal" id="postal" placeholder="Postal Code">
-                                        </div>
-                                    </div>
-                                    <div class="p-2">
-                                        <input type="text" class="form-control" name="country" id="country" placeholder="Country">
-                                    </div>
-                                    
-                                    <div style="width: 100%; margin-top: 10px;">
-                                        <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Payment</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div id="story_{{story.id}}" class="contentcard">
-                        <div class="innerStoryCard" style="position: relative; overflow:hidden; background: dodgerblue; padding-top: 100px;">
-
-                            <div class="card productBuyCard p-2">
-                                <div class="p-2">
-                                    <h3 class="text-dark" style="font-weight: bold">
-                                        <i class="fas fa-credit-card text-info"></i> Payment.
-                                    </h3>
-                                </div>
-                                <div class="pt-2 pb-2">
-                                    <div class="d-flex justify-content-between shopProduct">
-                                        <div class="d-table" style="width: 50px; height: 50px; border-radius: 5px;">
-                                            <img src="{{storySet.src}}" class="image-fluid">
-                                        </div>
-                                        <div class="d-block pt-2" style="height: 50px; width: 160px;">
-                                            <div style="font-size:10px" class="text-dark bold">{{storySet.title}}</div>
-                                            <small style="font-size:10px" class="text-dark bold">Quantity: <span class="changableQuantity">1</span></small>
-                                        </div>
-                                        <div class="d-table" style="height: 50px;">
-                                            <h6 class="v-center text-muted">{{storySet.price}} <i class="fas fa-dollar-sign"></i></h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="personalInfoForm bg-light p-2" style="border-radius: 5px;">
-                                    <div class="p-2">
-                                        <input type="text" class="form-control" name="cardNumber" id="cardNumber" placeholder="Card Number">
-                                    </div>
-                                    
-                                    <div class="p-2">
-                                        <input type="text" class="form-control" name="cardHolderName" id="cardHolderName" placeholder="Card Holder Name">
-                                    </div>
-                                    
-                                    <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
-                                        <div class="col-8 p-2">
-                                            <input type="rel" class="form-control" name="expiryDate" id="expiryDate" placeholder="Expiry Date (MM/YYYY)">
-                                        </div>
-                                        <div class="col-4 p-2">
-                                            <input type="text" class="form-control" name="securityCode" id="securityCode" placeholder="Security Code">
-                                        </div>
-                                    </div>
-                                    
-                                    
-                                    <div style="width: 100%; margin-top: 10px;">
-                                        <button onclick="performCheckout()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Pay <span class="changablePrice">{{storySet.price}}</span>$</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             {% endif %}
         </div>
         <div class="swiper-pagination"></div>
@@ -710,26 +821,28 @@
 
     var rangeValue = 0;
 
+    
+
     function setRange(obj){
-        var id = $(this).closest('.editable-container').attr('id').split('_')[1];
-        var newRangeValue = $(this).val();
+        var id = $(obj).closest('.editable-container').attr('id').split('_')[1];
+        var newRangeValue = $(obj).val();
+        console.log(rangeValue);
+        console.log(newRangeValue);
         $.ajax({
-            type: "POST",
-            url: "setRange/"+id+"/",
-            data: {
-                "rangeValue": rangeValue,
-                "newRangeValue": newRangeValue
-            },
+            type: "GET",
+            url: "/setRange/"+id+"/"+rangeValue+"/"+newRangeValue+"/",
+            data: null,
             contentType: false,
             processData: false,
             success: function(result) {
-                rangeValue = newRangeValue;
+                null;
             }
         });
+        rangeValue = newRangeValue;
     }
 
-console.log("{{storySet.id}}");
     function performCheckout(){
+        $("#WaitingResponseCardToggler").click();
         $.ajax({
             type: "POST",
             url: "/performCheckout/",
@@ -752,7 +865,12 @@ console.log("{{storySet.id}}");
                 "storySet": "{{storySet.id}}",
             },
             success: function(result) {
-                null;
+                if(result == "done"){
+                    $("#checkoutSuccessResponseCardToggler").click();
+                }
+                else{
+                    $("#checkoutFailedResponseCardToggler").click();
+                }
             }
         });
     }

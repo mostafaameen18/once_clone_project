@@ -38,6 +38,13 @@ def createNewStorySet(request):
 
     insert = storiesSet(user=request.user, code=code)
     insert.save()
+
+    if len(customuser.objects.filter(user=request.user)) > 0:
+        checkoutStory = story(user=request.user, storyType="checkout", background="dodgerblue")
+        checkoutStory.save()
+        insert.storiesSet.add(checkoutStory)
+        insert.save()
+
     return redirect("create-story", insert.id)
 
 def duplicateStorySet(request, id):
@@ -109,17 +116,19 @@ def addProductSell(request, storySetId):
 
 
 def preview(request, code):
+    context = {}
     ids = []
     storiesSetIds = storiesSet.objects.get(code=code)
     for i in storiesSetIds.storiesSet.all():
         ids.append(i.id)
-    stories = story.objects.filter(id__in=ids)
+    stories = story.objects.filter(id__in=ids, storyType="design")
+    if storiesSetIds.product != None:
+        checkoutStory = story.objects.filter(id__in=ids, storyType="checkout")
+        context['checkoutStory'] = checkoutStory
     storiesSetIds.views += 1
     storiesSetIds.save()
-    context = {
-        'stories': stories,
-        'storySet': storiesSetIds
-    }
+    context['stories'] = stories
+    context['storySet'] = storiesSetIds
     return render(request, 'preview.html', context)
 
 @csrf_exempt
@@ -146,41 +155,43 @@ def performCheckout(request):
     securityCode = request.POST.get('securityCode')
     storySetId = request.POST.get('storySet')
     mycustomuser = customuser.objects.get(user=storiesSet.objects.get(id=storySetId).user)
-
-    url = "https://{}/products/{}/".format(mycustomuser.shop_name, storiesSet.objects.get(id=storySetId).handle)
-    options = Options()
-    options.headless = True
-    driver = webdriver.Firefox(options=options, executable_path="geckodriver")
-    driver.get(url)
-    driver.find_element_by_id("password").send_keys('zaffot')
-    driver.find_element_by_xpath('/html/body/div/div[2]/div[2]/form/button').click()
-    driver.get(url)
-    driver.find_element_by_xpath('/html/body/div[3]/main/div[1]/div/div/div[2]/div[1]/form/div[2]/div/button').click()
-    time.sleep(2)
-    driver.get("https://{}/cart".format(mycustomuser.shop_name))
-    driver.find_element_by_xpath('//*[@id="updates_large_36877700563110:50daaab6a50d082b93e922a89edee8e2"]').send_keys(quantity)
-    driver.find_element_by_xpath('/html/body/div[3]/main/div/div/div[1]/form/div/div/div/div[4]/div[1]/input').click()
-    driver.find_element_by_id('checkout_email_or_phone').send_keys(email)
-    driver.find_element_by_id('checkout_shipping_address_first_name').send_keys(fname)
-    driver.find_element_by_id('checkout_shipping_address_last_name').send_keys(lname)
-    driver.find_element_by_id('checkout_shipping_address_address1').send_keys(addressLine1)
-    driver.find_element_by_id('checkout_shipping_address_address2').send_keys(addressLine2)
-    driver.find_element_by_id('checkout_shipping_address_city').send_keys(city)
-    select = Select(driver.find_element_by_id('checkout_shipping_address_country'))
-    select.select_by_visible_text(country)
-    select = Select(driver.find_element_by_id('checkout_shipping_address_province'))
-    select.select_by_visible_text(state)
-    driver.find_element_by_id('checkout_shipping_address_zip').send_keys(postal)
-    driver.find_element_by_id('continue_button').click()
-    driver.find_element_by_id('continue_button').click()
-    driver.find_element_by_id('number').send_keys(cardNumber)
-    driver.find_element_by_id('name').send_keys(cardHolderName)
-    driver.find_element_by_id('expiry').send_keys(expiryDate)
-    driver.find_element_by_id('verification_value').send_keys(securityCode)
-    driver.find_element_by_id('continue_button').click()
-    time.sleep(2)
-    driver.quit()
-    return HttpResponse('done')
+    try:
+        url = "https://{}/products/{}/".format(mycustomuser.shop_name, storiesSet.objects.get(id=storySetId).handle)
+        options = Options()
+        options.headless = True
+        driver = webdriver.Firefox(options=options, executable_path="geckodriver")
+        driver.get(url)
+        driver.find_element_by_id("password").send_keys('zaffot')
+        driver.find_element_by_xpath('/html/body/div/div[2]/div[2]/form/button').click()
+        driver.get(url)
+        driver.find_element_by_xpath('/html/body/div[3]/main/div[1]/div/div/div[2]/div[1]/form/div[2]/div/button').click()
+        time.sleep(2)
+        driver.get("https://{}/cart".format(mycustomuser.shop_name))
+        driver.find_element_by_xpath('//*[@id="updates_large_36877700563110:50daaab6a50d082b93e922a89edee8e2"]').send_keys(quantity)
+        driver.find_element_by_xpath('/html/body/div[3]/main/div/div/div[1]/form/div/div/div/div[4]/div[1]/input').click()
+        driver.find_element_by_id('checkout_email_or_phone').send_keys(email)
+        driver.find_element_by_id('checkout_shipping_address_first_name').send_keys(fname)
+        driver.find_element_by_id('checkout_shipping_address_last_name').send_keys(lname)
+        driver.find_element_by_id('checkout_shipping_address_address1').send_keys(addressLine1)
+        driver.find_element_by_id('checkout_shipping_address_address2').send_keys(addressLine2)
+        driver.find_element_by_id('checkout_shipping_address_city').send_keys(city)
+        select = Select(driver.find_element_by_id('checkout_shipping_address_country'))
+        select.select_by_visible_text(country)
+        select = Select(driver.find_element_by_id('checkout_shipping_address_province'))
+        select.select_by_visible_text(state)
+        driver.find_element_by_id('checkout_shipping_address_zip').send_keys(postal)
+        driver.find_element_by_id('continue_button').click()
+        driver.find_element_by_id('continue_button').click()
+        driver.find_element_by_id('number').send_keys(cardNumber)
+        driver.find_element_by_id('name').send_keys(cardHolderName)
+        driver.find_element_by_id('expiry').send_keys(expiryDate)
+        driver.find_element_by_id('verification_value').send_keys(securityCode)
+        driver.find_element_by_id('continue_button').click()
+        time.sleep(2)
+        driver.quit()
+        return HttpResponse('done')
+    except:
+        return HttpResponse('wrong')
 
 
 def addCheckRadio(request, id):
@@ -232,18 +243,26 @@ def removeYesNoAns(request, id, answer):
 
 
 @csrf_exempt
-def setRange(request, id):
-    newRangeValue = request.POST.get('newRangeValue')
-    rangeValue = request.POST.get('rangeValue')
+def setRange(request, id, rv, nrv):
+    rangeValue = int(rv)
+    newRangeValue = int(nrv)
+    print(newRangeValue)
+    print(rangeValue)
     mycomponent = components.objects.get(id=id)
-    if int(rangeValue) == 0:
-        mycomponent.rangeCount += newRangeValue
-        mycomponent.rangeCount *= newRangeValue
+    if rangeValue == 0:
+        mycomponent.rangeCount += 1
+        mycomponent.rangeTimes += newRangeValue
+        mycomponent.save()
     else:
-        mycomponent.rangeCount -= rangeValue
-        mycomponent.rangeTimes /= rangeValue
-        mycomponent.rangeCount += newRangeValue
-        mycomponent.rangeTimes *= newRangeValue
+        mycomponent.rangeCount -= 1
+        mycomponent.rangeTimes -= rangeValue
+        mycomponent.save()
+        if newRangeValue != 0:
+            mycomponent.rangeCount += 1
+            mycomponent.rangeTimes += newRangeValue
+            mycomponent.save()
+
+    return HttpResponse('done')
 
 
 
@@ -255,8 +274,14 @@ def answers(request, storySet):
     for i in storiesSetIds.storiesSet.all():
         ids.append(i.id)
     mystories = story.objects.filter(user=request.user, id__in=ids)
+    totalAnswers = 0
+    for i in mystories:
+        for j in i.components.all():
+            if j.type == "range" or j.type == "check" or j.type == "radio" or j.type == "yesNo":
+                totalAnswers += 1
     context = {
-        "stories": mystories
+        "stories": mystories,
+        "totalAnswers": totalAnswers
     }
     return render(request, 'answers.html', context)
 
@@ -268,6 +293,27 @@ def connectShop(request):
     shopPass = request.POST.get('shopPass')
 
     mycustomuser = customuser(user=request.user, shop_name=shopName, shop_api_key=shopKey, shop_password=shopPass)
+    mycustomuser.save()
+
+    userStoriesSet = storiesSet.objects.get(user=request.user)
+    for storySet in userStoriesSet:
+        checkoutStory = story(user=request.user, storyType="checkout", background="dodgerblue")
+        checkoutStory.save()
+        storySet.storiesSet.add(checkoutStory)
+        storySet.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def updateShop(request):
+    user = request.user
+    shopName = request.POST.get('shopName')
+    shopKey = request.POST.get('shopKey')
+    shopPass = request.POST.get('shopPass')
+
+    mycustomuser = customuser.objects.get(user=request.user)
+    mycustomuser.shop_name = shopName
+    mycustomuser.shop_api_key = shopKey
+    mycustomuser.shop_password = shopPass
     mycustomuser.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -411,6 +457,15 @@ def updateComponent(request, id, item):
         component.background = data
     elif item == "color":
         component.color = data
+    elif item == "target":
+        component.target = data
+    elif item == "fontSize":
+        component.fontSize = data
+    elif item == "fontFamily":
+        component.fontFamily = data
+    elif item == "textAlign":
+        component.textAlign = data
+
 
     component.save()
     return HttpResponse('done')
@@ -448,15 +503,16 @@ def removeChoice(request, objId):
 
 
 @csrf_exempt
-def upload_image(request, id):
+def upload_image(request):
     image = request.FILES.get('images')
     insert = images(user=request.user, image=image)
     insert.save()
 
-    image_containing_story = story.objects.get(id=id)
-    image_containing_story.story_images.add(insert)
-    image_containing_story.save()
+    context = [{
+        "src": insert.image.url,
+        "id": insert.id
+    }]
 
-    return HttpResponse(insert.image.url)
+    return HttpResponse(json.dumps(context))
 
 

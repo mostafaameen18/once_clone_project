@@ -90,6 +90,14 @@
             top: 50%;
             left: 100%;
             transform: translate(-70%, -50%);
+            z-index: 5;
+            visibility: hidden;
+        }
+        .storyControls{
+            visibility: hidden;
+        }
+        .contentcard.active .storyContentControl, .contentcard.active .storyControls{
+            visibility: visible;
         }
         .storyContentControl-navlink.nav-link{
             text-align: center;
@@ -301,6 +309,7 @@
 			color: white;
 			font-weight: bold;
 			line-height: 50px;
+            cursor: pointer;
 		}
 
 		.engage-card{
@@ -430,6 +439,38 @@
         }
         .shopProduct.active{
             background: darkred;
+        }
+
+
+        .productCardWrapper{
+            width: 310px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .productBuyCard{
+            width: 100%;
+            height: auto;
+            margin: auto;
+        }
+        .productBuyCard .card-body{
+            border-top-left-radius: 15px;
+            box-shadow: 0px 0px 10px gray;
+            border-top-right-radius: 15px;
+        }
+        .hiddenInput, .hiddenInput:focus{
+            background: transparent;
+            border: none;
+            outline: none;
+            text-align: center;
+            width: 100%;
+        }
+        .changeQuantityBtn{
+            width: 100%;
+            height: 30px;
+            border: 2px solid #333;
+            border-radius: 25px;
+            display: inline-block;
         }
 
     </style>
@@ -838,6 +879,9 @@
         </div>
         <div id="cart" class="tab-pane">
             {% if plan %}
+                <div class="p-2 m-2">
+                    <button type="button" data-toggle="modal" data-target="#connectShopModal" class="btn btn-outline-white">Update shop info</button>
+                </div>
             	<div id="shopProductsList" class="p-3">
 
                 </div>
@@ -908,7 +952,7 @@
                     <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
                         {% for component in story.components.all %}
                             <div class="editableContainerAbsoluteContainer">
-                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}};" class="editable-container">
+                                <div id="{{component.type}}_{{component.id}}" style="width: {{component.width}}; height: {{component.height}}; top: {{component.top}}; left: {{component.left}}; font-family: {{component.fontFamily}}; transform: translate(-50%, -50%) rotate({{component.rotation}});" class="editable-container">
                                     {% if component.type == 'image' %}
                                         <img class="image-fluid" src="{{component.image.url}}" alt="">
                                     {% elif component.type == 'text' or component.type == 'block' %}
@@ -932,7 +976,7 @@
                                 
 
                                     {% elif component.type == 'button' %}
-                                        <div onclick="window.location.replace('{{component.href}}')" style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
+                                        <div style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
                                     {% elif component.type == 'emoji' %}
                                         <img class="emojioneemoji" src="{{component.src}}" alt="">
                                     {% elif component.type == 'sticker' or component.type == 'gif' %}
@@ -982,6 +1026,35 @@
                                 </div>
                             </div>
                         {% endfor %}
+                        {% if story.storyType == "checkout" %}
+                            <div class="editableContainerAbsoluteContainer" style="padding: 10px; padding-top: 100px; width: 100%; overflow: hidden;">
+                                <div class="card productBuyCard">
+                                    <div class="card-image-top" style="width: 100%; height: 100px;">
+                                        <img class="image-fluid" src="{{entireStorySet.src}}">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <h5 class="text-dark" style="font-weight: bold;">{{entireStorySet.title}}</h5>
+                                            <h5 class="text-dark" style="font-weight: bold;">{{entireStorySet.price}}$</h5>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="col-4 text-center">
+                                                <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
+                                            </div>
+                                            <div class="col-4">
+                                                <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
+                                            </div>
+                                            <div class="col-4 text-center">
+                                                <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
+                                            </div>
+                                        </div>
+                                        <div style="width: 100%; margin-top: 10px;">
+                                            <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                     <ul class="nav d-block storyContentControl storyContentControl-oneColor">
                         <li class="nav-item">
@@ -1023,15 +1096,6 @@
                                                 <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
                                             </li>
                                         </ul>
-                                        <li class="nav-item p-3">
-                                            <small class="text-muted">Custom Color</small>
-                                            <div class="d-flex">
-                                                <div>
-                                                    #
-                                                </div>
-                                                <input onkeyup="setTextCustomColor(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Hex color code" maxlength="6" type="text">
-                                            </div>
-                                        </li>
                                         <hr>
                                         <ul class="nav row" style="width: max-content">
                                             <small class="text-muted">Set layout color</small>
@@ -1104,6 +1168,12 @@
                             <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-link"></i></a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item p-3">
+                                    <div class="form-group">
+                                            <input id="setLinkTargetChecker" type="checkbox" onclick="setLinkTarget(this)">
+                                            <label for="setLinkTargetChecker" class="text-info">
+                                                Open link in new tab on click ?
+                                            </label>
+                                        </div>
                                     <small class="text-muted">Enter URL</small>
                                     <div class="d-block">
                                         <input onkeyup="setHref(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your url" type="text">
@@ -1190,15 +1260,6 @@
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <small class="text-muted">Custom Color</small>
-                                    <div class="d-flex">
-                                        <div>
-                                            #
-                                        </div>
-                                        <input onkeyup="setStoryCustomBg(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Hex color code" maxlength="6" type="text">
-                                    </div>
-                                </li>
-                                <li class="nav-item">
                                     <smal class="text-muted">Pre-made gradients</smal>
                                     <ul class="nav row p-2" style="width: 100%;">
                                         <li class="nav-item">
@@ -1254,266 +1315,246 @@
     </div>
 
     <div id="storyCardHtml" style="visibility: hidden; width: 0; height: 0; position: absolute;">
-        <div class="col-lg-4 col-md-6 col-12 p-2">
-            <div id="" class="contentcard newContentCard">
-                <div class="innerStoryCard" style="overflow:hidden;"></div>
-                <ul class="nav d-block storyContentControl storyContentControl-oneColor">
-                    <li class="nav-item">
-                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center; line-height: 1;" href="#!"><i class="fas fa-palette"></i></a>
-                        <ul class="dropdown-menu">
-                            <li class="nav-item p-3">
-                                <ul class="nav d-block p-2">
-                                    <ul class="nav row" style="width: max-content">
-                                        <small class="text-muted">set text color</small>
-                                        <br/>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
-                                        </li>
-                                    </ul>
-                                    <li class="nav-item p-3">
-                                        <small class="text-muted">Custom Color</small>
-                                        <div class="d-flex">
-                                            <div>
-                                                #
-                                            </div>
-                                            <input onkeyup="setTextCustomColor(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Hex color code" maxlength="6" type="text">
-                                        </div>
-                                    </li>
-                                    <hr>
-                                    <ul class="nav row" style="width: max-content">
-                                        <small class="text-muted">Set layout color</small>
-                                        <br/>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
-                                        </li>
-                                    </ul>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item pt-1">
-                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-align-center"></i></a>
-                        <ul class="dropdown-menu">
-                            <li class="nav-item p-3">
-                                <ul class="nav d-flex justify-content-between" style="width: max-content;">
+        <div id="" class="contentcard newContentCard p-2">
+            <div class="innerStoryCard" style="position: relative; overflow:hidden;"></div>
+            <ul class="nav d-block storyContentControl storyContentControl-oneColor">
+                <li class="nav-item">
+                    <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center; line-height: 1;" href="#!"><i class="fas fa-palette"></i></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item p-3">
+                            <ul class="nav d-block p-2">
+                                <ul class="nav row" style="width: max-content">
+                                    <small class="text-muted">set text color</small>
+                                    <br/>
                                     <li class="nav-item">
-                                        <a onclick="setTextAlign(this)" data-align="left" href="#!" class="nav-link btn text-info"><i class="fas fa-align-left"></i></a>
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setTextAlign(this)" data-align="center" href="#!" class="nav-link btn text-info"><i class="fas fa-align-center"></i></a>
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setTextAlign(this)" data-align="right" href="#!" class="nav-link btn text-info"><i class="fas fa-align-right"></i></a>
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a onclick="setTextColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
                                     </li>
                                 </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item pt-1">
-                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-quote-left"></i></a>
-                        <ul class="dropdown-menu">
-                            <li class="nav-item p-3">
-                                <small class="text-muted">Enter text</small>
-                                <div class="d-block">
-                                    <input onkeyup="setText(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item pt-1">
-                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-link"></i></a>
-                        <ul class="dropdown-menu">
-                            <li class="nav-item p-3">
-                                <small class="text-muted">Enter URL</small>
-                                <div class="d-block">
-                                    <input onkeyup="setHref(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your url" type="text">
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item pt-1">
-                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-font"></i></a>
-                        <ul class="dropdown-menu" style="width: max-content;">
-                            <li class="nav-item p-3">
-                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: Georgia, serif;' data-font="Georgia, serif">Nice mood under moon light</a>
-                            </li>
-                            <li class="nav-item p-3">
-                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: Arial, Helvetica, sans-serif;' data-font="Arial, Helvetica, sans-serif">Nice mood under moon light</a>
-                            </li>
-                            <li class="nav-item p-3">
-                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: "Comic Sans MS", cursive, sans-serif;' data-font='"Comic Sans MS", cursive, sans-serif'>Nice mood under moon light</a>
-                            </li>
-                            <li class="nav-item p-3">
-                                <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: "Courier New", Courier, monospace;' data-font='"Courier New", Courier, monospace'>Nice mood under moon light</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item pt-1">
-                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-sync-alt"></i></a>
-                        <ul class="dropdown-menu">
-                            <li class="nav-item p-3">
-                                <input type="range" onmousemove="setRotationDegree(this)" class="form-control">
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item pt-1">
-                        <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-text-width"></i></a>
-                        <ul class="dropdown-menu">
-                            <li class="nav-item p-3">
-                                <input type="range" onmousemove="setFontSize(this)" class="form-control">
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item pt-1">
-                        <a onclick="removeEditableContainer()" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-trash"></i></a>
-                    </li>
-                </ul>
-                <ul class="storyControls nav d-flex justify-content-between">
-                    <li class="nav-item">
-                        <a onclick="removeStory(this)" href="#!" class="nav-link"><i class="fas fa-trash"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="dropdown" class="nav-link"><i class="fas fa-circle"></i></a>
-                        <ul class="dropdown-menu p-3">
-                            <li class="nav-item">
-                                <ul class="nav row p-2" style="width: 100%;">
+                                <hr>
+                                <ul class="nav row" style="width: max-content">
+                                    <small class="text-muted">Set layout color</small>
+                                    <br/>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
+                                        <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
                                     </li>
                                 </ul>
-                            </li>
-                            <li class="nav-item">
-                                <small class="text-muted">Custom Color</small>
-                                <div class="d-flex">
-                                    <div>
-                                        #
-                                    </div>
-                                    <input onkeyup="setStoryCustomBg(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Hex color code" maxlength="6" type="text">
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <smal class="text-muted">Pre-made gradients</smal>
-                                <ul class="nav row p-2" style="width: 100%;">
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, white, grey)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, black, grey)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, blue, violet)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, green, yellow)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, red, darkred)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, dodgerblue, green)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, violet, red)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, green, cyan)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, white, cyan)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, pink, violet)"></a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, pink, red)"></a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pt-1">
+                    <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-align-center"></i></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item p-3">
+                            <ul class="nav d-flex justify-content-between" style="width: max-content;">
+                                <li class="nav-item">
+                                    <a onclick="setTextAlign(this)" data-align="left" href="#!" class="nav-link btn text-info"><i class="fas fa-align-left"></i></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setTextAlign(this)" data-align="center" href="#!" class="nav-link btn text-info"><i class="fas fa-align-center"></i></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setTextAlign(this)" data-align="right" href="#!" class="nav-link btn text-info"><i class="fas fa-align-right"></i></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pt-1">
+                    <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-quote-left"></i></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item p-3">
+                            <small class="text-muted">Enter text</small>
+                            <div class="d-block">
+                                <input onkeyup="setText(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your text" type="text">
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pt-1">
+                    <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-link"></i></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item p-3">
+                            <small class="text-muted">Enter URL</small>
+                            <div class="d-block">
+                                <input onkeyup="setHref(this)" style="border: none; border-bottom: 2px solid dodgerblue; width: 100%;" placeholder="Your url" type="text">
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pt-1">
+                    <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-font"></i></a>
+                    <ul class="dropdown-menu" style="width: max-content;">
+                        <li class="nav-item p-3">
+                            <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: Georgia, serif;' data-font="Georgia, serif">Nice mood under moon light</a>
+                        </li>
+                        <li class="nav-item p-3">
+                            <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: Arial, Helvetica, sans-serif;' data-font="Arial, Helvetica, sans-serif">Nice mood under moon light</a>
+                        </li>
+                        <li class="nav-item p-3">
+                            <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: "Comic Sans MS", cursive, sans-serif;' data-font='"Comic Sans MS", cursive, sans-serif'>Nice mood under moon light</a>
+                        </li>
+                        <li class="nav-item p-3">
+                            <a href="#!" onclick="setTextFont(this)" class="nav-link" style='font-family: "Courier New", Courier, monospace;' data-font='"Courier New", Courier, monospace'>Nice mood under moon light</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pt-1">
+                    <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-sync-alt"></i></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item p-3">
+                            <input type="range" onmousemove="setRotationDegree(this)" class="form-control">
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pt-1">
+                    <a data-toggle="dropdown" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-text-width"></i></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item p-3">
+                            <input type="range" onmousemove="setFontSize(this)" class="form-control">
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item pt-1">
+                    <a onclick="removeEditableContainer()" class="nav-link text-white storyContentControl-navlink" style="text-align: center;" href="#!"><i class="fas fa-trash"></i></a>
+                </li>
+            </ul>
+            <ul class="storyControls nav d-flex justify-content-between">
+                <li class="nav-item">
+                    <a onclick="removeStory(this)" href="#!" class="nav-link"><i class="fas fa-trash"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a data-toggle="dropdown" class="nav-link"><i class="fas fa-circle"></i></a>
+                    <ul class="dropdown-menu p-3">
+                        <li class="nav-item">
+                            <ul class="nav row p-2" style="width: 100%;">
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <smal class="text-muted">Pre-made gradients</smal>
+                            <ul class="nav row p-2" style="width: 100%;">
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, white, grey)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, black, grey)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, blue, violet)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, green, yellow)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, red, darkred)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, dodgerblue, green)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, violet, red)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, green, cyan)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, white, cyan)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, pink, violet)"></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setStoryBg(this)" class="nav-link datacolorBtn" href="#!" data-color="linear-gradient(90deg, pink, red)"></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -1525,29 +1566,35 @@
                         <img class="image-fluid" src="{% static 'img/storeIcon.png' %}" alt="">
                     </div>
                     <br/>
-                    <h2 class="text-center text-info">
-                        Connect your E-Shop and pull your products automatically.
-                    </h2>
+                    {% if plan %}
+                        <h2 class="text-center text-info">
+                            Update your shop information
+                        </h2>
+                    {% else %}
+                        <h2 class="text-center text-info">
+                            Connect your E-Shop and pull your products automatically.
+                        </h2>
+                        <br/>
+                        <div class="text-center">
+                            <small class="text-danger bold">Create private app for you shop to generate API key and PASSWORD</small>
+                        </div>
+                    {% endif %}
                     <br/>
-                    <div class="text-center">
-                        <small class="text-danger bold">Create private app for you shop to generate API key and PASSWORD</small>
-                    </div>
-                    <br/>
-                    <form id="connectShopForm" method="post" action="{% url 'connectShop' %}">
+                    <form id="connectShopForm" method="post" {%if plan%}action="{% url 'updateShop' %}"{%else%}action="{% url 'connectShop' %}"{%endif%}>
                     {% csrf_token %}
                         <div class="form-group">
                             <label for="shopName" class="text-dark bold">Shop Domain*</label>
-                            <input type="text" class="form-control" name="shopName" id="shopName" placeholder="Enter shop domain (doesn't include http, https)" required>
+                            <input {%if plan%}value="{{customuser.shop_name}}"{%endif%} type="text" class="form-control" name="shopName" id="shopName" placeholder="shopname.myshopify.com (no paid domain, http or https)" required>
                         </div>
                         <div class="form-group">
                             <label for="shopKey" class="text-dark bold">Shop API Key*</label>
-                            <input type="text" class="form-control" name="shopKey" id="shopKey" placeholder="Enter shop API Key" required>
+                            <input {%if plan%}value="{{customuser.shop_api_key}}"{%endif%} type="text" class="form-control" name="shopKey" id="shopKey" placeholder="Enter shop API Key" required>
                         </div>
                         <div class="form-group">
                             <label for="shopKey" class="text-dark bold">Shop password*</label>
-                            <input type="password" class="form-control" name="shopPass" id="shopPass" placeholder="Enter shop password" required>
+                            <input {%if plan%}value="{{customuser.shop_password}}"{%endif%} type="password" class="form-control" name="shopPass" id="shopPass" placeholder="Enter shop password" required>
                         </div>
-                        <button style="width: 100%;" type="submit" class="btn btn-warning">Connect shop</button>
+                        <button style="width: 100%;" type="submit" class="btn btn-warning">{%if plan%}Update{%else%}Connect{%endif%} shop</button>
                     </form>
                 </div>
             </div>
@@ -1683,19 +1730,20 @@
         var formdata = new FormData();
         formdata.append("images",file);
 
-        var story_id = $(".contentcard.active").attr('id').split('_')[1];
-
         $.ajax({
             type: "POST",
-            url: "/upload_image/"+story_id+"/",
+            url: "/upload_image/",
             data: formdata,
             contentType: false,
             processData: false,
             success: function(result) {
+                result = eval(result)[0];
                 var imageWidgetHtml = $("#imageCardHtml").html();
                 $(".imagesContainer").append(imageWidgetHtml);
-                $(".imagesContainer .newImageWidget img").attr('src',result);
+                $(".imagesContainer .newImageWidget img").attr('src',result['src']);
+                $(".imagesContainer .newImageWidget").attr('id',"image_"+result['id']);
                 $(".imagesContainer .newImageWidget").removeClass('newImageWidget');
+                location.reload();
             }
         });
     }
@@ -1704,9 +1752,16 @@
     function setTextColor(obj){
         var color = $(obj).attr('data-color');
         $(".editable-container.active .includeText:not('.specialTextColor, .text-stroke, .card-choice-title')").css('color',color);
-        var id = $(".editable-container.active").attr('id');
-        var type = "color";
-        var data = color;
+        var id = $(".editable-container.active").attr('id').split('_')[1];
+        var editableContainerType = $(".editable-container.active").attr('id').split('_')[0];
+        if(editableContainerType == "text" || editableContainerType == "block"){
+            var type = "html";
+            var data = $(".editable-container.active").html();
+        }
+        else{
+            var type = "color";
+            var data = color;
+        }
         updateComponent(id, type, data);
     }
 
@@ -1718,20 +1773,37 @@
         $(".editable-container.active .specialTextColor").css({'color':color});
         $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('border-color',color);
         $(".editable-container.active h1 i, .editable-container.active h2 i, .editable-container.active h3 i, .editable-container.active h4 i, .editable-container.active h5 i, .editable-container.active h6 i").css('color',color);
-        var id = $(".editable-container.active").attr('id');
-        var type = "background";
-        var data = color;
+        var id = $(".editable-container.active").attr('id').split('_')[1];
+        var editableContainerType = $(".editable-container.active").attr('id').split('_')[0];
+        if(editableContainerType == "text" || editableContainerType == "block"){
+            var type = "html";
+            var data = $(".editable-container.active").html();
+        }
+        else{
+            var type = "background";
+            var data = color;
+        }
         updateComponent(id, type, data);
     }
 
     function setTextAlign(obj){
         var align = $(obj).attr('data-align');
-        $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('text-align',align);
+        editableContainerType = $(".editable-container.active").attr('id').split('_')[0];
+        if(editableContainerType == "text" || editableContainerType == "block"){
+            $(".editable-container.active h3, .editable-container.active h5, .editable-container.active h6").css('text-align',align);
+            var id = $(".editable-container.active").attr('id').split('_')[1];
+            var type = "html";
+            var data = $(".editable-container.active").html();
+            updateComponent(id, type, data);
+        }
     }
 
     function setTextFont(obj){
         var font = $(obj).attr('data-font');
         $(".editable-container.active").css('font-family',font);
+        var id = $(".editable-container.active").attr('id').split('_')[1];
+        var type = "fontFamily";
+        upadteComponent(id, type, font);
     }
 
     function setText(obj){
@@ -1765,13 +1837,23 @@
             var id = $(".editable-container.active").attr('id').split('_')[1];
             var type = "href";
             updateComponent(id, type, href);
-            $(".editable-container.active .clickmebtn").attr('onclick','window.location.replace("'+href+'")');
+        }
+    }
+
+    function setLinkTarget(obj){
+        var id = $(".editabl-container.active").attr('id').split('_')[1];
+        var type = "target"
+        if($(obj).is(":checked")){
+            updateComponent(id, type, "blank");
+        }
+        else{
+            updateComponent(id, type, "None");
         }
     }
 
     function setRotationDegree(obj){
         degree = ($(obj).val() - 50) * 3.6;
-        $(".editable-container.active").css('transform','rotate('+degree+'deg)');
+        $(".editable-container.active").css('transform','translate(-50%, -50%) rotate('+degree+'deg)');
         var id = $(".editable-container.active").attr('id').split('_')[1];
         var type = "rotation";
         var finalDeg = degree+'deg';
@@ -1780,7 +1862,10 @@
 
     function setFontSize(obj){
         size = $(obj).val();
-        $(".editable-container.active h1, .editable-container.active h2, .editable-container.active h3, .editable-container.active h4, .editable-container.active h5, .editable-container.active h6").css('font-size',size);
+        $(".editable-container.active .includeText").css('font-size',size);
+        var id = $(".editable-container.active").attr('id');
+        var type = "fontSize";
+        upadteComponent(id, type, size);
     }
 
 
@@ -1944,10 +2029,7 @@
         $(".contentcard.active .innerStoryCard").css('background',$(obj).attr('data-color'));
         updateStory($(obj).attr('data-color'));
     }
-    function setStoryCustomBg(obj){
-        $(".contentcard.active .innerStoryCard").css('background',"#"+$(obj).val());
-        updateStory("#"+$(obj).val());
-    }
+    
 
     var x = setInterval(function(){
         var sec2 = document.getElementsByClassName('hour-number-card')[5];
@@ -2027,7 +2109,6 @@
 
     function updateStory(bg){
         var id = $(".contentcard.active").attr('id').split('_')[1];
-
         var url = '/update_story/'+id+'/'+bg+'/';
         $.ajax({
             type: "GET",
@@ -2178,7 +2259,6 @@
     <script>
         $(document).ready(function(e){
             var data = {{products|safe}}.products;
-            console.log(data);
             for(var i=0; i<data.length; i++){
                 var productsContainer = document.getElementById('shopProductsList');
 

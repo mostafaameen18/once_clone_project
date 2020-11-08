@@ -34,6 +34,7 @@ class components(models.Model):
     type = models.CharField(max_length=500, choices=typeChoices)
     title = models.CharField(max_length=500, default="default text for widget", blank=True, null=True)
     href = models.URLField(blank=True, null=True)
+    target = models.CharField(max_length=500, blank=True, null=True)
     image = models.ImageField(blank=True, null=True)
     src = models.TextField(blank=True, null=True)
     html = models.TextField(blank=True, null=True)
@@ -57,13 +58,20 @@ class components(models.Model):
     rotation = models.CharField(max_length=500, default="0deg")
     background = models.CharField(max_length=500, blank=True, null=True, default="white")
     color = models.CharField(max_length=500, blank=True, null=True, default="#333")
+    fontSize = models.CharField(max_length=500, blank=True, null=True)
+    fontFamily = models.CharField(max_length=500, blank=True, null=True, default="Helvetica")
+    textAlign = models.CharField(max_length=500, blank=True, null=True, default="center")
 
 
 
 
 class story(models.Model):
-
+    storyTypeChoices = (
+        ("design","design"),
+        ("checkout","checkout"),
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    storyType = models.CharField(max_length=500, choices=storyTypeChoices, default="design")
     date = models.DateTimeField(auto_now_add=True)
     background = models.CharField(max_length=500, default="white")
     components = models.ManyToManyField(components, null=True, blank=True)
@@ -88,8 +96,10 @@ class storiesSet(models.Model):
 
     def getFirstStory(self):
         try:
-            story = self.storiesSet.all()[0]
-            return story
+            if len(self.storiesSet.all().filter(storyType="design")) > 0:
+                return self.storiesSet.all().filter(storyType="design")[0]
+            else:
+                return self.storiesSet.all()[0]
         except:
             return False
 

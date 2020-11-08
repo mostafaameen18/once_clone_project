@@ -6,6 +6,7 @@ urlpatterns = [
     #path('login/', views.loginView, name='login'),
     path('create-story/<int:storySet>/', views.createStoryView, name='create-story'),
     path('connectShop/',views.connectShop,name="connectShop"),
+    path('updateShop/',views.updateShop,name="updateShop"),
     path('storiesList/',views.storiesList,name="storiesList"),
     path('createNewStorySet/',views.createNewStorySet,name="createNewStorySet"),
     path('preview/<str:code>/',views.preview,name="preview"),
