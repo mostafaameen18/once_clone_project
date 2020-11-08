@@ -329,8 +329,50 @@
                                             </div>
                                         </div>
                                     {% elif component.type == 'timer' %}
-                                
-
+                                        <div style="background: {{component.background}};" class="engage-card p-3">
+                                            <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                            <div class="row justify-content-between timer-card">
+                                                <div class="col-3" style="padding: 0;">
+                                                    <div class="d-flex justify-content-center">
+                                                        <div class="col-6 p-1">
+                                                            <h6 class="hour-number-card">{{component.getD1}}</h6>
+                                                        </div>
+                                                        <div class="col-6 p-1">
+                                                            <h6 class="hour-number-card">{{component.getD2}}</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <small class="text-muted">Days</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3" style="padding: 0;">
+                                                    <div class="d-flex justify-content-center">
+                                                        <div class="col-6 p-1">
+                                                            <h6 class="hour-number-card">{{component.getH1}}</h6>
+                                                        </div>
+                                                        <div class="col-6 p-1">
+                                                            <h6 class="hour-number-card">{{component.getH2}}</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <small class="text-muted">Hours</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3" style="padding: 0;">
+                                                    <div class="d-flex justify-content-center">
+                                                        <div class="col-6 p-1">
+                                                            <h6 class="hour-number-card">{{component.getM1}}</h6>
+                                                        </div>
+                                                        <div class="col-6 p-1">
+                                                            <h6 class="hour-number-card">{{component.getM2}}</h6>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <small class="text-muted">Minutes</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     {% elif component.type == 'button' %}
                                         <div style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">
                                         <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="display: block color: {{component.color}};">{{component.title}}</a>
@@ -409,8 +451,50 @@
                                                     </div>
                                                 </div>
                                             {% elif component.type == 'timer' %}
-                                        
-
+                                                <div style="background: {{component.background}};" class="engage-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div class="row justify-content-between timer-card">
+                                                        <div class="col-3" style="padding: 0;">
+                                                            <div class="d-flex justify-content-center">
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getD1}}</h6>
+                                                                </div>
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getD2}}</h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <small class="text-muted">Days</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-3" style="padding: 0;">
+                                                            <div class="d-flex justify-content-center">
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getH1}}</h6>
+                                                                </div>
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getH2}}</h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <small class="text-muted">Hours</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-3" style="padding: 0;">
+                                                            <div class="d-flex justify-content-center">
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getM1}}</h6>
+                                                                </div>
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getM2}}</h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <small class="text-muted">Minutes</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             {% elif component.type == 'button' %}
                                                 <div style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">
                                                 <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="display: block color: {{component.color}};">{{component.title}}</a>
@@ -872,6 +956,64 @@
                     $("#checkoutFailedResponseCardToggler").click();
                 }
             }
+        });
+    }
+
+
+
+
+
+
+
+
+
+    var x = setInterval(adjustTimer,60000);
+
+    function adjustTimer(){
+        $(".timer-card").each(function(){
+            var d1 = $(this).find('.hour-number-card')[0];
+            var d2 = $(this).find('.hour-number-card')[1];
+            var h1 = $(this).find('.hour-number-card')[2];
+            var h2 = $(this).find('.hour-number-card')[3];
+            var m1 = $(this).find('.hour-number-card')[4];
+            var m2 = $(this).find('.hour-number-card')[5];
+
+            if (Number(m2.textContent) > 0){
+                m2.textContent = Number(m2.textContent) - 1;
+            }
+            else if(Number(m2.textContent) == 0){
+                if(Number(m1.textContent) > 0){
+                    m2.textContent = 9;
+                    m1.textContent = Number(m1.textContent) - 1;
+                }
+                else if(Number(m1.textContent) == 0){
+                    m2.textContent = 9;
+                    m1.textContent = 5;
+                    if(Number(h2.textContent) > 0){
+                        h2.textContent = Number(h2.textContent) - 1;
+                    }
+                    else if(Number(h2.textContent) == 0){
+                        if(Number(h1.textContent) > 0){
+                            h2.textContent = 9;
+                            h1.textContent = Number(h1.textContent) - 1;
+                        }
+                        else if(Number(h1.textContent) == 0){
+                            h2.textContent = 4;
+                            h1.textContent = 2;
+                            if(Number(d2.textContent) > 0){
+                                d2.textContent = Number(d2.textContent) - 1;
+                            }
+                            else if(Number(d2.textContent) == 0){
+                                if(Number(d1.textContent) > 0){
+                                    d2.textContent = 9;
+                                    d1.textContent = Number(d1.textContent) - 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         });
     }
 

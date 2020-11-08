@@ -379,8 +379,50 @@
                                                     </div>
                                                 </div>
                                             {% elif component.type == 'timer' %}
-                                        
-
+                                                <div style="background: {{component.background}};" class="engage-card p-3">
+                                                    <h6 style="color: {{component.color}};" class="text-center bold includeText">{{component.title}}</h6>
+                                                    <div class="row justify-content-between timer-card">
+                                                        <div class="col-3" style="padding: 0;">
+                                                            <div class="d-flex justify-content-center">
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getD1}}</h6>
+                                                                </div>
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getD2}}</h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <small class="text-muted">Days</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-3" style="padding: 0;">
+                                                            <div class="d-flex justify-content-center">
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getH1}}</h6>
+                                                                </div>
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getH2}}</h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <small class="text-muted">Hours</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-3" style="padding: 0;">
+                                                            <div class="d-flex justify-content-center">
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getM1}}</h6>
+                                                                </div>
+                                                                <div class="col-6 p-1">
+                                                                    <h6 class="hour-number-card">{{component.getM2}}</h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <small class="text-muted">Minutes</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             {% elif component.type == 'button' %}
                                                 <div onclick="window.location.replace('{{component.href}}')" style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">Click me !</div>
                                             {% elif component.type == 'emoji' %}

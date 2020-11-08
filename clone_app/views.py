@@ -12,6 +12,7 @@ from django.http import JsonResponse
 import string
 from random import *
 import time
+from . import models
 
 def homeView(request):
     return render(request, 'index.html')
@@ -66,32 +67,32 @@ def removeStorySet(request, id):
 def createStoryView(request, storySet):
     if not request.user.is_authenticated:
         return redirect('login')
-    try:
-        ids = []
-        storiesSetIds = storiesSet.objects.get(id=storySet)
-        for i in storiesSetIds.storiesSet.all():
-            ids.append(i.id)
-        stories = story.objects.filter(user=request.user, id__in=ids)
-        stories_images = images.objects.filter(user=request.user)
+    # try:
+    ids = []
+    storiesSetIds = storiesSet.objects.get(id=storySet)
+    for i in storiesSetIds.storiesSet.all():
+        ids.append(i.id)
+    stories = story.objects.filter(user=request.user, id__in=ids)
+    stories_images = images.objects.filter(user=request.user)
 
-        context = {
-            'stories': stories,
-            'images': stories_images,
-            'storySet': storySet,
-            'entireStorySet': storiesSetIds
-        }
-        try:
-            mycustomuser = customuser.objects.get(user=request.user)
-            url = "https://{}:{}@{}/admin/api/2020-10/products.json".format(mycustomuser.shop_api_key, mycustomuser.shop_password, mycustomuser.shop_name)
-            res = requests.get(url)
-            context['products'] = json.dumps(res.json())
-            context['customuser'] = mycustomuser
-            context['plan'] = "paid"
-        except:
-            pass
-        return render(request, 'story.html', context)
+    context = {
+        'stories': stories,
+        'images': stories_images,
+        'storySet': storySet,
+        'entireStorySet': storiesSetIds
+    }
+    try:
+        mycustomuser = customuser.objects.get(user=request.user)
+        url = "https://{}:{}@{}/admin/api/2020-10/products.json".format(mycustomuser.shop_api_key, mycustomuser.shop_password, mycustomuser.shop_name)
+        res = requests.get(url)
+        context['products'] = json.dumps(res.json())
+        context['customuser'] = mycustomuser
+        context['plan'] = "paid"
     except:
-        return redirect('storiesList')
+        pass
+    return render(request, 'story.html', context)
+    # except:
+    #     return redirect('storiesList')
 
 
 @csrf_exempt
@@ -377,11 +378,11 @@ def createComponent(request, id, type):
     elif type == "check":
         component.title = "You can pick multiple choices"
         component.save()
-        choice1 = choices(user=user, title="first option")
+        choice1 = models.choices(user=user, title="first option")
         choice1.save()
-        choice2 = choices(user=user, title="second option")
+        choice2 = models.choices(user=user, title="second option")
         choice2.save()
-        choice3 = choices(user=user, title="third option")
+        choice3 = models.choices(user=user, title="third option")
         choice3.save()
         component.choices.add(choice1)
         component.choices.add(choice2)
@@ -395,11 +396,11 @@ def createComponent(request, id, type):
     elif type == "radio":
         component.title = "You can pick one choice"
         component.save()
-        choice1 = choices(user=user, title="first option")
+        choice1 = models.choices(user=user, title="first option")
         choice1.save()
-        choice2 = choices(user=user, title="second option")
+        choice2 = models.choices(user=user, title="second option")
         choice2.save()
-        choice3 = choices(user=user, title="third option")
+        choice3 = models.choices(user=user, title="third option")
         choice3.save()
         component.choices.add(choice1)
         component.choices.add(choice2)
@@ -443,8 +444,8 @@ def updateComponent(request, id, item):
         component.hours = data
     elif item == "minutes":
         component.minutes = data
-    elif item == "seconds":
-        component.seconds = data
+    elif item == "date":
+        component.date = data
     elif item == "left":
         component.left = data
     elif item == "top":

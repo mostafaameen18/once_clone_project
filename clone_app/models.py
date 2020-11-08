@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
+import datetime
 
 
 
@@ -48,7 +50,7 @@ class components(models.Model):
     yesNoCount = models.IntegerField(blank=True, null=True, default=0)
     hours = models.IntegerField(blank=True, null=True)
     minutes = models.IntegerField(blank=True, null=True)
-    seconds = models.IntegerField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
     transX = models.CharField(max_length=500, default="-50%")
     transY = models.CharField(max_length=500, default="-50%")
     top = models.CharField(max_length=500, default="50%")
@@ -62,6 +64,47 @@ class components(models.Model):
     fontFamily = models.CharField(max_length=500, blank=True, null=True, default="Helvetica")
     textAlign = models.CharField(max_length=500, blank=True, null=True, default="center")
 
+
+    def getD1(self):
+        f_date = date(int(str(self.date).split('-')[0]), int(str(self.date).split('-')[1]), int(str(self.date).split('-')[2]))
+        l_date = date.today()
+        l_date = date(int(str(l_date).split('-')[0]), int(str(l_date).split('-')[1]), int(str(l_date).split('-')[2]))
+        delta = f_date - l_date
+        days = "%02d"%delta.days
+        return int(days[0])
+
+    def getD2(self):
+        f_date = date(int(str(self.date).split('-')[0]), int(str(self.date).split('-')[1]), int(str(self.date).split('-')[2]))
+        l_date = date.today()
+        l_date = date(int(str(l_date).split('-')[0]), int(str(l_date).split('-')[1]), int(str(l_date).split('-')[2]))
+        delta = f_date - l_date
+        days = "%02d"%delta.days
+        return int(days[1])
+
+    def getH1(self):
+        hours = "%02d"%(int(self.hours) - int(datetime.datetime.now().hour))
+        if int(hours) < 0:
+            hours = 24 + int(hours)
+        return str(hours)[0]
+
+
+    def getH2(self):
+        hours = "%02d"%(int(self.hours) - int(datetime.datetime.now().hour))
+        if int(hours) < 0:
+            hours = 24 + int(hours)
+        return str(hours)[1]
+
+    def getM1(self):
+        minutes = "%02d"%(int(self.minutes) - int(datetime.datetime.now().minute))
+        if int(minutes) < 0:
+            minutes = 60 + int(minutes)
+        return str(minutes)[0]
+
+    def getM2(self):
+        minutes = "%02d"%(int(self.minutes) - int(datetime.datetime.now().minute))
+        if int(minutes) < 0:
+            minutes = 60 + int(minutes)
+        return str(minutes)[1]
 
 
 
