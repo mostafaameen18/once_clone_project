@@ -293,17 +293,20 @@ def connectShop(request):
     shopKey = request.POST.get('shopKey')
     shopPass = request.POST.get('shopPass')
 
-    mycustomuser = customuser(user=request.user, shop_name=shopName, shop_api_key=shopKey, shop_password=shopPass)
-    mycustomuser.save()
+    try:
+        mycustomuser = customuser(user=request.user, shop_name=shopName, shop_api_key=shopKey, shop_password=shopPass)
+        mycustomuser.save()
 
-    userStoriesSet = storiesSet.objects.get(user=request.user)
-    for storySet in userStoriesSet:
-        checkoutStory = story(user=request.user, storyType="checkout", background="dodgerblue")
-        checkoutStory.save()
-        storySet.storiesSet.add(checkoutStory)
-        storySet.save()
+        userStoriesSet = storiesSet.objects.filter(user=request.user)
+        for storySet in userStoriesSet:
+            checkoutStory = story(user=request.user, storyType="checkout", background="dodgerblue")
+            checkoutStory.save()
+            storySet.storiesSet.add(checkoutStory)
+            storySet.save()
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except:
+        return HttpResponse("shop already exists")
 
 def updateShop(request):
     user = request.user
@@ -349,6 +352,8 @@ def update_story(request, id, bg):
 def remove_story(request, id):
     user = request.user
     this_story = story.objects.get(user=user, id=id)
+    if this_story.storyType == "checkout":
+        return HttpResponse("checkout")
     if this_story.components.all() != None:
         for component in this_story.components.all():
             if component.choices.all() != None:
