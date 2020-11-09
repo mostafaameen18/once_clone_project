@@ -90,7 +90,7 @@
             top: 50%;
             left: 100%;
             transform: translate(-70%, -50%);
-            z-index: 5;
+            z-index: 6;
             visibility: hidden;
         }
         .storyControls{
@@ -273,7 +273,7 @@
             border-radius: 15px;
         }
         .contentcard.active{
-            z-index: 1;
+            z-index: 10;
         }
         .contentcard.active .innerStoryCard{
             border: 3px solid dodgerblue;
@@ -1860,7 +1860,7 @@
         $(".editable-container.active").css('font-family',font);
         var id = $(".editable-container.active").attr('id').split('_')[1];
         var type = "fontFamily";
-        upadteComponent(id, type, font);
+        updateComponent(id, type, font);
     }
 
     function setText(obj){
@@ -1920,9 +1920,15 @@
     function setFontSize(obj){
         size = $(obj).val();
         $(".editable-container.active .includeText").css('font-size',size);
-        var id = $(".editable-container.active").attr('id');
-        var type = "fontSize";
-        upadteComponent(id, type, size);
+        var id = $(".editable-container.active").attr('id').split('_')[1];
+        var containerType = $(".editable-container.active").attr('id').split('_')[0];
+        if(containerType == "text" || containerType == "block"){
+            var data = $(".editable-container.active").html();
+            updateComponent(id, "html", data);
+        }
+        else{
+            updateComponent(id, "fontSize", size)
+        }
     }
 
 
