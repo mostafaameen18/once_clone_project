@@ -502,7 +502,7 @@
                     <ul class="dropdown-menu">
                         <li class="dropdown-item">
                             <div class="d-flex">
-                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://ec2-3-209-124-56.compute-1.amazonaws.com/preview/{{entireStorySet.code}}">
+                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://honkymonkey.com/preview/{{entireStorySet.code}}">
                                 <a onclick="copyPreviewLink()" href="#!" class="btn btn-fancy"><i class="fas fa-copy"></i></a>
                             </div>
                         </li>
@@ -1143,34 +1143,34 @@
                                             <small class="text-muted">Set layout color</small>
                                             <br/>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="white"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="255,255,255" data-color="white"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="black"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="0,0,0" data-color="black"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="grey"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="128,128,128" data-color="grey"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="blue"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="0,0,255" data-color="blue"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="cyan"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="0,255,255" data-color="cyan"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="purple"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="128, 0, 128" data-color="purple"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="violet"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="238,130,238" data-color="violet"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="lightblue"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="173, 216, 230" data-color="lightblue"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="red"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="255,0,0" data-color="red"></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-color="green"></a>
+                                                <a onclick="setTextSecondaryColor(this)" class="nav-link datacolorBtn" href="#!" data-rgb="0,255,0" data-color="green"></a>
                                             </li>
                                         </ul>
                                     </ul>
@@ -1821,8 +1821,10 @@
 
     function setTextSecondaryColor(obj){
         var color = $(obj).attr('data-color');
+        var rgbColor = $(obj).attr('data-rgb');
+        var undelineBG = 'rgba(0, 0, 0, 0) linear-gradient(transparent 50%, rgb('+rgbColor+') 50%)';
         $(".editable-container.active .text-bg").css('background',color);
-        $(".editable-container.active .text-underlined").css('background',color);
+        $(".editable-container.active .text-underlined").css('background',undelineBG);
         $(".editable-container.active .text-stroke").css({'text-shadow': '-1px -1px 0 '+color+', -1px 1px 0 '+color+', 1px -1px 0 '+color+', 1px 1px 0 '+color+''});
         $(".editable-container.active .specialTextColor").css({'color':color});
         $(".editable-container.active .text-left-bordered").css('border-color',color);
@@ -2384,6 +2386,7 @@
     <script>
         $(document).ready(function(e){
             var data = {{products|safe}}.products;
+            console.log(data);
             for(var i=0; i<data.length; i++){
                 var productsContainer = document.getElementById('shopProductsList');
 
@@ -2401,7 +2404,6 @@
                 displayFlexContainer.setAttribute('data-id',data[i].id);
                 displayFlexContainer.setAttribute('data-price',data[i].variants[0].price);
                 displayFlexContainer.setAttribute('data-title',data[i].title);
-                displayFlexContainer.setAttribute('data-description',data[i].body_html);
                 displayFlexContainer.setAttribute('data-src',data[i].image.src);
                 displayFlexContainer.setAttribute('data-handle', data[i].handle);
 
@@ -2428,13 +2430,7 @@
                 productTitle.className = "text-white bold";
                 productTitle.innerHTML = data[i].title;
 
-                productBody = document.createElement('small');
-                productBody.setAttribute('style','font-size:10px');
-                productBody.className = "text-white";
-                productBody.innerHTML = data[i].body_html;
-
                 productDes.appendChild(productTitle);
-                productDes.appendChild(productBody);
 
 
                 // sibling 3
@@ -2473,7 +2469,6 @@
             var id = $(this).attr('data-id');
             var handle = $(this).attr('data-handle')
             var title = $(this).attr('data-title');
-            var description = $(this).attr('data-description');
             var price = $(this).attr('data-price');
             var src = $(this).attr('data-src');
             var url = "/addProductSell/{{storySet}}/";
@@ -2483,7 +2478,6 @@
                 data: {
                     "handle": handle,
                     "title": title,
-                    "description": description,
                     "price": price,
                     "src": src,
                     "id": id,

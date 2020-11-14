@@ -261,8 +261,8 @@
         .swiper-slide {
             background-position: center;
             background-size: cover;
-            width: 315px;
-            height: 530px;
+            width: 310px;
+            height: 510px;
         }
 
         .rangeSlider, .rangeSlider:focus{
@@ -926,37 +926,66 @@
     }
 
     function performCheckout(){
-        $("#WaitingResponseCardToggler").click();
-        $.ajax({
-            type: "POST",
-            url: "/performCheckout/",
-            data: {
-                "quantity": $("#quantity").val(),
-                "fname": $("#fname").val(),
-                "lname": $("#lname").val(),
-                "email": $("#email").val(),
-                "phone": $("#phone").val(),
-                "addressLine1": $("#addressLine1").val(),
-                "addressLine2": $("#addressLine2").val(),
-                "city": $("#city").val(),
-                "state": $("#state").val(),
-                "country": $("#country").val(),
-                "postal": $("#postal").val(),
-                "cardNumber": $("#cardNumber").val(),
-                "cardHolderName": $("#cardHolderName").val(),
-                "expiryDate": $("#expiryDate").val(),
-                "securityCode": $("#securityCode").val(),
-                "storySet": "{{storySet.id}}",
-            },
-            success: function(result) {
-                if(result == "done"){
-                    $("#checkoutSuccessResponseCardToggler").click();
+        if ($("#fname").val() == '' || $("#lname").val() == '' || $("#email").val() == '' || $("#phone").val() == ''){
+            $("#personalInfoFormToggler").click();
+            $(".form-control").each(function(){
+                if($(this).val() == ''){
+                    $(this).css('border-color','red');
+                }
+            });
+        }
+        else if($("#addressLine1").val() == '' || $("#addressLine2").val() == '' || $("#city").val() == '' || $("#state").val() == '' || $("#country").val() == '' || $("#postal").val() == ''){
+            $("#shippingLocationFormToggler").click();
+            $(".form-control").each(function(){
+                if($(this).val() == ''){
+                    $(this).css('border-color','red');
+                }
+            });
+        }
+        else if($("#cardNumber").val() == '' || $("#cardHolderName").val() == '' || $("#expiryDate").val() == '' || $("#securityCode").val() == ''){
+            $("#productPaymentFormToggler").click();
+            $(".form-control").each(function(){
+                if($(this).val() == ''){
+                    $(this).css('border-color','red');
                 }
                 else{
-                    $("#checkoutFailedResponseCardToggler").click();
+                    $(this).css('border-color','grey');
                 }
-            }
-        });
+            });
+        }
+        else{
+            $("#WaitingResponseCardToggler").click();
+            $.ajax({
+                type: "POST",
+                url: "/performCheckout/",
+                data: {
+                    "quantity": $("#quantity").val(),
+                    "fname": $("#fname").val(),
+                    "lname": $("#lname").val(),
+                    "email": $("#email").val(),
+                    "phone": $("#phone").val(),
+                    "addressLine1": $("#addressLine1").val(),
+                    "addressLine2": $("#addressLine2").val(),
+                    "city": $("#city").val(),
+                    "state": $("#state").val(),
+                    "country": $("#country").val(),
+                    "postal": $("#postal").val(),
+                    "cardNumber": $("#cardNumber").val(),
+                    "cardHolderName": $("#cardHolderName").val(),
+                    "expiryDate": $("#expiryDate").val(),
+                    "securityCode": $("#securityCode").val(),
+                    "storySet": "{{storySet.id}}",
+                },
+                success: function(result) {
+                    if(result == "done"){
+                        $("#checkoutSuccessResponseCardToggler").click();
+                    }
+                    else{
+                        $("#checkoutFailedResponseCardToggler").click();
+                    }
+                }
+            });
+        }
     }
 
 

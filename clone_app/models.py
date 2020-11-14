@@ -71,7 +71,7 @@ class components(models.Model):
         l_date = date(int(str(l_date).split('-')[0]), int(str(l_date).split('-')[1]), int(str(l_date).split('-')[2]))
         delta = f_date - l_date
         days = "%02d"%delta.days
-        return int(days[0])
+        return str(days[0])
 
     def getD2(self):
         f_date = date(int(str(self.date).split('-')[0]), int(str(self.date).split('-')[1]), int(str(self.date).split('-')[2]))
@@ -79,7 +79,7 @@ class components(models.Model):
         l_date = date(int(str(l_date).split('-')[0]), int(str(l_date).split('-')[1]), int(str(l_date).split('-')[2]))
         delta = f_date - l_date
         days = "%02d"%delta.days
-        return int(days[1])
+        return str(days[1])
 
     def getH1(self):
         hours = "%02d"%(int(self.hours) - int(datetime.datetime.now().hour))

@@ -67,32 +67,32 @@ def removeStorySet(request, id):
 def createStoryView(request, storySet):
     if not request.user.is_authenticated:
         return redirect('login')
-    # try:
-    ids = []
-    storiesSetIds = storiesSet.objects.get(id=storySet)
-    for i in storiesSetIds.storiesSet.all():
-        ids.append(i.id)
-    stories = story.objects.filter(user=request.user, id__in=ids)
-    stories_images = images.objects.filter(user=request.user)
-
-    context = {
-        'stories': stories,
-        'images': stories_images,
-        'storySet': storySet,
-        'entireStorySet': storiesSetIds
-    }
     try:
-        mycustomuser = customuser.objects.get(user=request.user)
-        url = "https://{}:{}@{}/admin/api/2020-10/products.json".format(mycustomuser.shop_api_key, mycustomuser.shop_password, mycustomuser.shop_name)
-        res = requests.get(url)
-        context['products'] = json.dumps(res.json())
-        context['customuser'] = mycustomuser
-        context['plan'] = "paid"
+        ids = []
+        storiesSetIds = storiesSet.objects.get(id=storySet)
+        for i in storiesSetIds.storiesSet.all():
+            ids.append(i.id)
+        stories = story.objects.filter(user=request.user, id__in=ids)
+        stories_images = images.objects.filter(user=request.user)
+
+        context = {
+            'stories': stories,
+            'images': stories_images,
+            'storySet': storySet,
+            'entireStorySet': storiesSetIds
+        }
+        try:
+            mycustomuser = customuser.objects.get(user=request.user)
+            url = "https://{}:{}@{}/admin/api/2020-10/products.json".format(mycustomuser.shop_api_key, mycustomuser.shop_password, mycustomuser.shop_name)
+            res = requests.get(url)
+            context['products'] = json.dumps(res.json())
+            context['customuser'] = mycustomuser
+            context['plan'] = "paid"
+        except:
+            pass
+        return render(request, 'story.html', context)
     except:
-        pass
-    return render(request, 'story.html', context)
-    # except:
-    #     return redirect('storiesList')
+        return redirect('storiesList')
 
 
 @csrf_exempt
@@ -100,7 +100,6 @@ def addProductSell(request, storySetId):
 
     handle = request.POST.get('handle')
     title = request.POST.get('title')
-    description = request.POST.get('description')
     price = request.POST.get('price')
     src = request.POST.get('src')
     productId = request.POST.get('id')
@@ -108,7 +107,6 @@ def addProductSell(request, storySetId):
     storySet = storiesSet.objects.get(id=storySetId)
     storySet.handle = handle
     storySet.title = title
-    storySet.description = description
     storySet.price = price
     storySet.src = src
     storySet.product = productId
@@ -159,7 +157,7 @@ def performCheckout(request):
     try:
         url = "https://{}/products/{}/".format(mycustomuser.shop_name, storiesSet.objects.get(id=storySetId).handle)
         options = Options()
-        options.headless = True
+        # options.headless = True
         driver = webdriver.Firefox(options=options, executable_path="geckodriver")
         driver.get(url)
         driver.find_element_by_id("password").send_keys('zaffot')
