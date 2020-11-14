@@ -977,12 +977,13 @@
                     "storySet": "{{storySet.id}}",
                 },
                 success: function(result) {
-                    if(result == "done"){
-                        $("#checkoutSuccessResponseCardToggler").click();
-                    }
-                    else{
-                        $("#checkoutFailedResponseCardToggler").click();
-                    }
+                    // if(result == "done"){
+                    //     $("#checkoutSuccessResponseCardToggler").click();
+                    // }
+                    // else{
+                    //     $("#checkoutFailedResponseCardToggler").click();
+                    // }
+                    console.log(result);
                 }
             });
         }
