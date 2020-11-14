@@ -708,8 +708,9 @@
                                                     <h1 class="text-center mt-3 text-success bold">Done successfully</h1>
                                                 </div>
                                             </div>
-                                            <div id="checkoutSuccessResponseCard" class="tab-pane fade show">
+                                            <div id="checkoutFailedResponseCard" class="tab-pane fade show">
                                                 <div style="width: 100%; height: 200px;">
+                                                    <a class="nav-link text-info" onclick="$('#productQuantityFormToggler').click()"><i class="fas fa-arrow-left"></i></a>
                                                     <h1 class="text-center mt-3 text-danger bold">Something went wrong !!</h1>
                                                 </div>
                                             </div>
@@ -977,13 +978,12 @@
                     "storySet": "{{storySet.id}}",
                 },
                 success: function(result) {
-                    // if(result == "done"){
-                    //     $("#checkoutSuccessResponseCardToggler").click();
-                    // }
-                    // else{
-                    //     $("#checkoutFailedResponseCardToggler").click();
-                    // }
-                    console.log(result);
+                    if(result == "done"){
+                        $("#checkoutSuccessResponseCardToggler").click();
+                    }
+                    else{
+                        $("#checkoutFailedResponseCardToggler").click();
+                    }
                 }
             });
         }
