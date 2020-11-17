@@ -495,14 +495,14 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item" style="line-height: 3;">
-                    <a class="nav-link text-royal bold" href="{% url 'answers' storySet %}">Answers</a>
+                    <a class="nav-link text-royal bold" href="{% url 'answers' storySet.id %}">Answers</a>
                 </li>
                 <li class="nav-item m-md-2">
                     <a data-toggle="dropdown" class="text-royal btn btn-fancy bold nav-link" href="#!"><i class="fas fa-link"></i> Share</a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-item">
                             <div class="d-flex">
-                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://honkymonkey.com/preview/{{entireStorySet.code}}">
+                                <input class="form-control" style="width: 100%;" type="text" id="previewLink" value="http://honkymonkey.com/preview/{{storySet.code}}">
                                 <a onclick="copyPreviewLink()" href="#!" class="btn btn-fancy"><i class="fas fa-copy"></i></a>
                             </div>
                         </li>
@@ -879,12 +879,58 @@
         </div>
         <div id="cart" class="tab-pane">
             {% if plan %}
-                <div class="p-2 m-2">
-                    <button type="button" data-toggle="modal" data-target="#connectShopModal" class="btn btn-outline-white">Update shop info</button>
-                </div>
-            	<div id="shopProductsList" class="p-3">
+            <ul class="nav d-flex justify-content-center" role="tablist">
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#shopProductsListTab" class="nav-link text-white bold sticker-emoji-toggler active">Shop Products</a>
+                </li>
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#productCheckoutWidgetTab" class="nav-link text-white bold sticker-emoji-toggler">Checkout widget</a>
+                </li>
+                
+            </ul>
+            <div class="tab-content">
+                <div id="shopProductsListTab" class="tab-pane fade show active">
+                    <div class="p-2 m-2">
+                        <button type="button" data-toggle="modal" data-target="#connectShopModal" class="btn btn-outline-white">Update shop info</button>
+                    </div>
+                	<div id="shopProductsList" class="p-3">
 
+                    </div>
                 </div>
+                <div id="productCheckoutWidgetTab" class="tab-pane fade show">
+                    <div class="col-10 mx-auto p-2">
+                        <div class="widget" data-type="range">
+                            <div class="engage-card p-3">
+                                <div class="card productBuyCard">
+                                    <div class="card-image-top" style="width: 100%; height: 100px;">
+                                        <img class="image-fluid" src="{{storySet.src}}">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <h5 class="text-dark" style="font-weight: bold;">{{storySet.title}}</h5>
+                                            <h5 class="text-dark" style="font-weight: bold;">{{storySet.price}}$</h5>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="col-4 text-center">
+                                                <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
+                                            </div>
+                                            <div class="col-4">
+                                                <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
+                                            </div>
+                                            <div class="col-4 text-center">
+                                                <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
+                                            </div>
+                                        </div>
+                                        <div style="width: 100%; margin-top: 10px;">
+                                            <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% else %}
                 <div class="p-3">
                     <div class="badge badge-warning"><h6 class="bold text-dark pt-1"><i class="fas fa-gem"></i> Premium</h6></div>
@@ -947,7 +993,7 @@
             <div class="p-2 addStoryCard">
                 <div class="addStoryBtn innerStoryCard" onclick="addStory()"><h3 class="text-royal text-center bold"><i class="fas fa-plus"></i></h3></div>
             </div>
-            {% for story in stories %}
+            {% for story in storySet.storiesSet.all %}
                 <div id="story_{{story.id}}" class="contentcard p-2">
                     <div class="innerStoryCard" style="position: relative; overflow:hidden; background: {{story.background}};">
                         {% for component in story.components.all %}
@@ -1025,7 +1071,7 @@
                                         <figure>
                                             <img class="image-fluid" src="{{component.src}}" alt="">
                                         </figure>
-                                    {% elif component.type == 'unsalpsh' %}
+                                    {% elif component.type == 'unsplash' %}
                                         <img class="image-fluid" src="{{component.src}}" alt="">
                                     {% elif component.type == 'check' %}
                                         <div style="background: {{component.background}};" class="engage-card p-3">
@@ -1063,40 +1109,38 @@
                                                 <div style="cursor: pointer;" onclick="addChoice(this)" class="card-choice-title mx-auto"><i class="fas fa-plus"></i> Add choice</div>
                                             </div>
                                         </div>
+                                    {% elif component.type == 'checkout' %}
+                                        <div style="background: {{component.background}};" class="engage-card productBuyCard">
+                                            <div class="card-image-top" style="width: 100%; height: 100px;">
+                                                <img class="image-fluid" src="{{storySet.src}}">
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between">
+                                                    <h5 class="includeText" style="color: {{component.color}}; font-weight: bold;">{{storySet.title}}</h5>
+                                                    <h5 class="includeText" style="color: {{component.color}}; font-weight: bold;">{{storySet.price}}$</h5>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="col-4 text-center">
+                                                        <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
+                                                    </div>
+                                                    <div class="col-4 text-center">
+                                                        <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
+                                                    </div>
+                                                </div>
+                                                <div style="width: 100%; margin-top: 10px;">
+                                                    <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     {% endif %}
                                     <button class="resizeXbtn"><i class="fas fa-circle"></i></button>
                                 </div>
                             </div>
                         {% endfor %}
-                        {% if story.storyType == "checkout" %}
-                            <div class="editableContainerAbsoluteContainer" style="padding: 10px; padding-top: 100px; width: 100%; overflow: hidden;">
-                                <div class="card productBuyCard">
-                                    <div class="card-image-top" style="width: 100%; height: 100px;">
-                                        <img class="image-fluid" src="{{entireStorySet.src}}">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <h5 class="text-dark" style="font-weight: bold;">{{entireStorySet.title}}</h5>
-                                            <h5 class="text-dark" style="font-weight: bold;">{{entireStorySet.price}}$</h5>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="col-4 text-center">
-                                                <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
-                                            </div>
-                                            <div class="col-4">
-                                                <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
-                                            </div>
-                                            <div class="col-4 text-center">
-                                                <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
-                                            </div>
-                                        </div>
-                                        <div style="width: 100%; margin-top: 10px;">
-                                            <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
+                        
                     </div>
                     <ul class="nav d-block storyContentControl storyContentControl-oneColor">
                         <li class="nav-item">
@@ -2216,7 +2260,7 @@
 
 
 
-    var storySet = "{{storySet}}";
+    var storySet = "{{storySet.id}}";
 
 
     function addStory(){
@@ -2394,7 +2438,7 @@
                 topPaddingContainer.className = "pt-2 pb-2";
 
                 var displayFlexContainer = document.createElement('div');
-                if("{{entireStorySet.product}}" == data[i].id){
+                if("{{storySet.product}}" == data[i].id){
                     displayFlexContainer.className = "d-flex justify-content-between shopProduct active";
                 }
                 else{
@@ -2451,7 +2495,7 @@
                 displayFlexContainer.appendChild(productPriceCon);
 
                 topPaddingContainer.appendChild(displayFlexContainer);
-                if("{{entireStorySet.product}}" == data[i].id){
+                if("{{storySet.product}}" == data[i].id){
                     productsContainer.prepend(topPaddingContainer);
                 }
                 else{
@@ -2471,7 +2515,7 @@
             var title = $(this).attr('data-title');
             var price = $(this).attr('data-price');
             var src = $(this).attr('data-src');
-            var url = "/addProductSell/{{storySet}}/";
+            var url = "/addProductSell/{{storySet.id}}/";
             $.ajax({
                 type: "POST",
                 url: url,

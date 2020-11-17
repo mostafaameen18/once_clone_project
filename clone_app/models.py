@@ -31,6 +31,7 @@ class components(models.Model):
         ('timer','timer'),
         ('range','range'),
         ('button','button'),
+        ('checkout','checkout'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=500, choices=typeChoices)
@@ -139,10 +140,7 @@ class storiesSet(models.Model):
 
     def getFirstStory(self):
         try:
-            if len(self.storiesSet.all().filter(storyType="design")) > 0:
-                return self.storiesSet.all().filter(storyType="design")[0]
-            else:
-                return self.storiesSet.all()[0]
+            return self.storiesSet.all()[0]
         except:
             return False
 

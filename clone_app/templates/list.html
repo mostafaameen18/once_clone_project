@@ -224,7 +224,30 @@
             width: 70px;
             height: 110px;
         }
-        
+        .productBuyCard{
+            width: 100%;
+            height: auto;
+            margin: auto;
+        }
+        .productBuyCard .card-body{
+            border-top-left-radius: 15px;
+            box-shadow: 0px 0px 10px gray;
+            border-top-right-radius: 15px;
+        }
+        .hiddenInput, .hiddenInput:focus{
+            background: transparent;
+            border: none;
+            outline: none;
+            text-align: center;
+            width: 100%;
+        }
+        .changeQuantityBtn{
+            width: 100%;
+            height: 30px;
+            border: 2px solid #333;
+            border-radius: 25px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -364,7 +387,7 @@
                                                 <figure>
                                                     <img class="image-fluid" src="{{component.src}}" alt="">
                                                 </figure>
-                                            {% elif component.type == 'unsalpsh' %}
+                                            {% elif component.type == 'unsplash' %}
                                                 <img class="image-fluid" src="{{component.src}}" alt="">
                                             {% elif component.type == 'check' %}
                                                 <div style="background: {{component.background}};" class="engage-card check-card p-3">
@@ -394,6 +417,32 @@
                                                         {% endfor %}
                                                     </div>
                                                 </div>
+                                            {% elif component.type == 'checkout' %}
+                                                <div style="background: {{component.background}};" class="engage-card productBuyCard">
+                                                    <div class="card-image-top" style="width: 100%; height: 100px;">
+                                                        <img class="image-fluid" src="{{story.src}}">
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between">
+                                                            <h5 class="includeText" style="color: {{component.color}}; font-weight: bold;">{{story.title}}</h5>
+                                                            <h5 class="includeText" style="color: {{component.color}}; font-weight: bold;">{{story.price}}$</h5>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="col-4 text-center">
+                                                                <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
+                                                            </div>
+                                                            <div class="col-4 text-center">
+                                                                <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
+                                                            </div>
+                                                        </div>
+                                                        <div style="width: 100%; margin-top: 10px;">
+                                                            <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
+                                                        </div>
+                                                    </div>
+                                                </div>                              
                                             {% endif %}
                                         </div>
                                     </div>

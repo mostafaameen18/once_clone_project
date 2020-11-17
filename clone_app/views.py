@@ -21,8 +21,8 @@ def loginView(request):
     return render(request, 'login.html')
 
 def storiesList(request):
-    # if not request.user.is_authenticated:
-    #     return redirect('login')
+    if not request.user.is_authenticated:
+        return redirect('login')
     stories = storiesSet.objects.filter(user=request.user)
     context = {
         'stories': stories
@@ -39,12 +39,6 @@ def createNewStorySet(request):
 
     insert = storiesSet(user=request.user, code=code)
     insert.save()
-
-    if len(customuser.objects.filter(user=request.user)) > 0:
-        checkoutStory = story(user=request.user, storyType="checkout", background="dodgerblue")
-        checkoutStory.save()
-        insert.storiesSet.add(checkoutStory)
-        insert.save()
 
     return redirect("create-story", insert.id)
 
@@ -69,17 +63,12 @@ def createStoryView(request, storySet):
         return redirect('login')
     try:
         ids = []
-        storiesSetIds = storiesSet.objects.get(id=storySet)
-        for i in storiesSetIds.storiesSet.all():
-            ids.append(i.id)
-        stories = story.objects.filter(user=request.user, id__in=ids)
+        storySet = storiesSet.objects.get(id=storySet)
         stories_images = images.objects.filter(user=request.user)
 
         context = {
-            'stories': stories,
             'images': stories_images,
             'storySet': storySet,
-            'entireStorySet': storiesSetIds
         }
         try:
             mycustomuser = customuser.objects.get(user=request.user)
@@ -117,17 +106,10 @@ def addProductSell(request, storySetId):
 def preview(request, code):
     context = {}
     ids = []
-    storiesSetIds = storiesSet.objects.get(code=code)
-    for i in storiesSetIds.storiesSet.all():
-        ids.append(i.id)
-    stories = story.objects.filter(id__in=ids, storyType="design")
-    if storiesSetIds.product != None:
-        checkoutStory = story.objects.filter(id__in=ids, storyType="checkout")
-        context['checkoutStory'] = checkoutStory
-    storiesSetIds.views += 1
-    storiesSetIds.save()
-    context['stories'] = stories
-    context['storySet'] = storiesSetIds
+    storySet = storiesSet.objects.get(code=code)
+    storySet.views += 1
+    storySet.save()
+    context['storySet'] = storySet
     return render(request, 'preview.html', context)
 
 @csrf_exempt
@@ -270,17 +252,14 @@ def answers(request, storySet):
     if not request.user.is_authenticated:
         return redirect('login')
     ids = []
-    storiesSetIds = storiesSet.objects.get(id=storySet)
-    for i in storiesSetIds.storiesSet.all():
-        ids.append(i.id)
-    mystories = story.objects.filter(user=request.user, id__in=ids)
+    storySet = storiesSet.objects.get(id=storySet)
     totalAnswers = 0
-    for i in mystories:
+    for i in storySet.storiesSet.all():
         for j in i.components.all():
             if j.type == "range" or j.type == "check" or j.type == "radio" or j.type == "yesNo":
                 totalAnswers += 1
     context = {
-        "stories": mystories,
+        "stories": storySet,
         "totalAnswers": totalAnswers
     }
     return render(request, 'answers.html', context)
@@ -295,13 +274,6 @@ def connectShop(request):
     try:
         mycustomuser = customuser(user=request.user, shop_name=shopName, shop_api_key=shopKey, shop_password=shopPass)
         mycustomuser.save()
-
-        userStoriesSet = storiesSet.objects.filter(user=request.user)
-        for storySet in userStoriesSet:
-            checkoutStory = story(user=request.user, storyType="checkout", background="dodgerblue")
-            checkoutStory.save()
-            storySet.storiesSet.add(checkoutStory)
-            storySet.save()
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     except:
@@ -351,8 +323,6 @@ def update_story(request, id, bg):
 def remove_story(request, id):
     user = request.user
     this_story = story.objects.get(user=user, id=id)
-    if this_story.storyType == "checkout":
-        return HttpResponse("checkout")
     if this_story.components.all() != None:
         for component in this_story.components.all():
             if component.choices.all() != None:
