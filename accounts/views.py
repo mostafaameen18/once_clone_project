@@ -110,3 +110,10 @@ def verifyLoginRedirect(request, code):
 		return redirect('storiesList')
 
 
+
+
+def signout(request):
+	logout(request)
+	return redirect('home')
+
+

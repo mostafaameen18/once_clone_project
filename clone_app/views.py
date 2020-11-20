@@ -13,6 +13,8 @@ import string
 from random import *
 import time
 from . import models
+from datetime import datetime
+
 
 def homeView(request):
     return render(request, 'index.html')
@@ -177,7 +179,8 @@ def performCheckout(request):
 
 
 def addCheckRadio(request, id):
-    mychoice = choices.objects.get(id=id)
+    from . import models
+    mychoice = models.choices.objects.get(id=id)
     mychoice.chosen  += 1
     mychoice.save()
     userComponents = components.objects.filter(user=request.user, type__in=['check','radio'])
@@ -190,7 +193,8 @@ def addCheckRadio(request, id):
     return HttpResponse('done')
 
 def removeCheckRadio(request, id):
-    mychoice = choices.objects.get(id=id)
+    from . import models
+    mychoice = models.choices.objects.get(id=id)
     mychoice.chosen -= 1
     mychoice.save()
     userComponents = components.objects.filter(user=request.user, type__in=['check', 'radio'])
@@ -206,20 +210,20 @@ def removeCheckRadio(request, id):
 def addYesNoAns(request, id, answer):
     component = components.objects.get(id=id)
     if answer == "yes":
-        component.yesTimes += 1
+        component.yesTimes = component.yesTimes + 1
     if answer == "no":
-        component.noTimes += 1
-    component.yesNoCount += 1
+        component.noTimes = component.noTimes + 1
+    component.yesNoCount = component.yesNoCount + 1
     component.save()
     return HttpResponse('done')
 
 def removeYesNoAns(request, id, answer):
     component = components.objects.get(id=id)
     if answer == "yes":
-        component.yesTimes -= 1
+        component.yesTimes = component.yesTimes - 1
     if answer == "no":
-        component.noTimes -= 1
-    component.yesNoCount -= 1
+        component.noTimes = comopnent.noTimes - 1
+    component.yesNoCount = component.yesNoCount - 1
     component.save()
     return HttpResponse('done')
 
@@ -389,7 +393,7 @@ def createComponent(request, id, type):
         component.title = "chrono 24"
         component.hours = 24
         component.minutes = 60
-        component.seconds = 60
+        component.date = datetime.today().strftime('%Y-%m-%d')
     elif type == "range":
         component.title = "Evaluate us"
     elif type == "button":
@@ -456,8 +460,9 @@ def removeEditableContainer(request, objId):
     return HttpResponse('removed')
 
 def addChoice(request, objId):
+    from . import models
     mycomponent = components.objects.get(id=objId)
-    choice = choices(user=request.user, title="New choice")
+    choice = models.choices(user=request.user, title="New choice")
     choice.save()
     mycomponent.choices.add(choice)
     mycomponent.save()
@@ -465,13 +470,15 @@ def addChoice(request, objId):
 
 
 def updateChoice(request, id, title):
-    choice = choices.objects.get(id=id)
+    from . import models
+    choice = models.choices.objects.get(id=id)
     choice.title = title
     choice.save()
     return HttpResponse('done')
 
 def removeChoice(request, objId):
-    mychoice = choices.objects.get(id=objId)
+    from . import models
+    mychoice = models.choices.objects.get(id=objId)
     mychoice.delete()
     return HttpResponse('removed')
 

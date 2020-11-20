@@ -375,15 +375,14 @@
                                         </div>
                                     {% elif component.type == 'button' %}
                                         <div style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">
-                                        <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="display: block color: {{component.color}};">{{component.title}}</a>
+                                        <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="display: block; color: {{component.color}};">{{component.title}}</a>
 
                                         </div>
                                     {% elif component.type == 'emoji' %}
                                         <img class="emojioneemoji" src="{{component.src}}" alt="">
                                     {% elif component.type == 'sticker' or component.type == 'gif' %}
-                                        <figure>
-                                            <img class="image-fluid" src="{{component.src}}" alt="">
-                                        </figure>
+                                        <img class="image-fluid" src="{{component.src}}" alt="">
+                                        <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="opacity: 0; display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></a>
                                     {% elif component.type == 'unsplash' %}
                                         <img class="image-fluid" src="{{component.src}}" alt="">
                                     {% elif component.type == 'check' %}
@@ -475,20 +474,20 @@
                                                     <div class="personalInfoForm p-2" style="border-radius: 5px;">
                                                         <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
                                                             <div class="col-6 p-2">
-                                                                <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name">
+                                                                <input type="text" class="form-control personalInfoFormInput" name="fname" id="fname" placeholder="First Name">
                                                             </div>
                                                             <div class="col-6 p-2">
-                                                                <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name">
+                                                                <input type="text" class="form-control personalInfoFormInput" name="lname" id="lname" placeholder="Last Name">
                                                             </div>
                                                         </div>
                                                         <div class="p-2">
-                                                            <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                                            <input type="email" class="form-control personalInfoFormInput" name="email" id="email" placeholder="Email">
                                                         </div>
                                                         <div class="p-2">
-                                                            <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone Number">
+                                                            <input type="text" class="form-control personalInfoFormInput" name="phone" id="phone" placeholder="Phone Number">
                                                         </div>
                                                         <div style="width: 100%; margin-top: 10px;">
-                                                            <button onclick="$('#shippingLocationFormToggler').click()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Delivery Infos</button>
+                                                            <button class="text-center text-white shippingLocationFormTogglerClicker" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Delivery Infos</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -501,28 +500,28 @@
                                                     </div>
                                                     <div class="personalInfoForm p-2" style="border-radius: 5px;">
                                                         <div class="p-2">
-                                                            <input type="text" class="form-control" name="addressLine1" id="addressLine1" placeholder="Address Line 1">
+                                                            <input type="text" class="form-control shippingLocationFormInput" name="addressLine1" id="addressLine1" placeholder="Address Line 1">
                                                         </div>
                                                         <div class="p-2">
-                                                            <input type="text" class="form-control" name="addressLine2" id="addressLine2" placeholder="Address Line 2">
+                                                            <input type="text" class="form-control" name="addressLine2" id="addressLine2" placeholder="Address Line 2 (optional)">
                                                         </div>
                                                         <div class="row justify-content-between" style="width: 100%; margin: auto; padding: 0;">
                                                             <div class="col-4 p-2">
-                                                                <input type="text" class="form-control" name="city" id="city" placeholder="City">
+                                                                <input type="text" class="form-control shippingLocationFormInput" name="city" id="city" placeholder="City">
                                                             </div>
                                                             <div class="col-4 p-2">
-                                                                <input type="text" class="form-control" name="state" id="state" placeholder="State">
+                                                                <input type="text" class="form-control shippingLocationFormInput" name="state" id="state" placeholder="State">
                                                             </div>
                                                             <div class="col-4 p-2">
-                                                                <input type="text" class="form-control" name="postal" id="postal" placeholder="Postal Code">
+                                                                <input type="text" class="form-control shippingLocationFormInput" name="postal" id="postal" placeholder="Postal Code">
                                                             </div>
                                                         </div>
                                                         <div class="p-2">
-                                                            <input type="text" class="form-control" name="country" id="country" placeholder="Country">
+                                                            <input type="text" class="form-control shippingLocationFormInput" name="country" id="country" placeholder="Country">
                                                         </div>
                                                         
                                                         <div style="width: 100%; margin-top: 10px;">
-                                                            <button onclick="$('#productPaymentFormToggler').click()" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Payment</button>
+                                                            <button class="text-center text-white productPaymentFormTogglerClicker" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Next, Payment</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -600,8 +599,8 @@
             
         </div>
         <div class="swiper-pagination"></div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
+        <div id="swiper-button-next" class="swiper-button-next"></div>
+        <div id="swiper-button-prev" class="swiper-button-prev"></div>
 
     </div>
 
@@ -628,6 +627,23 @@
             prevEl: '.swiper-button-prev',
         },
     });
+
+
+
+    document.onkeydown = checkKey;
+    function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode == '37') {
+           document.getElementById('swiper-button-prev').click();
+        }
+        else if (e.keyCode == '39') {
+           document.getElementById('swiper-button-next').click();
+        }
+
+    }
+
 
 
 
@@ -693,12 +709,12 @@
     
 
     $(document).on('click', '.yesNoAns', function(){
+        var id = $(this).closest('.editable-container').attr('id').split('_')[1]
         if($(this).hasClass('checked')){
             null;
         }
         else{
             if($(".yesNoAns.checked").length > 0){
-                var id = $(".editable-container").attr('id').split("_")[1];
                 if($(this).hasClass('yesAnswer')){
                     var answer = "no";
                 }
@@ -713,7 +729,6 @@
                 addYesNoAns(id, answer);
             }
             else{
-                var id = $(".editable-container").attr('id').split("_")[1];
                 if($(this).hasClass('yesAnswer')){
                     var answer = "yes";
                 }
@@ -735,7 +750,7 @@
             contentType: false,
             processData: false,
             success: function(result) {
-                null;
+                console.log(result);
             }
         });
     }
@@ -748,7 +763,7 @@
             contentType: false,
             processData: false,
             success: function(result) {
-                null;
+                console.log(result);
             }
         });
     }
@@ -802,6 +817,36 @@
         rangeValue = newRangeValue;
     }
 
+
+
+    $(".shippingLocationFormTogglerClicker").on('click',function(){
+        var changeForm = true;
+        $(".personalInfoFormInput").each(function(){
+            if($(this).val() == ''){
+                $(this).css('border-color','red');
+                changeForm = false;
+            }
+            else{
+                $(this).css('border-color','grey');
+            }
+        });
+        if(changeForm == true){
+            $("#shippingLocationFormToggler").click();
+        }
+    });
+    $(".productPaymentFormTogglerClicker").on('click',function(){
+        var changeForm = true;
+        $(".shippingLocationFormInput").each(function(){
+            if($(this).val() == ''){
+                $(this).css('border-color','red');
+                changeForm = false;
+            }
+        });
+        if(changeForm==true){
+            $("#productPaymentFormToggler").click();
+        }
+    });
+
     function performCheckout(){
         if ($("#fname").val() == '' || $("#lname").val() == '' || $("#email").val() == '' || $("#phone").val() == ''){
             $("#personalInfoFormToggler").click();
@@ -811,7 +856,7 @@
                 }
             });
         }
-        else if($("#addressLine1").val() == '' || $("#addressLine2").val() == '' || $("#city").val() == '' || $("#state").val() == '' || $("#country").val() == '' || $("#postal").val() == ''){
+        else if($("#addressLine1").val() == '' || $("#city").val() == '' || $("#state").val() == '' || $("#country").val() == '' || $("#postal").val() == ''){
             $("#shippingLocationFormToggler").click();
             $(".form-control").each(function(){
                 if($(this).val() == ''){

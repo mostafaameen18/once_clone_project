@@ -38,6 +38,7 @@ urlpatterns = [
     path('verifyLoginPro/<str:code>/', verifyLoginPro, name="verifyLoginPro"),
     path('verifyLoginRedirect/<str:code>/', verifyLoginRedirect, name="verifyLoginRedirect"),
     path('resendVerificationEmail/',resendVerificationEmail, name="resendVerificationEmail"),
+    path('logout/',signout,name="logout"),
     re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

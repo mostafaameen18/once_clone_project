@@ -517,7 +517,7 @@
                             </a>
                         </li>
                         <li>
-                            <a style="height: 30px;" class="nav-link text-royal d-flex justify-content-between" href="#">
+                            <a style="height: 30px;" class="nav-link text-royal d-flex justify-content-between" href="{% url 'logout' %}">
                                 Logout
                             </a>
                         </li>
@@ -899,31 +899,29 @@
                 </div>
                 <div id="productCheckoutWidgetTab" class="tab-pane fade show">
                     <div class="col-10 mx-auto p-2">
-                        <div class="widget" data-type="range">
-                            <div class="engage-card p-3">
-                                <div class="card productBuyCard">
-                                    <div class="card-image-top" style="width: 100%; height: 100px;">
-                                        <img class="image-fluid" src="{{storySet.src}}">
+                        <div class="widget" data-type="checkout">
+                            <div class="engage-card productBuyCard p-3">
+                                <div class="card-image-top" style="width: 100%; height: 100px;">
+                                    <img class="image-fluid" src="{{storySet.src}}">
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.title}}</h5>
+                                        <h5 class="text-dark" style="font-weight: bold;">{{storySet.price}}$</h5>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <h5 class="text-dark" style="font-weight: bold;">{{storySet.title}}</h5>
-                                            <h5 class="text-dark" style="font-weight: bold;">{{storySet.price}}$</h5>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="col-4 text-center">
+                                            <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
                                         </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="col-4 text-center">
-                                                <a onclick="changeQuantity('minus')" class="changeQuantityBtn">-</a>
-                                            </div>
-                                            <div class="col-4">
-                                                <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
-                                            </div>
-                                            <div class="col-4 text-center">
-                                                <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
-                                            </div>
+                                        <div class="col-4">
+                                            <input class="hiddenInput disabled" type="text" name="quantity" id="quantity" value="1">
                                         </div>
-                                        <div style="width: 100%; margin-top: 10px;">
-                                            <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
+                                        <div class="col-4 text-center">
+                                            <a onclick="changeQuantity('plus')" class="changeQuantityBtn">+</a>
                                         </div>
+                                    </div>
+                                    <div style="width: 100%; margin-top: 10px;">
+                                        <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
                                     </div>
                                 </div>
                             </div>
@@ -1746,19 +1744,16 @@
         fetch(url).then(response => response.json()).then(content => {
             var data = content.data;
             for(var i=0; i<data.length; i++){
-                fig_widget_container_col = '<div id="new-giphy-widget" class="col-6 p-2"><div class="widget"></div></div>';
                 fig_widget_container_col = document.createElement('div');
                 fig_widget_container_col.className = "col-6 p-2";
                 fig_widget_container = document.createElement('div');
                 fig_widget_container.className = "widget";
                 fig_widget_container.setAttribute('data-type','sticker');
-                fig = document.createElement('figure');
                 img = document.createElement('img')
                 img.src = data[i].images.downsized.url;
                 img.className = 'image-fluid';
                 img.alt = '';
-                fig.appendChild(img);
-                fig_widget_container.appendChild(fig);
+                fig_widget_container.appendChild(img);
                 fig_widget_container_col.appendChild(fig_widget_container);
                 $("#stickers-icons-container").append(fig_widget_container_col);
             }
@@ -1774,19 +1769,16 @@
         fetch(url).then(response => response.json()).then(content => {
             var data = content.data;
             for(var i=0; i<data.length; i++){
-                fig_widget_container_col = '<div id="new-giphy-widget" class="col-6 p-2"><div class="widget"></div></div>';
                 fig_widget_container_col = document.createElement('div');
                 fig_widget_container_col.className = "col-6 p-2";
                 fig_widget_container = document.createElement('div');
                 fig_widget_container.className = "widget";
                 fig_widget_container.setAttribute('data-type','gif');
-                fig = document.createElement('figure');
                 img = document.createElement('img')
                 img.src = data[i].images.downsized.url;
                 img.className = 'image-fluid';
                 img.alt = '';
-                fig.appendChild(img);
-                fig_widget_container.appendChild(fig);
+                fig_widget_container.appendChild(img);
                 fig_widget_container_col.appendChild(fig_widget_container);
                 $("#gifs-icons-container").append(fig_widget_container_col);
             }
@@ -1802,7 +1794,6 @@
         fetch(url).then(response => response.json()).then(content => {
             var data = content.results;
             for(var i=0; i<data.length; i++){
-                fig_widget_container_col = '<div id="new-giphy-widget" class="col-6 p-2"><div class="widget"></div></div>';
                 fig_widget_container_col = document.createElement('div');
                 fig_widget_container_col.className = "col-6 p-2";
                 fig_widget_container = document.createElement('div');
@@ -1935,7 +1926,8 @@
     }
 
     function setHref(obj){
-        if($(".editable-container.active").attr('id').split('_')[0] == "button"){
+        editableContainerType = $(".editable-container.active").attr('id').split('_')[0];
+        if(editableContainerType == "button" || editableContainerType == "sticker" || editableContainerType == "gif"){
             var href = $(obj).val();
             var id = $(".editable-container.active").attr('id').split('_')[1];
             var type = "href";
@@ -1944,7 +1936,7 @@
     }
 
     function setLinkTarget(obj){
-        var id = $(".editabl-container.active").attr('id').split('_')[1];
+        var id = $(".editable-container.active").attr('id').split('_')[1];
         var type = "target"
         if($(obj).is(":checked")){
             updateComponent(id, type, "blank");
@@ -2040,11 +2032,7 @@
             dataSrc = $(this).attr('id').split('_')[1];
             createComponent(type, dataSrc, editableContainer);
         }
-        else if(type == "sticker" || type == "gif"){
-            dataSrc = $(this)[0].children[0].children[0].src;
-            createComponent(type, dataSrc, editableContainer);
-        }
-        else if(type == "unsplash"){
+        else if(type == "unsplash" || type == "sticker" || type == "gif"){
             dataSrc = $(this)[0].children[0].src;
             createComponent(type, dataSrc, editableContainer);
         }
@@ -2323,7 +2311,7 @@
             url: url,
             data: {'data': data},
             success: function (result) {
-                if(type == "text" || type == "block" || type == "image" || type == "yesNo" || type == "timer" || type == "range" || type == "button" || type == "emoji" || type == "sticker" || type == "unsplash" || type == "gif"){
+                if(type == "text" || type == "block" || type == "image" || type == "yesNo" || type == "timer" || type == "range" || type == "button" || type == "emoji" || type == "sticker" || type == "unsplash" || type == "gif" || type == "checkout"){
                     element.setAttribute('id',type+"_"+result);
                 }
                 else{
