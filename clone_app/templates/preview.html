@@ -572,7 +572,9 @@
                                                 </div>
                                                 <div id="WaitingResponseCard" class="tab-pane fade show">
                                                     <div style="height: 100px; text-align: center; padding-top: 20px;">
-                                                        <div class="spinner-border text-info" role="status"></div>
+                                                        <div id="waitingResponseCardText" class="text-info text-center">
+                                                            <span class='spinner-border'></span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div id="checkoutSuccessResponseCard" class="tab-pane fade show">
@@ -913,6 +915,26 @@
 
 
 
+
+    var holdOnList = [
+            "<span class='spinner-border'></span>",
+            "Please hold on...",
+            "Please wait until process is finished",
+            "This may take several seconds",
+        ];
+    var holdOnListIndex = 0
+    var z = setInterval(changeHoldOnText,5000);
+
+    function changeHoldOnText(){
+        if(holdOnListIndex==holdOnList.length-1){
+            $("#waitingResponseCardText").html(holdOnList[0]);
+            holdOnListIndex = 0;
+        }
+        else{
+            $("#waitingResponseCardText").html(holdOnList[holdOnListIndex+1]);
+            holdOnListIndex ++;
+        }
+    }
 
 
 

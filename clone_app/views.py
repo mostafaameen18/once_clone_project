@@ -144,9 +144,6 @@ def performCheckout(request):
         # options.headless = True
         driver = webdriver.Firefox(options=options, executable_path="geckodriver")
         driver.get(url)
-        driver.find_element_by_id("password").send_keys('zaffot')
-        driver.find_element_by_xpath('/html/body/div/div[2]/div[2]/form/button').click()
-        driver.get(url)
         driver.find_element_by_xpath('/html/body/div[3]/main/div[1]/div/div/div[2]/div[1]/form/div[2]/div/button').click()
         time.sleep(2)
         driver.get("https://{}/cart".format(mycustomuser.shop_name))
