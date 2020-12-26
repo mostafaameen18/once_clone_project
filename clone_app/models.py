@@ -85,26 +85,26 @@ class components(models.Model):
     def getH1(self):
         hours = "%02d"%(int(self.hours) - int(datetime.datetime.now().hour))
         if int(hours) < 0:
-            hours = 24 + int(hours)
+            hours = "%02d"%(24 + int(hours))
         return str(hours)[0]
 
 
     def getH2(self):
         hours = "%02d"%(int(self.hours) - int(datetime.datetime.now().hour))
         if int(hours) < 0:
-            hours = 24 + int(hours)
+            hours = "%02d"%(24 + int(hours))
         return str(hours)[1]
 
     def getM1(self):
         minutes = "%02d"%(int(self.minutes) - int(datetime.datetime.now().minute))
         if int(minutes) < 0:
-            minutes = 60 + int(minutes)
+            minutes = "%02d"%(60 + int(minutes))
         return str(minutes)[0]
 
     def getM2(self):
         minutes = "%02d"%(int(self.minutes) - int(datetime.datetime.now().minute))
         if int(minutes) < 0:
-            minutes = 60 + int(minutes)
+            minutes = "%02d"%(60 + int(minutes))
         return str(minutes)[1]
 
 

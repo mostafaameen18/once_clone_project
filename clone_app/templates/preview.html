@@ -375,14 +375,14 @@
                                         </div>
                                     {% elif component.type == 'button' %}
                                         <div style="cursor: pointer; background: {{component.background}}; color: {{component.color}};" class="clickmebtn includeText">
-                                        <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="display: block; color: {{component.color}};">{{component.title}}</a>
+                                        <a {% if component.target == "blank" %}target="blank"{%endif%} {% if component.href %} href="{{component.href}}" {% endif %} style="display: block; color: {{component.color}};">{{component.title}}</a>
 
                                         </div>
                                     {% elif component.type == 'emoji' %}
                                         <img class="emojioneemoji" src="{{component.src}}" alt="">
                                     {% elif component.type == 'sticker' or component.type == 'gif' %}
                                         <img class="image-fluid" src="{{component.src}}" alt="">
-                                        <a {% if component.target == "blank" %}target="blank"{%endif%} href="{{component.href}}" style="opacity: 0; display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></a>
+                                        <a {% if component.target == "blank" %}target="blank"{%endif%} {% if component.href %} href="{{component.href}}"{% endif %} style="opacity: 0; display: block; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></a>
                                     {% elif component.type == 'unsplash' %}
                                         <img class="image-fluid" src="{{component.src}}" alt="">
                                     {% elif component.type == 'check' %}
