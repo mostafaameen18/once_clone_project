@@ -664,6 +664,38 @@
     }
 
 
+    $(document).ready(function(){
+        var radioChoices = "{{radio}}".split('|');
+        var checkChoices = "{{check}}".split('|');
+        var rangeChoices = "{{range}}".split('|');
+        var yesnoChoices = "{{yesno}}".split('|');
+
+        for(var i=0; i<radioChoices.length; i++){
+            var thisComponent = radioChoices[i].split('_')[0];
+            var thisChoice = radioChoices[i].split('_')[1];
+            $("#radio_"+thisComponent).find('#choice_'+thisChoice).addClass('checked');
+        }
+
+        for(var i=0; i<checkChoices.length; i++){
+            var thisChoice = checkChoices[i];
+            $('#choice_'+thisChoice).addClass('checked');
+        }
+
+        for(var i=0; i<yesnoChoices.length; i++){
+            var thisComponent = yesnoChoices[i].split('_')[0];
+            var thisChoice = yesnoChoices[i].split('_')[1];
+            $("#yesNo_"+thisComponent).find("."+thisChoice+"Answer").addClass('checked');
+        }
+
+
+        for(var i=0; i<rangeChoices.length; i++){
+            var thisComponent = rangeChoices[i].split('_')[0];
+            var thisChoice = rangeChoices[i].split('_')[1];
+            $("#range_"+thisComponent).find(".rangeSlider").val(Number(thisChoice));
+        }
+
+    });
+
 
 
 

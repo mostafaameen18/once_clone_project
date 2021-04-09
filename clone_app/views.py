@@ -108,11 +108,27 @@ def addProductSell(request, storySetId):
 
 def preview(request, code):
     context = {}
+    
     ids = []
+    
     storySet = storiesSet.objects.get(code=code)
     storySet.views += 1
     storySet.save()
+
     context['storySet'] = storySet
+    
+    if "ONCE_RADIO_CHOICES" in request.COOKIES:
+        context['radio'] = request.COOKIES['ONCE_RADIO_CHOICES']
+
+    if "ONCE_CHECK_CHOICE_ID" in request.COOKIES:
+        context['check'] = request.COOKIES['ONCE_CHECK_CHOICE_ID']
+
+    if "ONCE_YES_NO" in request.COOKIES:
+        context['yesno'] = request.COOKIES['ONCE_YES_NO']
+
+    if "ONCE_RANGE" in request.COOKIES:
+        context['range'] = request.COOKIES['ONCE_RANGE']
+
     return render(request, 'preview.html', context)
 
 @csrf_exempt
