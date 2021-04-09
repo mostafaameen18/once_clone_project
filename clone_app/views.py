@@ -14,6 +14,7 @@ from random import *
 import time
 from . import models
 from datetime import datetime
+import csv
 
 
 def homeView(request):
@@ -175,77 +176,231 @@ def performCheckout(request):
         return HttpResponse('wrong')
 
 
-def addCheckRadio(request, id):
+def addRadio(request, componentID, id):
     from . import models
-    mychoice = models.choices.objects.get(id=id)
-    mychoice.chosen  += 1
-    mychoice.save()
-    userComponents = components.objects.filter(user=request.user, type__in=['check','radio'])
-    for component in userComponents:
-        total = 0
-        for choice in component.choices.all():
-            total += choice.chosen
-        component.choiceSum = total
-        component.save()
-    return HttpResponse('done')
 
-def removeCheckRadio(request, id):
+    if "ONCE_RADIO_CHOICES" in request.COOKIES:
+        last_choices = request.COOKIES['ONCE_RADIO_CHOICES'].split('|')
+        choices_context = {i.split('_')[0]:i.split("_")[1] for i in last_choices}
+
+        if str(componentID) in choices_context:
+            if str(choices_context[str(componentID)]) == str(id):
+                return HttpResponse('done')
+            else:
+                mychoice = models.choices.objects.get(id=choices_context[str(componentID)])
+                mychoice.chosen -= 1
+                mychoice.save()
+
+        choices_context[componentID] = id
+
+        mychoice = models.choices.objects.get(id=id)
+        mychoice.chosen  += 1
+        mychoice.save()
+
+        newChoiceLine = "|".join(["{}_{}".format(k,choices_context[k]) for k in choices_context])
+        res = HttpResponse('done')
+        res.set_cookie('ONCE_RADIO_CHOICES',newChoiceLine)
+        return res
+
+    else:
+
+        mychoice = models.choices.objects.get(id=id)
+        mychoice.chosen  += 1
+        mychoice.save()
+
+        res = HttpResponse('done')
+        res.set_cookie("ONCE_RADIO_CHOICES", "|".join(["{}_{}".format(componentID, id)]))
+        return res
+
+def addCheck(request, id):
     from . import models
-    mychoice = models.choices.objects.get(id=id)
-    mychoice.chosen -= 1
-    mychoice.save()
-    userComponents = components.objects.filter(user=request.user, type__in=['check', 'radio'])
-    for component in userComponents:
-        total = 0
-        for choice in component.choices.all():
-            total += choice.chosen
-        component.choiceSum = total
-        component.save()
-    return HttpResponse('done')
+
+    if "ONCE_CHECK_CHOICE_ID" in request.COOKIES:
+        
+        last_choice = request.COOKIES['ONCE_CHECK_CHOICE_ID'].split('|')
+
+        if str(id) in last_choice:
+
+            mychoice = models.choices.objects.get(id=id)
+            mychoice.chosen -= 1
+            mychoice.save()
+
+            last_choice.remove(str(id))
+            res = HttpResponse('done')
+            res.set_cookie('ONCE_CHECK_CHOICE_ID', "|".join(last_choice))
+            return res
+
+        else:
+
+            mychoice = models.choices.objects.get(id=id)
+            mychoice.chosen  += 1
+            mychoice.save()
+
+            last_choice.append(str(id))
+            res = HttpResponse('done')
+            res.set_cookie('ONCE_CHECK_CHOICE_ID', "|".join(last_choice))
+            return res
+    else:
+
+        mychoice = models.choices.objects.get(id=id)
+        mychoice.chosen  += 1
+        mychoice.save()
+    
+        res = HttpResponse('done')
+        res.set_cookie("ONCE_CHECK_CHOICE_ID", "|".join([str(id)]))
+        return res
 
 
 def addYesNoAns(request, id, answer):
-    component = components.objects.get(id=id)
-    if answer == "yes":
-        component.yesTimes = component.yesTimes + 1
-    if answer == "no":
-        component.noTimes = component.noTimes + 1
-    component.yesNoCount = component.yesNoCount + 1
-    component.save()
-    return HttpResponse('done')
+    from . import models
 
-def removeYesNoAns(request, id, answer):
     component = components.objects.get(id=id)
-    if answer == "yes":
-        component.yesTimes = component.yesTimes - 1
-    if answer == "no":
-        component.noTimes = comopnent.noTimes - 1
-    component.yesNoCount = component.yesNoCount - 1
-    component.save()
-    return HttpResponse('done')
+
+    if "ONCE_YES_NO" in request.COOKIES:
+        last_choice = request.COOKIES['ONCE_YES_NO'].split('|')
+        choices_context = {i.split('_')[0]:i.split("_")[1] for i in last_choice}
+
+        if str(id) in choices_context:
+            if str(choices_context[str(id)]) == str(answer):
+                return HttpResponse('done')
+            else:
+                if answer == "yes":
+                    component.noTimes -= 1
+                    component.yesTimes += 1
+                else:
+                    component.yesTimes -= 1
+                    component.noTimes += 1
+                component.save()
+                choices_context[str(id)] = str(answer)
+        else:
+            if answer == "yes":
+                component.yesTimes += 1
+            else:
+                component.noTimes += 1
+            component.save()
+            choices_context[str(id)] = str(answer)
+
+        newChoiceLine = "|".join(["{}_{}".format(k,choices_context[k]) for k in choices_context])
+        res = HttpResponse('done')
+        res.set_cookie('ONCE_YES_NO',newChoiceLine)
+        return res
+
+    else:
+        if answer == "yes":
+            component.yesTimes += 1
+        else:
+            component.noTimes += 1
+        component.save()
+        res = HttpResponse('done')
+        res.set_cookie('ONCE_YES_NO', "|".join(["{}_{}".format(str(id), answer)]))
+        return res
+
+
+
 
 
 @csrf_exempt
-def setRange(request, id, rv, nrv):
-    rangeValue = int(rv)
-    newRangeValue = int(nrv)
-    print(newRangeValue)
-    print(rangeValue)
+def setRange(request, id, rv):
+    
     mycomponent = components.objects.get(id=id)
-    if rangeValue == 0:
-        mycomponent.rangeCount += 1
-        mycomponent.rangeTimes += newRangeValue
-        mycomponent.save()
-    else:
-        mycomponent.rangeCount -= 1
-        mycomponent.rangeTimes -= rangeValue
-        mycomponent.save()
-        if newRangeValue != 0:
-            mycomponent.rangeCount += 1
-            mycomponent.rangeTimes += newRangeValue
-            mycomponent.save()
 
-    return HttpResponse('done')
+    if "ONCE_RANGE" in request.COOKIES:
+        last_choices = request.COOKIES['ONCE_RANGE'].split('|')
+        choices_context = {i.split('_')[0]:i.split("_")[1] for i in last_choices}
+
+        if str(id) in choices_context:
+            if str(choices_context[str(id)]) == str(rv):
+                return HttpResponse('done')
+            else:
+                mycomponent.rangeTimes -= float(choices_context[str(id)])
+                mycomponent.rangeTimes += rv
+                mycomponent.save()
+
+        choices_context[id] = rv
+
+        newChoiceLine = "|".join(["{}_{}".format(k,choices_context[k]) for k in choices_context])
+        res = HttpResponse('done')
+        res.set_cookie('ONCE_RANGE',newChoiceLine)
+        return res
+    else:
+        mycomponent.rangeCount += 1
+        mycomponent.rangeTimes += rv
+        mycomponent.save()
+
+        res = HttpResponse('done')
+        res.set_cookie('ONCE_RANGE',"|".join(["{}_{}".format(id,rv)]))
+        return res
+
+
+
+@csrf_exempt
+def addEntry(request):
+    id = request.POST['id']
+    name = request.POST['name']
+    email = request.POST['email']
+    phoneNumber = request.POST['phoneNumber']
+
+    if "ONCE_ENTRY" in request.COOKIES:
+        last_entries = request.COOKIES['ONCE_ENTRY'].split('|')
+        last_entries_value = request.COOKIES['ONCE_ENTRY_value'].split('|')
+        if id in last_entries:
+            for value in last_entries_value:
+                if id == value.split('_')[0]:
+                    entry = Entry.objects.get(id=value.split("_")[1])
+                    entry.name = name
+                    entry.email = email
+                    entry.phoneNumber = phoneNumber
+                    entry.save()
+                    break
+            return HttpResponse('done')
+        else:
+            entry = Entry(name=name, email=email, phoneNumber=phoneNumber)
+            entry.save()
+
+            component = components.objects.get(id=id)
+            component.entries.add(entry)
+
+            res = HttpResponse('done')
+            res.set_cookie("ONCE_ENTRY", "|".join(last_entries.append(id)))
+            res.set_cookie("ONCE_ENTRY_value", "|".join(last_entries_value("{}_{}".format(id,entry.id))))
+            return res
+    else:
+
+        entry = Entry(name=name, email=email, phoneNumber=phoneNumber)
+        entry.save()
+
+        component = components.objects.get(id=id)
+        component.entries.add(entry)
+
+        res = HttpResponse('done')
+        res.set_cookie("ONCE_ENTRY", "|".join([id]))
+        res.set_cookie("ONCE_ENTRY_value", "|".join(["{}_{}".format(id,entry.id)]))
+        return res
+
+
+def downloadEntries(request, id):
+    entries = components.objects.get(id=id).entries.all()
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Entries_{}.csv'.format(id)
+    writer = csv.writer(response)
+
+    writer.writerow([
+        "Name",
+        "Email",
+        "Phone Number",
+    ])
+    for entry in entries:
+        row = writer.writerow([
+            entry.name,
+            entry.email,
+            entry.phoneNumber,
+        ])
+
+    return response
+
+
+
 
 
 
@@ -257,7 +412,7 @@ def answers(request, storySet):
     totalAnswers = 0
     for i in storySet.storiesSet.all():
         for j in i.components.all():
-            if j.type == "range" or j.type == "check" or j.type == "radio" or j.type == "yesNo":
+            if j.type == "range" or j.type == "check" or j.type == "radio" or j.type == "yesNo" or j.type == "dataCollector":
                 totalAnswers += 1
     context = {
         "stories": storySet,

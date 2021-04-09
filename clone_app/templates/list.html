@@ -464,7 +464,7 @@
                         <a data-toggle="dropdown" class="nav-link"><i class="fas fa-ellipsis-v"></i></a>
                         <ul class="dropdown-menu">
                             <li class="nav-item">
-                                <a href="#!" class="nav-link"><i class="fas fa-hashtag text-info"></i> Export</a>
+                                <a href="{% url 'preview' story.code %}" class="nav-link"><i class="fas fa-eye text-info"></i> Preview</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{% url 'duplicateStorySet' story.id %}" class="nav-link"><i class="fas fa-clone text-dark"></i> Duplicate</a>

@@ -800,6 +800,29 @@
 
 
 
+                <div class="col-10 mx-auto p-2">
+                    <div class="widget" data-type="dataCollector">
+                        <div class="engage-card p-2">
+                            <div class="p-2">
+                                <input type="name" class="form-control dataCollectorName" placeholder="Name">
+                            </div>
+                            <div class="p-2">
+                                <input type="email" class="form-control dataCollectorEmail" placeholder="Email">
+                            </div>
+                            <div class="p-2">
+                                <input type="text" class="form-control dataCollectorPhoneNumber" placeholder="Phone Number">
+                            </div>
+                            <div class="p-2" style="width: 100%; margin-top: 10px;">
+                                <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
 
                 <div class="col-10 mx-auto p-2">
                     <div class="widget" data-type="yesNo">
@@ -1131,6 +1154,23 @@
                                                 <div style="width: 100%; margin-top: 10px;">
                                                     <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">Buy Now</button>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    {% elif component.type == 'dataCollector' %}
+                                        <div class="engage-card p-2">
+                                            <div class="p-2">
+                                                <input type="name" class="form-control dataCollectorName" placeholder="Name">
+                                            </div>
+                                            <div class="p-2">
+                                                <input type="email" class="form-control dataCollectorEmail" placeholder="Email">
+                                            </div>
+                                            <div class="p-2">
+                                                <input type="text" class="form-control dataCollectorPhoneNumber" placeholder="Phone Number">
+                                            </div>
+                                            <div class="p-2" style="width: 100%; margin-top: 10px;">
+                                                <button class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">
+                                                    Submit
+                                                </button>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -2311,7 +2351,7 @@
             url: url,
             data: {'data': data},
             success: function (result) {
-                if(type == "text" || type == "block" || type == "image" || type == "yesNo" || type == "timer" || type == "range" || type == "button" || type == "emoji" || type == "sticker" || type == "unsplash" || type == "gif" || type == "checkout"){
+                if(type == "text" || type == "block" || type == "image" || type == "yesNo" || type == "timer" || type == "range" || type == "button" || type == "emoji" || type == "sticker" || type == "unsplash" || type == "gif" || type == "checkout" || type == "dataCollector"){
                     element.setAttribute('id',type+"_"+result);
                 }
                 else{

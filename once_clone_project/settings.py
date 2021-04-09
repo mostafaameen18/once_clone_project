@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'clone_app',
     'accounts',
     'mathfilters',
-
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

@@ -486,6 +486,23 @@
                                                         {% endfor %}
                                                     </div>
                                                 </div>
+                                            {% elif component.type == 'dataCollector' %}
+                                                <div class="engage-card p-2">
+                                                    <div class="p-2">
+                                                        <input type="name" class="form-control dataCollectorName" placeholder="Name">
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <input type="email" class="form-control dataCollectorEmail" placeholder="Email">
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <input type="text" class="form-control dataCollectorPhoneNumber" placeholder="Phone Number">
+                                                    </div>
+                                                    <div class="p-2" style="width: 100%; margin-top: 10px;">
+                                                        <button onclick="addEntry(this)" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">
+                                                            Submit
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             {% elif component.type == 'checkout' %}
                                                 <div style="background: {{component.background}};" class="engage-card productBuyCard">
                                                     <div class="card-image-top" style="width: 100%; height: 100px;">
@@ -522,7 +539,7 @@
                 </div>
 
                 {% for component in story.components.all %}
-                    {% if component.type == "check" or component.type == "radio" or component.type == "range" or component.type == "yesNo" %}
+                    {% if component.type == "check" or component.type == "radio" or component.type == "range" or component.type == "yesNo" or component.type == "dataCollector" %}
                         <div class="p-2">
                             <div class="padding:0; margin: 0;">
                                 <div id="{{component.type}}_{{component.id}}" style="background: {{component.background}}; width: 250px; height: auto; border-radius: 5px; box-shadow: 0px 0px 10px grey;">
@@ -560,6 +577,25 @@
                                                     </div>
                                                 </div>
                                             {% endfor %}
+                                        </div>
+                                    {% elif component.type == 'dataCollector' %}
+                                        <div class="engage-card p-2">
+                                            <div class="p-2">
+                                                <input type="name" class="form-control dataCollectorName" placeholder="Name">
+                                            </div>
+                                            <div class="p-2">
+                                                <input type="email" class="form-control dataCollectorEmail" placeholder="Email">
+                                            </div>
+                                            <div class="p-2">
+                                                <input type="text" class="form-control dataCollectorPhoneNumber" placeholder="Phone Number">
+                                            </div>
+                                            <div class="p-2" style="width: 100%; margin-top: 10px;">
+                                                <button class="text-center" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">
+                                                    <a class="nav-link text-white bold" target="_blank" href="{% url 'downloadEntries' component.id %}">
+                                                        Download Entries ({{component.entries.all.count}})
+                                                    </a>
+                                                </button>
+                                            </div>
                                         </div>
                                     {% elif component.type == 'range' %}
                                         <div style="background: {{component.background}};" class="engage-card p-3">

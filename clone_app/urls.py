@@ -13,4 +13,10 @@ urlpatterns = [
     path('answers/<int:storySet>/',views.answers,name="answers"),
     path('duplicateStorySet/<int:id>/',views.duplicateStorySet,name="duplicateStorySet"),
     path('removeStorySet/<int:id>/',views.removeStorySet,name="removeStorySet"),
+    path('addEntry/',views.addEntry,name="addEntry"),
+    path('downloadEntries/<int:id>/',views.downloadEntries,name="downloadEntries"),
+    path("addRadio/<int:componentID>/<int:id>/", views.addRadio, name="addRadio"),
+    path("addCheck/<int:id>/", views.addCheck, name="addCheck"),
+    path('addYesNoAns/<int:id>/<str:answer>/', views.addYesNoAns,name="addYesNoAns"),
+    path("setRange/<int:id>/<int:rv>/", views.setRange, name="setRange"),
 ]

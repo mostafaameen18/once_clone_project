@@ -24,12 +24,9 @@ def checkAuthEmail(request):
 		user.save()
 
 	
-	letters = string.ascii_letters
-	digits = string.digits
-	chars = letters + digits
-	min_length = 6
-	max_length = 6
-	code = "".join(choice(chars) for x in range(randint(min_length, max_length)))
+	chars = string.ascii_letters + string.digits
+	length = 6
+	code = "".join(choice(chars) for x in range(randint(length, length)))
 
 	if len(hanguser.objects.filter(user=user)) > 0:
 		insertuser = hanguser.objects.get(user=user)

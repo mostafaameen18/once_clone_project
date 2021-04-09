@@ -413,6 +413,23 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
+                                    {% elif component.type == 'dataCollector' %}
+                                        <div class="engage-card p-2">
+                                            <div class="p-2">
+                                                <input type="name" class="form-control dataCollectorName" placeholder="Name">
+                                            </div>
+                                            <div class="p-2">
+                                                <input type="email" class="form-control dataCollectorEmail" placeholder="Email">
+                                            </div>
+                                            <div class="p-2">
+                                                <input type="text" class="form-control dataCollectorPhoneNumber" placeholder="Phone Number">
+                                            </div>
+                                            <div class="p-2" style="width: 100%; margin-top: 10px;">
+                                                <button onclick="addEntry(this)" class="text-center text-white" style="background: dodgerblue; width: 100%; height: 40px; border: none; border-radius: 5px;">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
                                     {% elif component.type == 'checkout' %}
                                         <div style="background: {{component.background}}; width: {{component.width}}; top: {{component.top}}; left: {{component.left}}; transform; translate(-50%,-50%) rotate({{component.rotation}};" class="engage-card productBuyCard">
                                             <ul class="nav" role="tablist" style="visibility: hidden;">
@@ -675,33 +692,22 @@
         if($(this).closest('.engage-card').hasClass('check-card')){
             if($(this).hasClass('checked')){
                 $(this).removeClass('checked');
-                var id = $(this).attr('id').split("_")[1];
-                removeCheckRadio(id);
             }
             else{
                 $(this).addClass('checked');
-                var id = $(this).attr('id').split("_")[1];
-                addCheckRadio(id);
             }
+            var id = $(this).attr('id').split("_")[1];
+            addCheck(id);
         }
         else if($(this).closest('.engage-card').hasClass('radio-card')){
             if($(this).hasClass('checked')){
                 null;
             }
             else{
-                if($(".card-choice.checked").length > 0){
-                    var id = $(".card-choice.checked").attr('id').split("_")[1];
-                    removeCheckRadio(id);
-                    id = $(this).attr('id').split("_")[1];
-                    addCheckRadio(id);
-                    $(".card-choice.checked").removeClass('checked');
-                    $(this).addClass('checked');
-                }
-                else{
-                    id = $(this).attr('id').split("_")[1];
-                    addCheckRadio(id);
-                    $(this).addClass('checked');
-                }
+                $(".card-choice.checked").removeClass('checked');
+                $(this).addClass('checked');
+                id = $(this).attr('id').split("_")[1];
+                addRadio(id);
             }
         }
     });
@@ -771,52 +777,71 @@
     }
 
 
-    function addCheckRadio(id){
+    function addRadio(id){
+        var componentID = $("#choice_"+id).closest('.editable-container').attr('id').split('_')[1];
         $.ajax({
             type: "GET",
-            url: "/addCheckRadio/"+id+"/",
+            url: "/addRadio/"+componentID+"/"+id+"/",
             data: null,
-            contentType: false,
-            processData: false,
             success: function(result) {
                 null;
             }
         });
     }
 
-    function removeCheckRadio(id){
+    function addCheck(id){
         $.ajax({
             type: "GET",
-            url: "/removeCheckRadio/"+id+"/",
+            url: "/addCheck/"+id+"/",
             data: null,
-            contentType: false,
-            processData: false,
             success: function(result) {
                 null;
             }
         });
     }
 
-    var rangeValue = 0;
+    
+
+    function addEntry(obj){
+        var id = $(obj).closest('.editable-container').attr('id').split('_')[1];
+        var name = $(obj).closest('.engage-card').find('.dataCollectorName').val();
+        var email = $(obj).closest('.engage-card').find('.dataCollectorEmail').val();
+        var phoneNumber = $(obj).closest('.engage-card').find('.dataCollectorPhoneNumber').val();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'addEntry' %}",
+            data: {
+                "id": id,
+                "name": name,
+                "email": email,
+                "phoneNumber": phoneNumber
+            },
+            success: function(result){
+                null
+            },
+            error: function(result){
+                null;
+            }
+        });
+    }
+
+
+
+
 
     
 
     function setRange(obj){
         var id = $(obj).closest('.editable-container').attr('id').split('_')[1];
-        var newRangeValue = $(obj).val();
-        console.log(rangeValue);
-        console.log(newRangeValue);
+        var rangeValue = $(obj).val();
         $.ajax({
             type: "GET",
-            url: "/setRange/"+id+"/"+rangeValue+"/"+newRangeValue+"/",
+            url: "/setRange/"+id+"/"+rangeValue+"/",
             data: null,
-            contentType: false,
-            processData: false,
             success: function(result) {
                 null;
             }
         });
-        rangeValue = newRangeValue;
     }
 
 

@@ -10,6 +10,11 @@ class images(models.Model):
     image = models.ImageField()
 
 
+class Entry(models.Model):
+    name = models.CharField(max_length=500)
+    email = models.EmailField()
+    phoneNumber = models.CharField(max_length=500)
+
 
 class choices(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -32,6 +37,7 @@ class components(models.Model):
         ('range','range'),
         ('button','button'),
         ('checkout','checkout'),
+        ('dataCollector','dataCollector'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=500, choices=typeChoices)
@@ -41,14 +47,13 @@ class components(models.Model):
     image = models.ImageField(blank=True, null=True)
     src = models.TextField(blank=True, null=True)
     html = models.TextField(blank=True, null=True)
-    choices = models.ManyToManyField(choices, null=True, blank=True)
-    choiceSum = models.IntegerField(blank=True, null=True, default=0)
+    choices = models.ManyToManyField(choices, blank=True)
+    entries = models.ManyToManyField(Entry, blank=True)
     clicks = models.IntegerField(blank=True, null=True, default=0)
     rangeTimes = models.FloatField(blank=True, null=True, default=0)
     rangeCount = models.IntegerField(blank=True, null=True, default=0)
     yesTimes = models.IntegerField(blank=True, null=True, default=0)
     noTimes = models.IntegerField(blank=True, null=True, default=0)
-    yesNoCount = models.IntegerField(blank=True, null=True, default=0)
     hours = models.IntegerField(blank=True, null=True)
     minutes = models.IntegerField(blank=True, null=True)
     date = models.DateField(blank=True, null=True)
@@ -65,6 +70,15 @@ class components(models.Model):
     fontFamily = models.CharField(max_length=500, blank=True, null=True, default="Helvetica")
     textAlign = models.CharField(max_length=500, blank=True, null=True, default="center")
 
+
+    def choiceSum(self):
+        total = 0
+        for choice in self.choices.all():
+            total += choice.chosen
+        return total
+
+    def yesNoCount(self):
+        return self.yesTimes + self.noTimes
 
     def getD1(self):
         f_date = date(int(str(self.date).split('-')[0]), int(str(self.date).split('-')[1]), int(str(self.date).split('-')[2]))
@@ -118,7 +132,7 @@ class story(models.Model):
     storyType = models.CharField(max_length=500, choices=storyTypeChoices, default="design")
     date = models.DateTimeField(auto_now_add=True)
     background = models.CharField(max_length=500, default="white")
-    components = models.ManyToManyField(components, null=True, blank=True)
+    components = models.ManyToManyField(components, blank=True)
 
     def __str__(self):
         return str(self.user)
